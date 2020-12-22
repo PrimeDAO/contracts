@@ -1,0 +1,17 @@
+{
+"crPool":{
+	"lpTokenName":"Prime Liquidity Pool One Token",
+	"lpTokenSymbol":"BPRIME",
+	"lpTokenAmount":"125000",
+	"PRIMEAmount": "161290",
+	"WETHAmount": "54",
+	"swapFee": "0.015",
+	"PRIMEWeight": "32",
+	"WETHWeight":"8"
+	},
+"yieldRewards":{
+	"reward":"500000",
+	"startTime":"1605888000",
+	"duration":"30"
+	}
+}

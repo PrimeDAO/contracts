@@ -1,0 +1,1184 @@
+{
+  "contractName": "Agreement",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getAgreementHash",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.13+commit.5b0b510c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"getAgreementHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"getAgreementHash()\":{\"details\":\"getAgreementHash\",\"return\":\"bytes32 agreementHash\"}},\"title\":\"A scheme for conduct ERC20 Tokens auction for reputation\"},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"@daostack/arc/contracts/schemes/Agreement.sol\":\"Agreement\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@daostack/arc/contracts/schemes/Agreement.sol\":{\"keccak256\":\"0xd2e8e2b9fb421c823706a18c929b353115427a9ad5f2b6b355f9e89fb60473d0\",\"urls\":[\"bzz-raw://8c6f10c918a96a58a2dde4137127d9891b48d5d637f567fb374e6dee6a2a9b38\",\"dweb:/ipfs/QmTKPKkHEXU2sNbU5hH4prP8GwqZ1GhJk1H9zkayRcowvq\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b5060808061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063696da92114602d575b600080fd5b60336045565b60408051918252519081900360200190f35b6000549056fea265627a7a723158209f7047bdf5a23f24109c34fb00b14239e486799cfea3dfec0d38fd8214ea17e964736f6c634300050d0032",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c8063696da92114602d575b600080fd5b60336045565b60408051918252519081900360200190f35b6000549056fea265627a7a723158209f7047bdf5a23f24109c34fb00b14239e486799cfea3dfec0d38fd8214ea17e964736f6c634300050d0032",
+  "sourceMap": "102:747:16:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;102:747:16;;;;;;;",
+  "deployedSourceMap": "102:747:16:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;102:747:16;;;;;;;;;;;;;;;;;;;407:101;;;:::i;:::-;;;;;;;;;;;;;;;;;458:7;488:13;407:101;:::o",
+  "source": "pragma solidity 0.5.13;\n\n/**\n * @title A scheme for conduct ERC20 Tokens auction for reputation\n */\n\n\ncontract Agreement {\n\n    bytes32 private agreementHash;\n\n    modifier onlyAgree(bytes32 _agreementHash) {\n        require(_agreementHash == agreementHash, \"Sender must send the right agreementHash\");\n        _;\n    }\n\n    /**\n     * @dev getAgreementHash\n     * @return bytes32 agreementHash\n     */\n    function getAgreementHash() external  view returns(bytes32)\n    {\n        return agreementHash;\n    }\n\n    /**\n     * @dev setAgreementHash\n     * @param _agreementHash is a hash of agreement required to be added to the TX by participants\n     */\n    function setAgreementHash(bytes32 _agreementHash) internal\n    {\n        require(agreementHash == bytes32(0), \"Can not set agreement twice\");\n        agreementHash = _agreementHash;\n    }\n\n\n}\n",
+  "sourcePath": "@daostack/arc/contracts/schemes/Agreement.sol",
+  "ast": {
+    "absolutePath": "@daostack/arc/contracts/schemes/Agreement.sol",
+    "exportedSymbols": {
+      "Agreement": [
+        4806
+      ]
+    },
+    "id": 4807,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4763,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:16"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title A scheme for conduct ERC20 Tokens auction for reputation",
+        "fullyImplemented": true,
+        "id": 4806,
+        "linearizedBaseContracts": [
+          4806
+        ],
+        "name": "Agreement",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 4765,
+            "name": "agreementHash",
+            "nodeType": "VariableDeclaration",
+            "scope": 4806,
+            "src": "128:29:16",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes32",
+              "typeString": "bytes32"
+            },
+            "typeName": {
+              "id": 4764,
+              "name": "bytes32",
+              "nodeType": "ElementaryTypeName",
+              "src": "128:7:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "value": null,
+            "visibility": "private"
+          },
+          {
+            "body": {
+              "id": 4777,
+              "nodeType": "Block",
+              "src": "207:112:16",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "id": 4772,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "id": 4770,
+                          "name": "_agreementHash",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4767,
+                          "src": "225:14:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "id": 4771,
+                          "name": "agreementHash",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4765,
+                          "src": "243:13:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "src": "225:31:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "53656e646572206d7573742073656e64207468652072696768742061677265656d656e7448617368",
+                        "id": 4773,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "258:42:16",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_c2bcf0352d1402213518437fa150fb3482822a0aedbe060b44ebd81fa7b67fe6",
+                          "typeString": "literal_string \"Sender must send the right agreementHash\""
+                        },
+                        "value": "Sender must send the right agreementHash"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_c2bcf0352d1402213518437fa150fb3482822a0aedbe060b44ebd81fa7b67fe6",
+                          "typeString": "literal_string \"Sender must send the right agreementHash\""
+                        }
+                      ],
+                      "id": 4769,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        13201,
+                        13202
+                      ],
+                      "referencedDeclaration": 13202,
+                      "src": "217:7:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 4774,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "217:84:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 4775,
+                  "nodeType": "ExpressionStatement",
+                  "src": "217:84:16"
+                },
+                {
+                  "id": 4776,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "311:1:16"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 4778,
+            "name": "onlyAgree",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 4768,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4767,
+                  "name": "_agreementHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4778,
+                  "src": "183:22:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 4766,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "183:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "182:24:16"
+            },
+            "src": "164:155:16",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 4785,
+              "nodeType": "Block",
+              "src": "471:37:16",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 4783,
+                    "name": "agreementHash",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 4765,
+                    "src": "488:13:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "functionReturnParameters": 4782,
+                  "id": 4784,
+                  "nodeType": "Return",
+                  "src": "481:20:16"
+                }
+              ]
+            },
+            "documentation": "@dev getAgreementHash\n@return bytes32 agreementHash",
+            "id": 4786,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAgreementHash",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4779,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "432:2:16"
+            },
+            "returnParameters": {
+              "id": 4782,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4781,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4786,
+                  "src": "458:7:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 4780,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "458:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "457:9:16"
+            },
+            "scope": 4806,
+            "src": "407:101:16",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 4804,
+              "nodeType": "Block",
+              "src": "721:124:16",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "id": 4796,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "id": 4792,
+                          "name": "agreementHash",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4765,
+                          "src": "739:13:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "hexValue": "30",
+                              "id": 4794,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "764:1:16",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              },
+                              "value": "0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              }
+                            ],
+                            "id": 4793,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "lValueRequested": false,
+                            "nodeType": "ElementaryTypeNameExpression",
+                            "src": "756:7:16",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_bytes32_$",
+                              "typeString": "type(bytes32)"
+                            },
+                            "typeName": "bytes32"
+                          },
+                          "id": 4795,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "756:10:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "src": "739:27:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "43616e206e6f74207365742061677265656d656e74207477696365",
+                        "id": 4797,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "768:29:16",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_57d2b41e44c125d12451ca60c4768c1ea6366c0c36b8be20ac1ab73b42bf6b7b",
+                          "typeString": "literal_string \"Can not set agreement twice\""
+                        },
+                        "value": "Can not set agreement twice"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_57d2b41e44c125d12451ca60c4768c1ea6366c0c36b8be20ac1ab73b42bf6b7b",
+                          "typeString": "literal_string \"Can not set agreement twice\""
+                        }
+                      ],
+                      "id": 4791,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        13201,
+                        13202
+                      ],
+                      "referencedDeclaration": 13202,
+                      "src": "731:7:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 4798,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "731:67:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 4799,
+                  "nodeType": "ExpressionStatement",
+                  "src": "731:67:16"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 4802,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 4800,
+                      "name": "agreementHash",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4765,
+                      "src": "808:13:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 4801,
+                      "name": "_agreementHash",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4788,
+                      "src": "824:14:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "src": "808:30:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "id": 4803,
+                  "nodeType": "ExpressionStatement",
+                  "src": "808:30:16"
+                }
+              ]
+            },
+            "documentation": "@dev setAgreementHash\n@param _agreementHash is a hash of agreement required to be added to the TX by participants",
+            "id": 4805,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setAgreementHash",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4789,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4788,
+                  "name": "_agreementHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4805,
+                  "src": "684:22:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 4787,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "684:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "683:24:16"
+            },
+            "returnParameters": {
+              "id": 4790,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "721:0:16"
+            },
+            "scope": 4806,
+            "src": "658:187:16",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 4807,
+        "src": "102:747:16"
+      }
+    ],
+    "src": "0:850:16"
+  },
+  "legacyAST": {
+    "absolutePath": "@daostack/arc/contracts/schemes/Agreement.sol",
+    "exportedSymbols": {
+      "Agreement": [
+        4806
+      ]
+    },
+    "id": 4807,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4763,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:16"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": "@title A scheme for conduct ERC20 Tokens auction for reputation",
+        "fullyImplemented": true,
+        "id": 4806,
+        "linearizedBaseContracts": [
+          4806
+        ],
+        "name": "Agreement",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 4765,
+            "name": "agreementHash",
+            "nodeType": "VariableDeclaration",
+            "scope": 4806,
+            "src": "128:29:16",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes32",
+              "typeString": "bytes32"
+            },
+            "typeName": {
+              "id": 4764,
+              "name": "bytes32",
+              "nodeType": "ElementaryTypeName",
+              "src": "128:7:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "value": null,
+            "visibility": "private"
+          },
+          {
+            "body": {
+              "id": 4777,
+              "nodeType": "Block",
+              "src": "207:112:16",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "id": 4772,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "id": 4770,
+                          "name": "_agreementHash",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4767,
+                          "src": "225:14:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "id": 4771,
+                          "name": "agreementHash",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4765,
+                          "src": "243:13:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "src": "225:31:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "53656e646572206d7573742073656e64207468652072696768742061677265656d656e7448617368",
+                        "id": 4773,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "258:42:16",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_c2bcf0352d1402213518437fa150fb3482822a0aedbe060b44ebd81fa7b67fe6",
+                          "typeString": "literal_string \"Sender must send the right agreementHash\""
+                        },
+                        "value": "Sender must send the right agreementHash"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_c2bcf0352d1402213518437fa150fb3482822a0aedbe060b44ebd81fa7b67fe6",
+                          "typeString": "literal_string \"Sender must send the right agreementHash\""
+                        }
+                      ],
+                      "id": 4769,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        13201,
+                        13202
+                      ],
+                      "referencedDeclaration": 13202,
+                      "src": "217:7:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 4774,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "217:84:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 4775,
+                  "nodeType": "ExpressionStatement",
+                  "src": "217:84:16"
+                },
+                {
+                  "id": 4776,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "311:1:16"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 4778,
+            "name": "onlyAgree",
+            "nodeType": "ModifierDefinition",
+            "parameters": {
+              "id": 4768,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4767,
+                  "name": "_agreementHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4778,
+                  "src": "183:22:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 4766,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "183:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "182:24:16"
+            },
+            "src": "164:155:16",
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 4785,
+              "nodeType": "Block",
+              "src": "471:37:16",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 4783,
+                    "name": "agreementHash",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 4765,
+                    "src": "488:13:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "functionReturnParameters": 4782,
+                  "id": 4784,
+                  "nodeType": "Return",
+                  "src": "481:20:16"
+                }
+              ]
+            },
+            "documentation": "@dev getAgreementHash\n@return bytes32 agreementHash",
+            "id": 4786,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAgreementHash",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4779,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "432:2:16"
+            },
+            "returnParameters": {
+              "id": 4782,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4781,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4786,
+                  "src": "458:7:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 4780,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "458:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "457:9:16"
+            },
+            "scope": 4806,
+            "src": "407:101:16",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 4804,
+              "nodeType": "Block",
+              "src": "721:124:16",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "commonType": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        "id": 4796,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "argumentTypes": null,
+                          "id": 4792,
+                          "name": "agreementHash",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4765,
+                          "src": "739:13:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "hexValue": "30",
+                              "id": 4794,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "764:1:16",
+                              "subdenomination": null,
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              },
+                              "value": "0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              }
+                            ],
+                            "id": 4793,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "lValueRequested": false,
+                            "nodeType": "ElementaryTypeNameExpression",
+                            "src": "756:7:16",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_bytes32_$",
+                              "typeString": "type(bytes32)"
+                            },
+                            "typeName": "bytes32"
+                          },
+                          "id": 4795,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "756:10:16",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "src": "739:27:16",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "43616e206e6f74207365742061677265656d656e74207477696365",
+                        "id": 4797,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "768:29:16",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_57d2b41e44c125d12451ca60c4768c1ea6366c0c36b8be20ac1ab73b42bf6b7b",
+                          "typeString": "literal_string \"Can not set agreement twice\""
+                        },
+                        "value": "Can not set agreement twice"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_57d2b41e44c125d12451ca60c4768c1ea6366c0c36b8be20ac1ab73b42bf6b7b",
+                          "typeString": "literal_string \"Can not set agreement twice\""
+                        }
+                      ],
+                      "id": 4791,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        13201,
+                        13202
+                      ],
+                      "referencedDeclaration": 13202,
+                      "src": "731:7:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 4798,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "731:67:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 4799,
+                  "nodeType": "ExpressionStatement",
+                  "src": "731:67:16"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 4802,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 4800,
+                      "name": "agreementHash",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4765,
+                      "src": "808:13:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 4801,
+                      "name": "_agreementHash",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4788,
+                      "src": "824:14:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "src": "808:30:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "id": 4803,
+                  "nodeType": "ExpressionStatement",
+                  "src": "808:30:16"
+                }
+              ]
+            },
+            "documentation": "@dev setAgreementHash\n@param _agreementHash is a hash of agreement required to be added to the TX by participants",
+            "id": 4805,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setAgreementHash",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4789,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4788,
+                  "name": "_agreementHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4805,
+                  "src": "684:22:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 4787,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "684:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "683:24:16"
+            },
+            "returnParameters": {
+              "id": 4790,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "721:0:16"
+            },
+            "scope": 4806,
+            "src": "658:187:16",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "internal"
+          }
+        ],
+        "scope": 4807,
+        "src": "102:747:16"
+      }
+    ],
+    "src": "0:850:16"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.0",
+  "updatedAt": "2020-12-22T12:30:47.859Z",
+  "devdoc": {
+    "methods": {
+      "getAgreementHash()": {
+        "details": "getAgreementHash",
+        "return": "bytes32 agreementHash"
+      }
+    },
+    "title": "A scheme for conduct ERC20 Tokens auction for reputation"
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

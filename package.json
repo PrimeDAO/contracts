@@ -1,0 +1,43 @@
+{
+  "name": "@primedao/contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "truffle test",
+    "lint": "solhint 'contracts/**/*.sol' && npx eslint test/*.js",
+    "deploy:contracts:kovan": "truffle migrate --network kovan --reset",
+    "deploy:dao:kovan": "npx run scripts/kovan/migrateDAO.js --network kovan",
+    "setup:oracle:kovan": "npx truffle exec scripts/kovan/setupPriceOracle.js --network kovan",
+    "create:pool:kovan": "npx truffle exec scripts/kovan/createPool.js --network kovan",
+    "transfer:pool:kovan": "npx truffle exec scripts/kovan/transferPool.js --network kovan",
+    "innit:staking:kovan": "npx truffle exec scripts/kovan/innitRewards.js --network kovan",
+    "deploy:contracts:mainnet": "truffle migrate --network mainnet --reset",
+    "deploy:dao:mainnet": "npx run scripts/mainnet/migrateDAO.js --network mainnet",
+    "setup:oracle:mainnet": "npx truffle exec scripts/mainnet/setupPriceOracle.js --network mainnet",
+    "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
+    "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
+    "innit:staking:mainnet": "npx truffle exec scripts/mainnet/innitRewards.js --network mainnet",
+    "coverage": "truffle run coverage"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@daostack/arc": "0.0.1-rc.41",
+    "@daostack/infra": "0.0.1-rc.17",
+    "@daostack/migration": "0.0.1-rc.44-v0",
+    "@openzeppelin/test-helpers": "^0.5.6",
+    "@truffle/hdwallet-provider": "^1.1.0",
+    "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "fs": "0.0.1-security",
+    "openzeppelin-solidity": "^2.4.0",
+    "solhint": "^3.2.2",
+    "truffle": "^5.1.43",
+    "web3": "^1.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "solidity-coverage": "^0.7.11"
+  }
+}

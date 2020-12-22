@@ -1,0 +1,285 @@
+{
+  "contractName": "Import",
+  "abi": [
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.13+commit.5b0b510c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/arseny/Projects/primeDAO/contracts/contracts/utils/test/Import.sol\":\"Import\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/arseny/Projects/primeDAO/contracts/contracts/utils/test/Import.sol\":{\"keccak256\":\"0xe1d6b66c3f72ec9b9e7751ca52c7e7499ea5135b478dda5d366b1fa2477fdc54\",\"urls\":[\"bzz-raw://36334c1563921df3466727133d74c13f77fb1d89acd9db4c8ba519da05d8f120\",\"dweb:/ipfs/QmVakd3CU2xtjsfY1yTSk7V4fAxM4M3bkY9f7A2HjHNBeE\"]},\"@daostack/arc/contracts/controller/Avatar.sol\":{\"keccak256\":\"0xdc75e96aca5c6aeaa3bbf97d2a3a1d305c1c168b74f1d5a6b151648e1b71086f\",\"urls\":[\"bzz-raw://425e5a7e0d27fe14af052e826a1757135afc30cf6941986dcd2c336e34c5d24c\",\"dweb:/ipfs/QmR9Jn4ZNx8LNyzSRWhdNh7rG8pccSHLX3iqdSk26VYw3R\"]},\"@daostack/arc/contracts/controller/Controller.sol\":{\"keccak256\":\"0x88fe5ca7618e1ed502a9665e53bfab5260282a9a7b561361ee8067af59a58f5a\",\"urls\":[\"bzz-raw://911676f75c5f83d54a7c892bb8dd39daa7b199c358536e7347ca150e815759bc\",\"dweb:/ipfs/QmT8TtonKcEgjrok8b3zUkGZQL6FEZCXFdkYMc5jV61bD6\"]},\"@daostack/arc/contracts/controller/DAOToken.sol\":{\"keccak256\":\"0x567235b3ec3884704725a775559a2c60b46c56d144072929035dbadeeb65e884\",\"urls\":[\"bzz-raw://8944f3ffa3f1fbc1aa6bfddf5f055a15bec79f51dcca655d5a8698aa9dfd38d4\",\"dweb:/ipfs/QmUZWJVgaXkMVMGiXAHkiETCHGptt6wCRLUiaGrzxk7Lv4\"]},\"@daostack/arc/contracts/globalConstraints/GlobalConstraintInterface.sol\":{\"keccak256\":\"0x83fb7666df1270aa8d857a631172b555dcf4f24fabba9a2a241d2b1ca2e574ef\",\"urls\":[\"bzz-raw://2499d07b8ba63936601c61884415a5f6848f1883e452efb608ccb181d98125e8\",\"dweb:/ipfs/QmeZCTMZ6KwJX1HLRZMMTZugskPDR6dvaNGEknEyyBePxt\"]},\"@daostack/arc/contracts/libs/SafeERC20.sol\":{\"keccak256\":\"0x1e91e541a9e835c05372a53eb7879e05bc47f6355602d6d3bf4bbdd8f660fc95\",\"urls\":[\"bzz-raw://ba9d1c3e68e38adc57e3097d191e7328816839ca918aff208338fb447b0792d8\",\"dweb:/ipfs/QmWisfDaqBSoYjg2U93VsZL43Lba4Ko7mbe6YS2wZpgvDR\"]},\"@daostack/arc/contracts/schemes/Agreement.sol\":{\"keccak256\":\"0xd2e8e2b9fb421c823706a18c929b353115427a9ad5f2b6b355f9e89fb60473d0\",\"urls\":[\"bzz-raw://8c6f10c918a96a58a2dde4137127d9891b48d5d637f567fb374e6dee6a2a9b38\",\"dweb:/ipfs/QmTKPKkHEXU2sNbU5hH4prP8GwqZ1GhJk1H9zkayRcowvq\"]},\"@daostack/arc/contracts/schemes/GenericScheme.sol\":{\"keccak256\":\"0xc256b1ca0e436ee52c6dee9ffe353af11ae8886e8c56955f32b90810237d37bd\",\"urls\":[\"bzz-raw://11e035440c22453c50293a91bfcf1a1743f04304a0842828ae5e66a981ef3ebd\",\"dweb:/ipfs/QmPPhksY5R9TqR8h7pTALVEcLYn8BbnZ89yYDYbz2hKzmK\"]},\"@daostack/arc/contracts/schemes/Locking4Reputation.sol\":{\"keccak256\":\"0x0180348aed9e3a89f810920e1876b37991a50f6166fb3d16a624db7a8d7785e9\",\"urls\":[\"bzz-raw://8ae7d576bab9e4ba527a731461821c1427fbdf899c9253a50aeb2134f996029b\",\"dweb:/ipfs/QmWVkTjrmvm6U7mrKLskDWcKUxBhkswNeN9VvgXgY7qK2H\"]},\"@daostack/arc/contracts/schemes/LockingToken4Reputation.sol\":{\"keccak256\":\"0xd769dae7d9f4a2dd85fb99c2974707da455b34b831a391622b1930d9cdb85049\",\"urls\":[\"bzz-raw://a0f1dbe549096cb8e0311ad9823e226ff996bd7f755970c7128d2aa74c98f1c2\",\"dweb:/ipfs/QmfDuPRwrhiJiR9fm4B2rGTT6eFPxqTxhnYCMaZomMiEMT\"]},\"@daostack/arc/contracts/schemes/PriceOracleInterface.sol\":{\"keccak256\":\"0x039506b7d17da35e14379bc12cb2896e11f527f89827f2abb5001dd32fff911b\",\"urls\":[\"bzz-raw://0d629d58127bcb1808e61152e3deb8e9381829316be5abc0fac4a363f6f1733f\",\"dweb:/ipfs/QmfRzBypSmVxWCuvPMFduxKv9sqBfJBxB5VXqmUi7Aw1EE\"]},\"@daostack/arc/contracts/universalSchemes/DaoCreator.sol\":{\"keccak256\":\"0xd08a37b916bc4d26ef8196793e76eb761c637f97a68f1f28940d7a51d790506b\",\"urls\":[\"bzz-raw://209f6346bc7e0df1c3c42a563d0354bfdd342dec7238755b2807dce12b154a7f\",\"dweb:/ipfs/QmeweZE6eN5cFKogcdtec2HS1EyUpkMKVnsy5FEpRN4rFz\"]},\"@daostack/arc/contracts/universalSchemes/UniversalScheme.sol\":{\"keccak256\":\"0xcd02bd2209bca29c2b76d5fa45f5f8f8aed544f92250def7f9f65f29bbe9c2ab\",\"urls\":[\"bzz-raw://2c673a3e3413b5caaf855b55f4af9286197497d7fccbf0a42e5c6d30e2b6359e\",\"dweb:/ipfs/QmVinKRvL3c2WiodV5x64ezSqUGHp1ARmhzZgqLBc58444\"]},\"@daostack/arc/contracts/universalSchemes/UniversalSchemeInterface.sol\":{\"keccak256\":\"0x6a7c12fc1106653ff0d61981f34a5466da4e8b5acd2f8f6128144a6177f85267\",\"urls\":[\"bzz-raw://b7b33ed8cee7197e763f6a04dd82761cf416e55e1494e2b56831d503c022a1f0\",\"dweb:/ipfs/QmfMahtFUXMw3s1mt3nYaUGqLbYru2EmumsVJ3WudmnSWX\"]},\"@daostack/arc/contracts/utils/DAOTracker.sol\":{\"keccak256\":\"0x98fdf00f5150a0e5ef98abde36f89c37fb307135ddbfe4e0476771c93782824f\",\"urls\":[\"bzz-raw://ee0f9617d3dca49b10738d188f5b8870f45f5601fbc64b1428aab7e6c13b13c1\",\"dweb:/ipfs/QmVoFTHX3QPb7hjAiSjdVEgQaanXys8mX4i4WTrCcNzcvS\"]},\"@daostack/arc/contracts/votingMachines/VotingMachineCallbacks.sol\":{\"keccak256\":\"0xc976cc624c5032745ecb75dc24afc02bda81e894dab798698f6f6b15e5b1eef6\",\"urls\":[\"bzz-raw://10a061b54ce3b50cd9fcdb4f3181bc65587b898aae7a48688c260eed3e55fe64\",\"dweb:/ipfs/QmUeNMvoaeJeQeaAbbcNXbD4RLAQT77YKvdhpD9duSv6KJ\"]},\"@daostack/infra/contracts/Reputation.sol\":{\"keccak256\":\"0x8218b8a68b491a6e5ee3a445f5a7d21579c8a2e88f41bc10124f3b5c4c1cfff1\",\"urls\":[\"bzz-raw://db4d6c8135aa64c91db4843871b571c977d78ad3928a648c2153702c0c645363\",\"dweb:/ipfs/Qmdpev6RKbG3iM1bwt27X8zQAGNLjWC7LWx5txzTH22fQz\"]},\"@daostack/infra/contracts/libs/RealMath.sol\":{\"keccak256\":\"0x122058c4c26cdc191c7d016c2523f40735448bab58f387238d662da9e415e8cd\",\"urls\":[\"bzz-raw://104c989116670a367be3d7f47eae90f28e200f12a9bf7224201c8beb0d109606\",\"dweb:/ipfs/QmZ6xWKYiJXuSF6fbvPTLQWZeyRrHD8sseUSzyYWTFA8vb\"]},\"@daostack/infra/contracts/votingMachines/AbsoluteVote.sol\":{\"keccak256\":\"0x6b63752376abb98cf5d62775ce84d42624ec6d84ec1cd8205b2851b0a929cb1b\",\"urls\":[\"bzz-raw://021ed12591b0993c40bf7b512cdb6692689101b3e64552e9e6c1a8353037081d\",\"dweb:/ipfs/QmbeqbR5ZMKRxdhEKcKrCn1NvGa1ZUnxhu8Xkiq2YYuXru\"]},\"@daostack/infra/contracts/votingMachines/GenesisProtocol.sol\":{\"keccak256\":\"0x332c8be191ed1a4eb103d3a2a340337bd3fc7aab75d8d4b1fb29a32fea3c4af9\",\"urls\":[\"bzz-raw://f7ef35bfdaaf9e3fe285e9f21defb857916a6fee354a6889d7b033c0e2dbfffb\",\"dweb:/ipfs/QmaYeS4LQj9sHtsBvDmY1TJcAdastiNfgxerUBaNCc7ena\"]},\"@daostack/infra/contracts/votingMachines/GenesisProtocolLogic.sol\":{\"keccak256\":\"0x9484150c4cd9a859d4807142b6f501c5a96211587fd88989db778965d160219a\",\"urls\":[\"bzz-raw://767f7d5c8d7dd43bfbe9ca7b7b874c301c60921bf7cdfdeb23e7c90138bc08bf\",\"dweb:/ipfs/QmRcANQn6W9FqaLZ6EHjbJkUFuxPhFC8gKEf82Xf7ECEmb\"]},\"@daostack/infra/contracts/votingMachines/IntVoteInterface.sol\":{\"keccak256\":\"0x7ae3856070e840611ecc8342bd7ef9648774c3f75be0d826ad2820ebc106e0b1\",\"urls\":[\"bzz-raw://c6c7f434bbd1e745ba1d5d1a95434150f0805cfc99b7b5a1cc7c3ae6beb8aca7\",\"dweb:/ipfs/QmRkonw8SweXe1vJDJS6SYkaZ48d9hWn12mkzGBtjbtZ4f\"]},\"@daostack/infra/contracts/votingMachines/ProposalExecuteInterface.sol\":{\"keccak256\":\"0x4dcece6cd237e4702c3ecca8a2018c88bfec75093f5277d18ba5e56733d9958d\",\"urls\":[\"bzz-raw://f3443e560a90ffa6fc5c47518b6c56aecd0f03085c6c5204f242d7cb6743001a\",\"dweb:/ipfs/QmVVHto4styW32xNK1o7ZHsDsHedxdKkLyRkuu8yWo1KB4\"]},\"@daostack/infra/contracts/votingMachines/VotingMachineCallbacksInterface.sol\":{\"keccak256\":\"0xf8b320bae7ea9c07e49f6cd80730c8a1d00cfdbe3225fb9c463e9ae457ff4735\",\"urls\":[\"bzz-raw://acc1d0c8bbdb470123f4178f4e872e4da34a1e6bafcd3d9eeaaafcf214bf28b1\",\"dweb:/ipfs/QmXYSXbHJP9Et2nd7nrHuVB3rQxZAaLNmiK5ytfVtWy5ap\"]},\"openzeppelin-solidity/contracts/GSN/Context.sol\":{\"keccak256\":\"0x90a3995645af7562d84b9d69363ffa5ae7217714ab61e951bf7bc450f40e4061\",\"urls\":[\"bzz-raw://216ef9d6b614db4eb46970b4e84903f2534a45572dd30a79f0041f1a5830f436\",\"dweb:/ipfs/QmNPrJ4MWKUAWzKXpUqeyKRUfosaoANZAqXgvepdrCwZAG\"]},\"openzeppelin-solidity/contracts/cryptography/ECDSA.sol\":{\"keccak256\":\"0xc89ea7e48ba477b1781b24ae963442fff1bb2af33b6178dad679a3fa2f5ab2de\",\"urls\":[\"bzz-raw://b736ddad8143f8f1cd13c20809d4ebce5f5a8c7725081b0b703294078bd506d1\",\"dweb:/ipfs/QmdhTWCXFCuwG9JaPMjwnhkQoDj9su8R7KMPNvD5z9KeWD\"]},\"openzeppelin-solidity/contracts/math/Math.sol\":{\"keccak256\":\"0x4b5aa451e4e8801478708f94b118a7821c0500d676255eaf89fc78c14856ce4e\",\"urls\":[\"bzz-raw://bed15b3f35ed05505efc8fb5cb01d06c52230fbcaadf4ed24a85b1ac2f15f33c\",\"dweb:/ipfs/QmS6tW81u8E4tvzVfVuqEuMCkdwAozQ6pKJPRBR4JEVmQp\"]},\"openzeppelin-solidity/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x640b6dee7a4b830bdfd52b5031a07fc2b12209f5b2e29e5d364a7d37f69d8076\",\"urls\":[\"bzz-raw://31113152e1ddb78fe7a4197f247591ca894e93f916867beb708d8e747b6cc74f\",\"dweb:/ipfs/QmbZaJyXdpsYGykVhHH9qpVGQg9DGCxE2QufbCUy3daTgq\"]},\"openzeppelin-solidity/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x6fb9d7889769d7cc161225f9ef7a90e468ba9788b253816f8d8b6894d3472c24\",\"urls\":[\"bzz-raw://cf4c00fc3c37cc5acf0c82ec6fd97bab67d72c2567fdc0ebf023d9c09b30a08e\",\"dweb:/ipfs/Qmb7TChG6DsEDX7LooJ4vmxot19f7VXX8S1zUGPeJTWbwZ\"]},\"openzeppelin-solidity/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0xb15af804e2bc97db51e4e103f13de9fe13f87e6b835d7a88c897966c0e58506e\",\"urls\":[\"bzz-raw://1e8cff8437557fc915a3bed968fcd8f2df9809599e665ef69c2c9ce628548055\",\"dweb:/ipfs/QmP5spYP8vs2jvLF8zNrXUbqB79hMsoEvMHiLcBxerWKcm\"]},\"openzeppelin-solidity/contracts/token/ERC20/ERC20Burnable.sol\":{\"keccak256\":\"0x9b94356691f3cbf90a5d83ae3fdf6a5a662bb004d2bd8b034160d60221807e64\",\"urls\":[\"bzz-raw://14a9d33db455302b8bb9fdb28998efefbe5a1cb41b29e31391609f646b2ab351\",\"dweb:/ipfs/Qmd4wFr6GEMZnnxgXeq3gmp7cs8tqDuHp3TVNhCbjnux2V\"]},\"openzeppelin-solidity/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xe5bb0f57cff3e299f360052ba50f1ea0fff046df2be070b6943e0e3c3fdad8a9\",\"urls\":[\"bzz-raw://59fd025151435da35faa8093a5c7a17de02de9d08ad27275c5cdf05050820d91\",\"dweb:/ipfs/QmQMvwEcPhoRXzbXyrdoeRtvLoifUW9Qh7Luho7bmUPRkc\"]},\"openzeppelin-solidity/contracts/utils/Address.sol\":{\"keccak256\":\"0x1a8e5072509c5ea7365eb1d48030b9be865140c8fb779968da0a459a0e174a11\",\"urls\":[\"bzz-raw://03335b7b07c7c8c8d613cfdd8ec39a0b5ec133ee510bf2fe6cc5a496767bef4b\",\"dweb:/ipfs/Qmebp4nzPja645c9yXSdJkGq96oU3am3LUnG2K3R7XxyKf\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603e80601d6000396000f3fe6080604052600080fdfea265627a7a72315820e2ef8ce71b76c6a5bc6c4ccc2c6e459ddb1426a79b424176a91c1cceeaa82c8364736f6c634300050d0032",
+  "deployedBytecode": "0x6080604052600080fdfea265627a7a72315820e2ef8ce71b76c6a5bc6c4ccc2c6e459ddb1426a79b424176a91c1cceeaa82c8364736f6c634300050d0032",
+  "sourceMap": "355:78:8:-;;;378:53;8:9:-1;5:2;;;30:1;27;20:12;5:2;378:53:8;355:78;;;;;;",
+  "deployedSourceMap": "355:78:8:-;;;;;",
+  "source": "pragma solidity 0.5.13;\n\nimport \"@daostack/arc/contracts/schemes/GenericScheme.sol\";\nimport \"@daostack/arc/contracts/universalSchemes/DaoCreator.sol\";\nimport \"@daostack/infra/contracts/votingMachines/AbsoluteVote.sol\";\nimport \"@daostack/arc/contracts/schemes/LockingToken4Reputation.sol\";\nimport \"openzeppelin-solidity/contracts/token/ERC20/IERC20.sol\";\n\ncontract Import  {\n    constructor () public {\n        // nothing here\n    }\n}\n",
+  "sourcePath": "/Users/arseny/Projects/primeDAO/contracts/contracts/utils/test/Import.sol",
+  "ast": {
+    "absolutePath": "/Users/arseny/Projects/primeDAO/contracts/contracts/utils/test/Import.sol",
+    "exportedSymbols": {
+      "Import": [
+        2252
+      ]
+    },
+    "id": 2253,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2242,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:8"
+      },
+      {
+        "absolutePath": "@daostack/arc/contracts/schemes/GenericScheme.sol",
+        "file": "@daostack/arc/contracts/schemes/GenericScheme.sol",
+        "id": 2243,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 5139,
+        "src": "25:59:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@daostack/arc/contracts/universalSchemes/DaoCreator.sol",
+        "file": "@daostack/arc/contracts/universalSchemes/DaoCreator.sol",
+        "id": 2244,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 6332,
+        "src": "85:65:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@daostack/infra/contracts/votingMachines/AbsoluteVote.sol",
+        "file": "@daostack/infra/contracts/votingMachines/AbsoluteVote.sol",
+        "id": 2245,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 8262,
+        "src": "151:67:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@daostack/arc/contracts/schemes/LockingToken4Reputation.sol",
+        "file": "@daostack/arc/contracts/schemes/LockingToken4Reputation.sol",
+        "id": 2246,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 5775,
+        "src": "219:69:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "file": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "id": 2247,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 12859,
+        "src": "289:64:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2252,
+        "linearizedBaseContracts": [
+          2252
+        ],
+        "name": "Import",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 2250,
+              "nodeType": "Block",
+              "src": "400:31:8",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 2251,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2248,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "390:2:8"
+            },
+            "returnParameters": {
+              "id": 2249,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "400:0:8"
+            },
+            "scope": 2252,
+            "src": "378:53:8",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2253,
+        "src": "355:78:8"
+      }
+    ],
+    "src": "0:434:8"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/arseny/Projects/primeDAO/contracts/contracts/utils/test/Import.sol",
+    "exportedSymbols": {
+      "Import": [
+        2252
+      ]
+    },
+    "id": 2253,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2242,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:8"
+      },
+      {
+        "absolutePath": "@daostack/arc/contracts/schemes/GenericScheme.sol",
+        "file": "@daostack/arc/contracts/schemes/GenericScheme.sol",
+        "id": 2243,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 5139,
+        "src": "25:59:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@daostack/arc/contracts/universalSchemes/DaoCreator.sol",
+        "file": "@daostack/arc/contracts/universalSchemes/DaoCreator.sol",
+        "id": 2244,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 6332,
+        "src": "85:65:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@daostack/infra/contracts/votingMachines/AbsoluteVote.sol",
+        "file": "@daostack/infra/contracts/votingMachines/AbsoluteVote.sol",
+        "id": 2245,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 8262,
+        "src": "151:67:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@daostack/arc/contracts/schemes/LockingToken4Reputation.sol",
+        "file": "@daostack/arc/contracts/schemes/LockingToken4Reputation.sol",
+        "id": 2246,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 5775,
+        "src": "219:69:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "file": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "id": 2247,
+        "nodeType": "ImportDirective",
+        "scope": 2253,
+        "sourceUnit": 12859,
+        "src": "289:64:8",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2252,
+        "linearizedBaseContracts": [
+          2252
+        ],
+        "name": "Import",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 2250,
+              "nodeType": "Block",
+              "src": "400:31:8",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 2251,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2248,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "390:2:8"
+            },
+            "returnParameters": {
+              "id": 2249,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "400:0:8"
+            },
+            "scope": 2252,
+            "src": "378:53:8",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2253,
+        "src": "355:78:8"
+      }
+    ],
+    "src": "0:434:8"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.0",
+  "updatedAt": "2020-12-22T12:30:47.773Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
