@@ -34,7 +34,6 @@
 
 import "@daostack/arc/contracts/libs/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-// import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
@@ -47,14 +46,11 @@ pragma solidity >=0.5.13;
 contract StakingRewards is Ownable, ReentrancyGuard {
 
     using SafeMath for uint256;
-    // using SafeERC20 for IERC20;
     using SafeERC20 for address;
 
     address public rewardToken;
     address public stakingToken;
 
-    // IERC20 public rewardToken;
-    // IERC20 public stakingToken;
     bool   public initialized;
 
     modifier initializer() {
@@ -90,8 +86,6 @@ contract StakingRewards is Ownable, ReentrancyGuard {
 
         rewardToken  = _rewardToken;
         stakingToken = _stakingToken;
-        // rewardToken  = IERC20(_rewardToken);
-        // stakingToken = IERC20(_stakingToken);
         initreward = _initreward;
         starttime = _starttime;
         DURATION = (_duration * 24 hours);

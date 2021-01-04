@@ -69,7 +69,6 @@ contract FarmManager {
     /* internal helpers functions */
 
 	function _create() internal returns(address) {
-        // require(owner != address(0), "VestingFactory: owner is the zero address");
         StakingRewards _newFarm = new StakingRewards();
         // newContract.transferOwnership(msg.sender);
 
