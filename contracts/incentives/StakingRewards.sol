@@ -32,8 +32,9 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 */
 
+import "@daostack/arc/contracts/libs/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+// import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
@@ -46,10 +47,14 @@ pragma solidity >=0.5.13;
 contract StakingRewards is Ownable, ReentrancyGuard {
 
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    // using SafeERC20 for IERC20;
+    using SafeERC20 for address;
 
-    IERC20 public rewardToken;
-    IERC20 public stakingToken;
+    address public rewardToken;
+    address public stakingToken;
+
+    // IERC20 public rewardToken;
+    // IERC20 public stakingToken;
     bool   public initialized;
 
     modifier initializer() {
@@ -83,13 +88,15 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         require(_starttime != 0,                              "StakingRewards: starttime cannot be null");
         require(_duration != 0,                               "StakingRewards: duration cannot be null");
 
-        rewardToken  = IERC20(_rewardToken);
-        stakingToken = IERC20(_stakingToken);
+        rewardToken  = _rewardToken;
+        stakingToken = _stakingToken;
+        // rewardToken  = IERC20(_rewardToken);
+        // stakingToken = IERC20(_stakingToken);
         initreward = _initreward;
         starttime = _starttime;
         DURATION = (_duration * 24 hours);
 
-        require(_initreward == rewardToken.balanceOf(address(this)),   "StakingRewards: wrong reward amount supplied");
+        require(_initreward == IERC20(rewardToken).balanceOf(address(this)),   "StakingRewards: wrong reward amount supplied");
 
         _notifyRewardAmount(_initreward);
     }
@@ -191,7 +198,7 @@ contract StakingRewards is Ownable, ReentrancyGuard {
     // This is in an effort to make someone whole, should they seriously
     // mess up. There is no guarantee governance will vote to return these.
     // It also allows for removal of airdropped tokens.
-    function rescueTokens(IERC20 _token, uint256 amount, address to)
+    function rescueTokens(address _token, uint256 amount, address to)
         external
         protected
     {
