@@ -5,7 +5,7 @@ const { expect } = require('chai');
 const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const BPool = artifacts.require('BPool');
-const FarmManager = artifacts.require('FarmManager');
+const FarmFactory = artifacts.require('FarmFactory');
 
 const { toWei } = web3.utils;
 
@@ -22,13 +22,15 @@ const deploy = async (accounts) => {
     setup.balancer = await helpers.setup.balancer(setup);
     // deploy token4rep
     setup.token4rep = await helpers.setup.token4rep(setup);
-    // deploy farmManager
+    // deploy farmFactory
+    setup.farmFactory = await helpers.setup.farmFactory(setup);
+    // deploy primeDAO
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 
     return setup;
 };
 
-contract('FarmManager', (accounts) => {
+contract('FarmFactory', (accounts) => {
     let setup;
     let rewardToken;
     let stakingToken;
@@ -43,40 +45,38 @@ contract('FarmManager', (accounts) => {
         context('» parameters are valid', () => {
             // proxy has already been initialized during setup
             it('it initializes farm manager', async () => {
-                expect(await setup.primeDAO.farmManager.initialized()).to.equal(true);
-                expect(await setup.primeDAO.farmManager.avatar()).to.equal(setup.organization.avatar.address);
+                expect(await setup.farmFactory.initialized()).to.equal(true);
+                expect(await setup.farmFactory.avatar()).to.equal(setup.organization.avatar.address);
             });
         });
         context('» avatar parameter is not valid', () => {
             before('!! deploy farm manager', async () => {
-                setup.farmManager = await FarmManager.new();
+                setup.farmFactory = await FarmFactory.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.primeDAO.farmManager.initialize(constants.ZERO_ADDRESS), 'FarmManager: avatar cannot be null');
+                await expectRevert(setup.farmFactory.initialize(constants.ZERO_ADDRESS), 'FarmFactory: avatar cannot be null');
             });
         });
     });
     context('» contract is initialized ', () => {
-        context('» avatar parameter is not valid', () => {
+        context('» avatar parameter is valid', () => {
             before('!! deploy farm manager', async () => {
+                setup = await deploy(accounts);
                 rewardToken = await setup.tokens.erc20s[0];
                 stakingToken = await setup.tokens.erc20s[1];
 
                 await rewardToken.transfer(setup.organization.avatar.address, rewardAmount);                
             });
             it('creates a farm', async () => {
+
                 const calldata = helpers.encodeCreateFarm(rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                //store data
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                // store data
                 setup.data.tx = tx;
 
-                // const pool = await setup.balancer.pool.bPool();
-                // const bPool = await BPool.at(pool);
-
-                await console.log(tx);
-                // expect(await bPool.isPublicSwap()).to.equal(publicSwap);
+                await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'FarmCreated', {});
             });
         });
     });

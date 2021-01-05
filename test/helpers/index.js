@@ -1,7 +1,7 @@
 const { BN } = require('@openzeppelin/test-helpers');
 const setup = require('./setup');
 const BalancerProxy = artifacts.require('BalancerProxy');
-const FarmManager = artifacts.require('FarmManager');
+const FarmFactory = artifacts.require('FarmFactory');
 
 const AMOUNT = new BN('1000');
 const EXPECTED = new BN('500');
@@ -36,7 +36,7 @@ const encodeUpdateWeight = (token, newWeight) => {
   return new web3.eth.Contract(BalancerProxy.abi).methods.updateWeight(token, newWeight).encodeABI();
 };
 const encodeCreateFarm = (rewardToken, stakingToken, initreward, starttime, duration) => {
-  return new web3.eth.Contract(FarmManager.abi).methods.createFarm(rewardToken, stakingToken, initreward, starttime, duration).encodeABI();
+  return new web3.eth.Contract(FarmFactory.abi).methods.createFarm(rewardToken, stakingToken, initreward, starttime, duration).encodeABI();
 };
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
   /**

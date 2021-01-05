@@ -5,7 +5,7 @@ import "@daostack/arc/contracts/controller/Controller.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../incentives/StakingRewards.sol";
 
-contract FarmManager {
+contract FarmFactory {
 
     Avatar public avatar;
     bool   public initialized;
@@ -13,19 +13,19 @@ contract FarmManager {
 	event FarmCreated(address newFarm);
 
     modifier initializer() {
-        require(!initialized, 					"FarmManager: contract already initialized");
+        require(!initialized, 					"FarmFactory: contract already initialized");
         initialized = true;
         _;
     }
 
     modifier protected() {
-        require(initialized,					"FarmManager: contract not initialized");
-        require(msg.sender == address(avatar),	"FarmManager: protected operation");
+        require(initialized,					"FarmFactory: contract not initialized");
+        require(msg.sender == address(avatar),	"FarmFactory: protected operation");
         _;
     }
 
 	function initialize(Avatar _avatar) external initializer {
-        require(_avatar != Avatar(0), 			"FarmManager: avatar cannot be null");
+        require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
 		avatar = _avatar;
 	}
 
@@ -37,6 +37,7 @@ contract FarmManager {
         uint256 _duration
 	)
 	public
+	payable
 	protected
 	returns(address)
 	{
@@ -70,7 +71,7 @@ contract FarmManager {
 
 	function _create() internal returns(address) {
         StakingRewards _newFarm = new StakingRewards();
-        // newContract.transferOwnership(msg.sender);
+        _newFarm.transferOwnership(address(avatar));
 
         emit FarmCreated(address(_newFarm));
         return address(_newFarm);
