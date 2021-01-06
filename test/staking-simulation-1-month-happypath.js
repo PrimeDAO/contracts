@@ -26,6 +26,8 @@ const deploy = async (accounts) => {
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy incentives contract
     setup.incentives = await helpers.setup.incentives(setup);
+    // deploy farmFactory
+    setup.farmFactory = await helpers.setup.farmFactory(setup);
     // deploy primeDAO governance
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 
