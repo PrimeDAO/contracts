@@ -1,5 +1,5 @@
 {
-  "orgName": "primeDAO-test",
+  "orgName": "primeDAO-test-new",
   "tokenName": "PrimeDAO Useless Token",
   "tokenSymbol": "PDAO",
   "ContributionReward": [{ "voteParams": 0 }],
@@ -12,11 +12,11 @@
        "schemeName":"LockingToken4Reputation",
        "isUniversal":false,
        "params":[
-         10000,
-         1608163200,
-         1608336000,
-         1608336001,
-         86400
+         "80000000000000000000000",
+         1609930800,
+         1610190000,
+         1610190000,
+         259200
        ],
        "permissions":"0x00000010",
        "alias":"LockingToken4Reputation",
