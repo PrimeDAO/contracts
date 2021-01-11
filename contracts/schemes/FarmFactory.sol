@@ -5,6 +5,10 @@ import "@daostack/arc/contracts/controller/Controller.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../incentives/StakingRewards.sol";
 
+/**
+ * @title primeDAO Yield Farming contracts factory
+ * @dev   Enable primeDAO governance to start new yield farming programs.
+ */
 contract FarmFactory {
 
     Avatar public avatar;
@@ -24,11 +28,23 @@ contract FarmFactory {
         _;
     }
 
+    /**
+      * @dev           Initialize proxy.
+      * @param _avatar The address of the Avatar controlling this contract.
+      */
 	function initialize(Avatar _avatar) external initializer {
         require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
 		avatar = _avatar;
 	}
 
+    /**
+      * @dev           			Create new farm.
+      * @param _rewardToken  	Reward token address.
+      * @param _stakingToken 	staking token address.
+      * @param _initreward 		Initial reward.
+      * @param _starttime 		Program start time.
+      * @param _duration 		Program duration.
+      */
 	function createFarm(
         address _rewardToken,
         address _stakingToken,
@@ -55,6 +71,13 @@ contract FarmFactory {
         return newFarm;
 	}
 
+    /**
+      * @dev           			Rescues tokens from an existing farm.
+      * @param _stakingRewards  Existing Staking Rewards contract.
+      * @param _amount		 	Staking token address.
+      * @param _token 			Token address to be rescued.
+      * @param _to 				Rescue to an address.
+      */
 	function rescueTokens(
 		StakingRewards _stakingRewards,
 		uint    _amount,
