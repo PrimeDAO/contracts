@@ -34,7 +34,10 @@ contract('FarmFactory', (accounts) => {
     let setup;
     let rewardToken;
     let stakingToken;
+    let receipt;
+    let newFarm;
     let rewardAmount = (BigInt(925 * 100 * 100000000000000000)).toString(); // "92500000000000003145728"
+    let rescueAmount = (BigInt(1 * 100 * 100000000000000000)).toString(); 
     let starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
     let durationDays = 7;
 
@@ -64,6 +67,7 @@ contract('FarmFactory', (accounts) => {
                 setup = await deploy(accounts);
                 rewardToken = await setup.tokens.erc20s[0];
                 stakingToken = await setup.tokens.erc20s[1];
+                rescueToken = await setup.tokens.erc20s[2];
 
                 await rewardToken.transfer(setup.organization.avatar.address, rewardAmount);                
             });
@@ -76,7 +80,22 @@ contract('FarmFactory', (accounts) => {
                 // store data
                 setup.data.tx = tx;
 
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'FarmCreated', {});
+                receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'FarmCreated', {});
+            });
+            it('rescues tokens', async () => {
+                newFarm = receipt.args[0];
+
+                // send rescue token to the farm address
+                await rescueToken.transfer(newFarm, rescueAmount);                
+
+                const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rescueToken.address, accounts[1]);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                // store data
+                setup.data.tx = tx;
+
+                await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'TokenRescued', {});
             });
         });
     });

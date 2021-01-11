@@ -15,6 +15,7 @@ contract FarmFactory {
     bool   public initialized;
 
 	event FarmCreated(address newFarm);
+	event TokenRescued(address farm, address token, address to);
 
     modifier initializer() {
         require(!initialized, 					"FarmFactory: contract already initialized");
@@ -87,7 +88,8 @@ contract FarmFactory {
 	public
 	protected
 	{
-		_stakingRewards.rescueTokens(_token, _amount, _to);
+		_rescueTokens(_stakingRewards, _amount, _token, _to);
+        emit TokenRescued(address(_stakingRewards), _token, _to);
 	}
 
     /* internal helpers functions */
@@ -99,4 +101,27 @@ contract FarmFactory {
         emit FarmCreated(address(_newFarm));
         return address(_newFarm);
     }
+
+    function _rescueTokens(
+		StakingRewards 	_stakingRewards,
+		uint    	 	_amount,
+		address 		_token,
+		address 		_to
+    ) internal {
+        bool             success;
+    	Controller controller = Controller(avatar.owner());
+
+        (success,) = controller.genericCall(
+            address(_stakingRewards),
+            abi.encodeWithSelector(
+                _stakingRewards.rescueTokens.selector,
+                _token,
+                _amount,
+                _to
+            ),
+            avatar,
+            0
+        );
+    }
+
 }
