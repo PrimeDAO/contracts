@@ -18,15 +18,15 @@ contract FarmFactory {
 	event TokenRescued(address farm, address token, address to);
 
     modifier initializer() {
-        require(!initialized, 					"FarmFactory: contract already initialized");
-        initialized = true;
-        _;
+    	require(!initialized, 					"FarmFactory: contract already initialized");
+    	initialized = true;
+    	_;
     }
 
     modifier protected() {
-        require(initialized,					"FarmFactory: contract not initialized");
-        require(msg.sender == address(avatar),	"FarmFactory: protected operation");
-        _;
+    	require(initialized,					"FarmFactory: contract not initialized");
+    	require(msg.sender == address(avatar),	"FarmFactory: protected operation");
+    	_;
     }
 
     /**
@@ -34,7 +34,7 @@ contract FarmFactory {
       * @param _avatar The address of the Avatar controlling this contract.
       */
 	function initialize(Avatar _avatar) external initializer {
-        require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
+    	require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
 		avatar = _avatar;
 	}
 
@@ -47,11 +47,11 @@ contract FarmFactory {
       * @param _duration 		Program duration.
       */
 	function createFarm(
-        address _rewardToken,
-        address _stakingToken,
-        uint256 _initreward,
-        uint256 _starttime,
-        uint256 _duration
+    	address _rewardToken,
+    	address _stakingToken,
+    	uint256 _initreward,
+    	uint256 _starttime,
+    	uint256 _duration
 	)
 	public
 	payable
@@ -80,10 +80,10 @@ contract FarmFactory {
       * @param _to 				Rescue to an address.
       */
 	function rescueTokens(
-		StakingRewards _stakingRewards,
-		uint    _amount,
-		address _token,
-		address _to
+		StakingRewards 	_stakingRewards,
+		uint    		_amount,
+		address 		_token,
+		address 		_to
 	)
 	public
 	protected
@@ -102,26 +102,25 @@ contract FarmFactory {
         return address(_newFarm);
     }
 
-    function _rescueTokens(
-		StakingRewards 	_stakingRewards,
-		uint    	 	_amount,
-		address 		_token,
-		address 		_to
-    ) internal {
-        bool             success;
-    	Controller controller = Controller(avatar.owner());
+  function _rescueTokens(
+  		StakingRewards 	_stakingRewards,
+  		uint    	 	_amount,
+  		address 		_token,
+  		address 		_to
+      ) internal {
+      bool success;
+      Controller controller = Controller(avatar.owner());
 
-        (success,) = controller.genericCall(
-            address(_stakingRewards),
-            abi.encodeWithSelector(
-                _stakingRewards.rescueTokens.selector,
-                _token,
-                _amount,
-                _to
-            ),
-            avatar,
-            0
-        );
+      (success,) = controller.genericCall(
+          address(_stakingRewards),
+          abi.encodeWithSelector(
+              _stakingRewards.rescueTokens.selector,
+              _token,
+              _amount,
+              _to
+          ),
+          avatar,
+          0
+      );
     }
-
 }

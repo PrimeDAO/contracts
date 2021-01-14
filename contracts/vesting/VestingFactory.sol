@@ -6,7 +6,16 @@ contract VestingFactory {
 
     event VestingCreated(address vestingContractAddress);
 
-    function create(address owner, address beneficiary, uint256 start, uint256 cliffDuration, uint256 duration, bool revocable) public returns(address) {
+    function create(
+    	address owner,
+    	address beneficiary,
+    	uint256 start, uint256 cliffDuration,
+    	uint256 duration,
+    	bool revocable
+    )
+    public
+    returns(address)
+    {
         require(owner != address(0), "VestingFactory: owner is the zero address");
         TokenVesting newVestingContract = new TokenVesting(beneficiary, start, cliffDuration, duration, revocable);
         newVestingContract.transferOwnership(owner);

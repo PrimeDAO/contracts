@@ -90,7 +90,8 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         starttime = _starttime;
         DURATION = (_duration * 24 hours);
 
-        require(_initreward == IERC20(rewardToken).balanceOf(address(this)),   "StakingRewards: wrong reward amount supplied");
+        require(_initreward == IERC20(rewardToken).balanceOf(address(this)),
+                "StakingRewards: wrong reward amount supplied");
 
         _notifyRewardAmount(_initreward);
     }
