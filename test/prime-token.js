@@ -23,6 +23,8 @@ const deploy = async (accounts) => {
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy VestingFactory
     setup.vesting = await helpers.setup.vesting(setup);
+    // deploy farmFactory
+    setup.farmFactory = await helpers.setup.farmFactory(setup);
     // deploy primeDAO governance
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 
@@ -41,7 +43,6 @@ contract('PrimeToken', (accounts) => {
     let vestingAddress; // vesting contract address
     let vestingContract; // vesting contract instance
     let nonrevokableVestingContract; // non-revokable vesting contract instance
-    let halfVested;
 
     before('!! deploy setup', async () => {
         setup = await deploy(accounts);

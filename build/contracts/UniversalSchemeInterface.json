@@ -12,30 +12,30 @@
     "absolutePath": "@daostack/arc/contracts/universalSchemes/UniversalSchemeInterface.sol",
     "exportedSymbols": {
       "UniversalSchemeInterface": [
-        6389
+        6540
       ]
     },
-    "id": 6390,
+    "id": 6541,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6380,
+        "id": 6531,
         "literals": [
           "solidity",
           "0.5",
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:23"
+        "src": "0:23:24"
       },
       {
         "absolutePath": "@daostack/arc/contracts/controller/Avatar.sol",
         "file": "../controller/Avatar.sol",
-        "id": 6381,
+        "id": 6532,
         "nodeType": "ImportDirective",
-        "scope": 6390,
-        "sourceUnit": 2972,
-        "src": "25:34:23",
+        "scope": 6541,
+        "sourceUnit": 3123,
+        "src": "25:34:24",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -45,9 +45,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 6389,
+        "id": 6540,
         "linearizedBaseContracts": [
-          6389
+          6540
         ],
         "name": "UniversalSchemeInterface",
         "nodeType": "ContractDefinition",
@@ -55,38 +55,38 @@
           {
             "body": null,
             "documentation": null,
-            "id": 6388,
+            "id": 6539,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getParametersFromController",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6384,
+              "id": 6535,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6383,
+                  "id": 6534,
                   "name": "_avatar",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6388,
-                  "src": "139:14:23",
+                  "scope": 6539,
+                  "src": "139:14:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_Avatar_$2971",
+                    "typeIdentifier": "t_contract$_Avatar_$3122",
                     "typeString": "contract Avatar"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6382,
+                    "id": 6533,
                     "name": "Avatar",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 2971,
-                    "src": "139:6:23",
+                    "referencedDeclaration": 3122,
+                    "src": "139:6:24",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_Avatar_$2971",
+                      "typeIdentifier": "t_contract$_Avatar_$3122",
                       "typeString": "contract Avatar"
                     }
                   },
@@ -94,19 +94,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "138:16:23"
+              "src": "138:16:24"
             },
             "returnParameters": {
-              "id": 6387,
+              "id": 6538,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6386,
+                  "id": 6537,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6388,
-                  "src": "177:7:23",
+                  "scope": 6539,
+                  "src": "177:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -114,10 +114,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6385,
+                    "id": 6536,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "177:7:23",
+                    "src": "177:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -127,49 +127,49 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "176:9:23"
+              "src": "176:9:24"
             },
-            "scope": 6389,
-            "src": "102:84:23",
+            "scope": 6540,
+            "src": "102:84:24",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
-        "scope": 6390,
-        "src": "61:132:23"
+        "scope": 6541,
+        "src": "61:132:24"
       }
     ],
-    "src": "0:194:23"
+    "src": "0:194:24"
   },
   "legacyAST": {
     "absolutePath": "@daostack/arc/contracts/universalSchemes/UniversalSchemeInterface.sol",
     "exportedSymbols": {
       "UniversalSchemeInterface": [
-        6389
+        6540
       ]
     },
-    "id": 6390,
+    "id": 6541,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6380,
+        "id": 6531,
         "literals": [
           "solidity",
           "0.5",
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:23"
+        "src": "0:23:24"
       },
       {
         "absolutePath": "@daostack/arc/contracts/controller/Avatar.sol",
         "file": "../controller/Avatar.sol",
-        "id": 6381,
+        "id": 6532,
         "nodeType": "ImportDirective",
-        "scope": 6390,
-        "sourceUnit": 2972,
-        "src": "25:34:23",
+        "scope": 6541,
+        "sourceUnit": 3123,
+        "src": "25:34:24",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -179,9 +179,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 6389,
+        "id": 6540,
         "linearizedBaseContracts": [
-          6389
+          6540
         ],
         "name": "UniversalSchemeInterface",
         "nodeType": "ContractDefinition",
@@ -189,38 +189,38 @@
           {
             "body": null,
             "documentation": null,
-            "id": 6388,
+            "id": 6539,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getParametersFromController",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6384,
+              "id": 6535,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6383,
+                  "id": 6534,
                   "name": "_avatar",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6388,
-                  "src": "139:14:23",
+                  "scope": 6539,
+                  "src": "139:14:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_Avatar_$2971",
+                    "typeIdentifier": "t_contract$_Avatar_$3122",
                     "typeString": "contract Avatar"
                   },
                   "typeName": {
                     "contractScope": null,
-                    "id": 6382,
+                    "id": 6533,
                     "name": "Avatar",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 2971,
-                    "src": "139:6:23",
+                    "referencedDeclaration": 3122,
+                    "src": "139:6:24",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_Avatar_$2971",
+                      "typeIdentifier": "t_contract$_Avatar_$3122",
                       "typeString": "contract Avatar"
                     }
                   },
@@ -228,19 +228,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "138:16:23"
+              "src": "138:16:24"
             },
             "returnParameters": {
-              "id": 6387,
+              "id": 6538,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6386,
+                  "id": 6537,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6388,
-                  "src": "177:7:23",
+                  "scope": 6539,
+                  "src": "177:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -248,10 +248,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 6385,
+                    "id": 6536,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "177:7:23",
+                    "src": "177:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -261,20 +261,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "176:9:23"
+              "src": "176:9:24"
             },
-            "scope": 6389,
-            "src": "102:84:23",
+            "scope": 6540,
+            "src": "102:84:24",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
-        "scope": 6390,
-        "src": "61:132:23"
+        "scope": 6541,
+        "src": "61:132:24"
       }
     ],
-    "src": "0:194:23"
+    "src": "0:194:24"
   },
   "compiler": {
     "name": "solc",
@@ -282,7 +282,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.0",
-  "updatedAt": "2020-12-22T12:30:47.930Z",
+  "updatedAt": "2021-01-04T09:54:30.664Z",
   "devdoc": {
     "methods": {}
   },

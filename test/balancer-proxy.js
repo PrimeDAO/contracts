@@ -24,6 +24,8 @@ const deploy = async (accounts) => {
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy vesting
     setup.vesting = await helpers.setup.vesting(setup);
+    // deploy farmFactory
+    setup.farmFactory = await helpers.setup.farmFactory(setup);
     // deploy primeDAO governance
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 
@@ -39,6 +41,7 @@ contract('BalancerProxy', (accounts) => {
     let newWeight;
     let startBLock;
     let endBlock;
+    let token;
     let poolAmountOut;
     let poolAmountIn;
     let maxAmountsIn;

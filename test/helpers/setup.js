@@ -9,6 +9,7 @@ const Reputation = artifacts.require('./Reputation.sol');
 const AbsoluteVote = artifacts.require('./AbsoluteVote.sol');
 const LockingToken4Reputation = artifacts.require('./LockingToken4Reputation.sol');
 const PriceOracle = artifacts.require('./PriceOracle.sol');
+const FarmFactory = artifacts.require('./FarmFactory.sol');
 // Balancer imports
 const ConfigurableRightsPool = artifacts.require('ConfigurableRightsPool');
 const BPool = artifacts.require('BPool');
@@ -81,6 +82,13 @@ const incentives = async (setup) => {
   const stakingRewards = await StakingRewards.new();
 
   return { stakingRewards };
+};
+
+const farmFactory = async (setup) => {
+  const farmFactory = await FarmFactory.new();
+  let tx = await farmFactory.initialize(setup.organization.avatar.address);
+
+  return farmFactory;
 };
 
 const balancer = async (setup) => {
@@ -229,17 +237,25 @@ const primeDAO = async (setup) => {
   poolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, poolManager.address);
   // initialize balancer scheme
   await poolManager.initialize(setup.organization.avatar.address, poolManager.voting.absoluteVote.address, poolManager.voting.params, setup.balancer.proxy.address);
+
+  // setup farmManager
+  const farmManager = await GenericScheme.new();
+  // deploy farmFactory scheme voting machine
+  farmManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);
+
+  await farmManager.initialize(setup.organization.avatar.address, farmManager.voting.absoluteVote.address, farmManager.voting.params, setup.farmFactory.address);
+
   // register schemes
   const permissions = '0x00000010';
   await setup.DAOStack.daoCreator.setSchemes(
     setup.organization.avatar.address,
-    [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address],
-    [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
-    [permissions, permissions, permissions, ],
+    [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address],
+    [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
+    [permissions, permissions, permissions, permissions, permissions],
     'metaData'
   );
 
-  return {poolManager};
+  return {poolManager, farmManager};
 };
 
 module.exports = {
@@ -250,6 +266,7 @@ module.exports = {
   balancer,
   DAOStack,
   organization,
+  farmFactory,
   token4rep,
   primeDAO,
 };

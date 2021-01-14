@@ -2,11 +2,9 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { time } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const BigNumber = require('bignumber.js');
-
-const StakingRewards = artifacts.require('StakingRewards');
 
 const { toWei } = web3.utils;
 
@@ -25,6 +23,8 @@ const deploy = async (accounts) => {
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy incentives contract
     setup.incentives = await helpers.setup.incentives(setup);
+    // deploy farmFactory
+    setup.farmFactory = await helpers.setup.farmFactory(setup);
     // deploy primeDAO governance
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 
