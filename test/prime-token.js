@@ -43,7 +43,6 @@ contract('PrimeToken', (accounts) => {
     let vestingAddress; // vesting contract address
     let vestingContract; // vesting contract instance
     let nonrevokableVestingContract; // non-revokable vesting contract instance
-    let halfVested;
 
     before('!! deploy setup', async () => {
         setup = await deploy(accounts);

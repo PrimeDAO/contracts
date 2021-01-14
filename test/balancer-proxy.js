@@ -41,6 +41,7 @@ contract('BalancerProxy', (accounts) => {
     let newWeight;
     let startBLock;
     let endBlock;
+    let token;
     let poolAmountOut;
     let poolAmountIn;
     let maxAmountsIn;
