@@ -30,6 +30,14 @@ module.exports = {
           network_id: 42,
           networkCheckTimeout: 100000000
       },
+      development: {
+          host: 'localhost',
+          port: 8545,
+          network_id: 1234,
+          gas: 4700000,
+          gasPrice: 20 * 1000000000
+          }
+      },
       coverage: {
           host: '127.0.0.1',
           port: 8555,
