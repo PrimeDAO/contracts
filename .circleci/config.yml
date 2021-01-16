@@ -9,11 +9,11 @@ jobs:
     steps:
       - run:
           name: Install truffle
-          command: npm install -g truffle
+          command: npm install truffle
       - run:
           name: Install packages
           command: npm install
       - run:
           name: Build Contracts
-          command: truffle compile
+          command: node_modules/.bin/truffle compile
   
