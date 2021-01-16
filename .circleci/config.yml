@@ -1,0 +1,16 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+jobs:
+  build:
+    working_directory: ~/contracts
+    docker:
+      - image: circleci/node:10.18.0
+    steps:
+      - run:
+          name: Install packages
+          command: npm install
+      - run:
+          name: Build Contracts
+          command: truffle compile
+  
