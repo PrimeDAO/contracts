@@ -36,7 +36,6 @@ module.exports = {
           network_id: 1234,
           gas: 4700000,
           gasPrice: 20 * 1000000000
-          }
       },
       coverage: {
           host: '127.0.0.1',
