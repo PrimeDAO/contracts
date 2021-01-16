@@ -8,6 +8,9 @@ jobs:
       - image: circleci/node:10.18.0
     steps:
       - run:
+          name: Install truffle
+          command: npm install -g truffle
+      - run:
           name: Install packages
           command: npm install
       - run:
