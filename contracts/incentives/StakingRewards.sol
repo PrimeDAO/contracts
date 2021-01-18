@@ -68,11 +68,6 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         starttime = _starttime;
         DURATION = (_duration * 24 hours);
 
-        // require(_initreward == IERC20(rewardToken).balanceOf(address(this)),
-        //         "StakingRewards: wrong reward amount supplied");
-
-        // _notifyRewardAmount(_initreward);
-
         rewardDistribution = msg.sender;
     }
 
@@ -132,28 +127,23 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
                 .add(rewards[account]);
     }
 
-    /* stake visibility is public as overriding LPTokenWrapper's stake() function */
-    /* added nonReentrant modifier as calling _stake(): calls token contract */
      function stake(uint256 amount) public nonReentrant updateReward(msg.sender) protected checkStart {
         require(amount > 0, "StakingRewards: cannot stake 0");
         _stake(amount);
         emit Staked(msg.sender, amount);
     }
 
-    /* added nonReentrant modifier as calling _withdraw(): calls token contract */
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) protected checkStart {
         require(amount > 0, "StakingRewards: Cannot withdraw 0");
         _withdraw(amount);
         emit Withdrawn(msg.sender, amount);
     }
 
-    /* added nonReentrant modifier as calling withdraw() and getReward(): these call token contract */
     function exit() external {
         withdraw(_balances[msg.sender]);
         getReward();
     }
 
-    /* added nonReentrant modifier as calling token contract */
     function getReward() public nonReentrant updateReward(msg.sender) protected checkStart {
         uint256 reward = earned(msg.sender);
         if (reward > 0) {
