@@ -18,9 +18,10 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "../utils/interfaces/IRewardDistributionRecipient.sol";
 
-contract StakingRewards is Ownable, ReentrancyGuard {
+
+contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
 
     using SafeMath for uint256;
     using SafeERC20 for address;
@@ -67,10 +68,12 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         starttime = _starttime;
         DURATION = (_duration * 24 hours);
 
-        require(_initreward == IERC20(rewardToken).balanceOf(address(this)),
-                "StakingRewards: wrong reward amount supplied");
+        // require(_initreward == IERC20(rewardToken).balanceOf(address(this)),
+        //         "StakingRewards: wrong reward amount supplied");
 
-        _notifyRewardAmount(_initreward);
+        // _notifyRewardAmount(_initreward);
+
+        rewardDistribution = msg.sender;
     }
 
     uint256 public DURATION;
@@ -165,6 +168,27 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         _;
     }
 
+    function notifyRewardAmount(uint256 reward) external protected onlyRewardDistribution updateReward(address(0)) {
+         if (block.timestamp >= periodFinish) {
+             rewardRate = reward.div(DURATION);
+         } else {
+             uint256 remaining = periodFinish.sub(block.timestamp);
+             uint256 leftover = remaining.mul(rewardRate);
+             rewardRate = reward.add(leftover).div(DURATION);
+         }
+
+         // Ensure the provided reward amount is not more than the balance in the contract.
+         // This keeps the reward rate in the right range, preventing overflows due to
+         // very high values of rewardRate in the earned and rewardsPerToken functions;
+         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
+         uint balance = rewardToken.balanceOf(address(this));
+         require(rewardRate <= balance.div(DURATION), "StakingRewards: Provided reward too high");
+
+         lastUpdateTime = block.timestamp;
+         periodFinish = block.timestamp.add(DURATION);
+         emit RewardAdded(reward);
+     }
+
     // This function allows governance to take unsupported tokens out of the
     // contract, since this one exists longer than the other pools.
     // This is in an effort to make someone whole, should they seriously
@@ -205,10 +229,4 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         stakingToken.safeTransfer(msg.sender, _amount);
     }
 
-    function _notifyRewardAmount(uint256 reward) internal updateReward(address(0)) {
-        rewardRate = reward.div(DURATION);
-        lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(DURATION);
-        emit RewardAdded(reward);
-    }
 }
