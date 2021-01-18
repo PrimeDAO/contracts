@@ -13,7 +13,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
       - image: trufflesuite/ganache-cli
-        command: ganache-cli -i 1234 -e 100000000000 -l 4700038
+        command: ganache-cli -i 1234
 
     working_directory: ~/repo
 
