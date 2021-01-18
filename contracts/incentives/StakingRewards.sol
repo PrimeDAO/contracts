@@ -101,6 +101,47 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         _;
     }
 
+    function notifyRewardAmount(uint256 reward) external protected onlyRewardDistribution updateReward(address(0)) {
+         if (block.timestamp >= periodFinish) {
+             rewardRate = reward.div(DURATION);
+         } else {
+             uint256 remaining = periodFinish.sub(block.timestamp);
+             uint256 leftover = remaining.mul(rewardRate);
+             rewardRate = reward.add(leftover).div(DURATION);
+         }
+
+         // Ensure the provided reward amount is not more than the balance in the contract.
+         // This keeps the reward rate in the right range, preventing overflows due to
+         // very high values of rewardRate in the earned and rewardsPerToken functions;
+         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
+         // uint balance = rewardToken.balanceOf(address(this));
+         // require(rewardRate <= balance.div(DURATION), "StakingRewards: Provided reward too high");
+
+         lastUpdateTime = block.timestamp;
+         periodFinish = block.timestamp.add(DURATION);
+         emit RewardAdded(reward);
+     }
+
+    // This function allows governance to take unsupported tokens out of the
+    // contract, since this one exists longer than the other pools.
+    // This is in an effort to make someone whole, should they seriously
+    // mess up. There is no guarantee governance will vote to return these.
+    // It also allows for removal of airdropped tokens.
+    function rescueTokens(address _token, uint256 amount, address to)
+        external
+        protected
+    {
+        // only gov
+        require(msg.sender == owner(), "StakingRewards: !governance");
+        // cant take staked asset
+        require(_token != stakingToken, "StakingRewards: stakingToken");
+        // cant take reward asset
+        require(_token != rewardToken, "StakingRewards: rewardToken");
+
+        // transfer to
+        _token.safeTransfer(to, amount);
+    }
+
     function lastTimeRewardApplicable() public view returns (uint256) {
         return Math.min(block.timestamp, periodFinish);
     }
@@ -156,47 +197,6 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     modifier checkStart(){
         require(block.timestamp >= starttime,"StakingRewards: not start");
         _;
-    }
-
-    function notifyRewardAmount(uint256 reward) external protected onlyRewardDistribution updateReward(address(0)) {
-         if (block.timestamp >= periodFinish) {
-             rewardRate = reward.div(DURATION);
-         } else {
-             uint256 remaining = periodFinish.sub(block.timestamp);
-             uint256 leftover = remaining.mul(rewardRate);
-             rewardRate = reward.add(leftover).div(DURATION);
-         }
-
-         // Ensure the provided reward amount is not more than the balance in the contract.
-         // This keeps the reward rate in the right range, preventing overflows due to
-         // very high values of rewardRate in the earned and rewardsPerToken functions;
-         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-         uint balance = rewardToken.balanceOf(address(this));
-         require(rewardRate <= balance.div(DURATION), "StakingRewards: Provided reward too high");
-
-         lastUpdateTime = block.timestamp;
-         periodFinish = block.timestamp.add(DURATION);
-         emit RewardAdded(reward);
-     }
-
-    // This function allows governance to take unsupported tokens out of the
-    // contract, since this one exists longer than the other pools.
-    // This is in an effort to make someone whole, should they seriously
-    // mess up. There is no guarantee governance will vote to return these.
-    // It also allows for removal of airdropped tokens.
-    function rescueTokens(address _token, uint256 amount, address to)
-        external
-        protected
-    {
-        // only gov
-        require(msg.sender == owner(), "StakingRewards: !governance");
-        // cant take staked asset
-        require(_token != stakingToken, "StakingRewards: stakingToken");
-        // cant take reward asset
-        require(_token != rewardToken, "StakingRewards: rewardToken");
-
-        // transfer to
-        _token.safeTransfer(to, amount);
     }
 
     function totalSupply() public view returns (uint256) {
