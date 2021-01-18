@@ -1,10 +1,12 @@
-/*global artifacts, contract, before, it, context*/
+/*global web3, artifacts, contract, before, it, context*/
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
 const { constants, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const FarmFactory = artifacts.require('FarmFactory');
+// const BigNumber = require('bignumber.js');
+const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {
     // initialize test setup
@@ -34,8 +36,9 @@ contract('FarmFactory', (accounts) => {
     let rescueToken;
     let receipt;
     let newFarm;
-    let rewardAmount = (BigInt(925 * 100 * 100000000000000000)).toString(); // "92500000000000003145728"
-    let rescueAmount = (BigInt(1 * 100 * 100000000000000000)).toString(); 
+    let rewardAmount = toWei('9249.999999999999475712');
+    let rescueAmount = toWei('100'); 
+
     let starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
     let durationDays = 7;
 

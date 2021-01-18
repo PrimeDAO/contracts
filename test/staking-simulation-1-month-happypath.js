@@ -39,7 +39,7 @@ contract('Staking: 1 month happypath', (accounts) => {
     let irregularStake;
     let irregularStake2;
     let tinyStake;
-    let _initreward = (BigInt(925 * 100 * 1000000000000000000)).toString();
+    let _initreward = toWei('9249.999999999999475712');
     let _starttime;
     let _durationDays = 28;
 
