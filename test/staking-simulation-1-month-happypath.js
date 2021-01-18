@@ -43,13 +43,6 @@ contract('Staking: 1 month happypath', (accounts) => {
     let _starttime;
     let _durationDays = 28;
 
-    let earned;
-    let earned2;
-    let earned3;
-    let earned4;
-    let earned5;
-    let earned6;
-
     before('!! deploy setup', async () => {
         setup = await deploy(accounts);
     });
@@ -133,25 +126,13 @@ contract('Staking: 1 month happypath', (accounts) => {
             });
             context('» week 2: some users getReward', async () => {
                 it('users 1 - 6 can claim their PRIME rewards whilst keeping tokens staked', async () => {
-
                     await time.increase(time.duration.weeks(2));
 
-                    earned = BigNumber(await setup.incentives.stakingRewards.earned(accounts[1]));
                     await setup.incentives.stakingRewards.getReward( { from: accounts[1] } );
-
-                    earned2 = BigNumber(await setup.incentives.stakingRewards.earned(accounts[2]));
                     await setup.incentives.stakingRewards.getReward( { from: accounts[2] } );
-
-                    earned3 = BigNumber(await setup.incentives.stakingRewards.earned(accounts[3]));
                     await setup.incentives.stakingRewards.getReward( { from: accounts[3] } );
-
-                    earned4 = BigNumber(await setup.incentives.stakingRewards.earned(accounts[4]));
                     await setup.incentives.stakingRewards.getReward( { from: accounts[4] } );
-
-                    earned5 = BigNumber(await setup.incentives.stakingRewards.earned(accounts[5]));
                     await setup.incentives.stakingRewards.getReward( { from: accounts[5] } );
-
-                    earned6 = BigNumber(await setup.incentives.stakingRewards.earned(accounts[6]));
                     await setup.incentives.stakingRewards.getReward( { from: accounts[6] } );
 
                     await time.increase(time.duration.hours(1));
