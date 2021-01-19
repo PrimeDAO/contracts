@@ -34,4 +34,6 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run: npm run lint # triggers lint
+
       - run: npm test # triggers truffle test
