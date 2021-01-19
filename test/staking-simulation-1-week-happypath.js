@@ -1,4 +1,4 @@
-/*global artifacts, web3, contract, before, it, context*/
+/*global web3, contract, before, it, context*/
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
@@ -42,13 +42,6 @@ contract('Staking: 1 week happypath', (accounts) => {
     let _initreward = toWei('9249.999999999999475712');
     let _starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
     let _durationDays = 7;
-
-    let earned;
-    let earned2;
-    let earned3;
-    let earned4;
-    let earned5;
-    let earned6;
 
     before('!! deploy setup', async () => {
         setup = await deploy(accounts);
@@ -132,25 +125,13 @@ contract('Staking: 1 week happypath', (accounts) => {
             });
             context('» day 2: getReward', async () => {
                 it('users 1 - 6 can claim their PRIME rewards whilst keeping tokens staked', async () => {
-
                     await time.increase(time.duration.days(2));
 
-                    earned = (await setup.incentives.stakingRewards.earned(accounts[1])).toString();
                     await setup.incentives.stakingRewards.getReward( { from: accounts[1] } );
-
-                    earned2 = (await setup.incentives.stakingRewards.earned(accounts[2])).toString();
                     await setup.incentives.stakingRewards.getReward( { from: accounts[2] } );
-
-                    earned3 = (await setup.incentives.stakingRewards.earned(accounts[3])).toString();
                     await setup.incentives.stakingRewards.getReward( { from: accounts[3] } );
-
-                    earned4 = (await setup.incentives.stakingRewards.earned(accounts[4])).toString();
                     await setup.incentives.stakingRewards.getReward( { from: accounts[4] } );
-
-                    earned5 = (await setup.incentives.stakingRewards.earned(accounts[5])).toString();
                     await setup.incentives.stakingRewards.getReward( { from: accounts[5] } );
-
-                    earned6 = (await setup.incentives.stakingRewards.earned(accounts[6])).toString();
                     await setup.incentives.stakingRewards.getReward( { from: accounts[6] } );
 
                     await time.increase(time.duration.hours(1));
