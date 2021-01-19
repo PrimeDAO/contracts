@@ -84,6 +84,7 @@ contract('Staking: 1 month happypath', (accounts) => {
 
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                     await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays);
+                    await setup.incentives.stakingRewards.notifyRewardAmount(_initreward);
                 });
                 it('multiple users stake entire bPrime balance', async () => {
                     expect((await setup.incentives.stakingRewards.rewardPerTokenStored()).toString()).to.equal('0');
@@ -194,10 +195,10 @@ contract('Staking: 1 month happypath', (accounts) => {
                 it('Contract bPRIME balance == 0', async () => {
                     expect((await setup.balancer.pool.balanceOf(setup.incentives.stakingRewards.address)).toString()).to.equal('0'); // all stake removed
                 });
-                it('reduction in stakingRewards prime balance == ~total reward payout amount', async () => {
+                it('reduction in stakingRewards prime balance > 99.999% of total reward amount', async () => {
                     let remainingPrimeBalance = BigNumber(await setup.tokens.primeToken.balanceOf(setup.incentives.stakingRewards.address));
 
-                    console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/92500000000000002949500');
+                    console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/' + _initreward);
 
                     let balance = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     let balance2 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[2]));
@@ -211,6 +212,8 @@ contract('Staking: 1 month happypath', (accounts) => {
 
                     let payout = BigNumber(balance.plus(balance2).plus(balance3).plus(balance4).plus(balance5).plus(balance6).plus(balance7).plus(balance8).plus(balance9)).toFixed(18);
                     expect( (BigNumber(_initreward).minus(payout)).toFixed(18) ).to.equal(remainingPrimeBalance.toFixed(18));
+                    let rewardFraction = (_initreward/100000);
+                    expect(remainingPrimeBalance.toNumber()).to.be.at.most(rewardFraction); // remaining prime < 0.001% of reward amount
                 });
             });
         });
