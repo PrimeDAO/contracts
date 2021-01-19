@@ -121,7 +121,6 @@ contract('StakingRewards', (accounts) => {
             before('!! deploy contract', async () => {
                 setup.data.incentives = await StakingRewards.new();
                 _badReward = toWei('9249.999999999999475712');
-                // _badReward = (BigInt(924.9 * 100 * 1000000000000000000)).toString();
             });
             it('it reverts', async () => {
                 await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _badReward);
