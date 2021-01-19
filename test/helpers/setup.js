@@ -21,6 +21,8 @@ const SmartPoolManager = artifacts.require('SmartPoolManager');
 const BalancerProxy = artifacts.require('BalancerProxy');
 const PrimeToken = artifacts.require('PrimeToken');
 const VestingFactory = artifacts.require('VestingFactory');
+const RepRedeemer = artifacts.require('RepRedeemer');
+
 
 const { time, constants } = require('@openzeppelin/test-helpers');
 // Incentives imports
@@ -82,6 +84,12 @@ const incentives = async (setup) => {
   const stakingRewards = await StakingRewards.new();
 
   return { stakingRewards };
+};
+
+const repRedeemer = async (setup) => {
+  const repRedeemer = await RepRedeemer.new();
+
+  return repRedeemer;
 };
 
 const farmFactory = async (setup) => {
@@ -261,6 +269,7 @@ const primeDAO = async (setup) => {
 module.exports = {
   initialize,
   incentives,
+  repRedeemer,
   tokens,
   vesting,
   balancer,
