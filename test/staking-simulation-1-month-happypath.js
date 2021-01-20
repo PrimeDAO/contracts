@@ -198,7 +198,7 @@ contract('Staking: 1 month happypath', (accounts) => {
                 it('reduction in stakingRewards prime balance > 99.999% of total reward amount', async () => {
                     let remainingPrimeBalance = BigNumber(await setup.tokens.primeToken.balanceOf(setup.incentives.stakingRewards.address));
 
-                    console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/' + _initreward);
+                    // console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/' + _initreward);
 
                     let balance = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     let balance2 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[2]));

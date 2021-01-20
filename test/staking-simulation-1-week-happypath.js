@@ -202,7 +202,7 @@ contract('Staking: 1 week happypath', (accounts) => {
                     *                             ~13213979828042328659724 if everyone calls exit() on day 6
                     *                             ~26428265542328043366944 if everyone calls exit() on day 5
                     */
-                    console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/' + _initreward);
+                    // console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/' + _initreward);
 
                     let balance = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     let balance2 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[2]));
