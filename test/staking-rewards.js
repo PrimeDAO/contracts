@@ -332,6 +332,7 @@ contract('StakingRewards', (accounts) => {
                     let rewardEarned = BigInt(await setup.incentives.stakingRewards.earned(accounts[1]));
                     let tx = await setup.incentives.stakingRewards.exit( {from: accounts[1] });
                     setup.data.tx = tx;
+                    console.log(setup.data.tx.tx);
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'Withdrawn');
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'RewardPaid'); // <-- for some reason this isn't triggering, even though the reward has been paid out
                     let balance = BigInt(await setup.tokens.primeToken.balanceOf(accounts[1]));

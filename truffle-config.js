@@ -31,9 +31,9 @@ module.exports = {
           networkCheckTimeout: 100000000
       },
       development: {
-          host: 'localhost',
+          host: '127.0.0.1',
           port: 8545,
-          network_id: 1234
+          network_id: "*",
       },
       coverage: {
           host: '127.0.0.1',
