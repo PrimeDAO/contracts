@@ -142,6 +142,11 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         _token.safeTransfer(to, amount);
     }
 
+    function exit() external {
+        withdraw(_balances[msg.sender]);
+        getReward();
+    }
+
     function lastTimeRewardApplicable() public view returns (uint256) {
         return Math.min(block.timestamp, periodFinish);
     }
@@ -178,11 +183,6 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         require(amount > 0, "StakingRewards: Cannot withdraw 0");
         _withdraw(amount);
         emit Withdrawn(msg.sender, amount);
-    }
-
-    function exit() external {
-        withdraw(_balances[msg.sender]);
-        getReward();
     }
 
     function getReward() public nonReentrant updateReward(msg.sender) protected checkStart {
