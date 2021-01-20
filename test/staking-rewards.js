@@ -300,6 +300,7 @@ contract('StakingRewards', (accounts) => {
                 before('!! fund & initialize contract', async () => {
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                     await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays);
+                    await setup.incentives.stakingRewards.notifyRewardAmount(_initreward);
                 });
                 it('cannot exit with no funds', async () => {
                     await expectRevert(
@@ -327,14 +328,14 @@ contract('StakingRewards', (accounts) => {
                     await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
 
                     await setup.incentives.stakingRewards.stake(stakeAmount, { from: accounts[1] });
+                    expect((await setup.tokens.primeToken.balanceOf(accounts[1])).toString()).to.equal('0');
                     await time.increase(time.duration.days(2));
 
                     let rewardEarned = BigInt(await setup.incentives.stakingRewards.earned(accounts[1]));
                     let tx = await setup.incentives.stakingRewards.exit( {from: accounts[1] });
                     setup.data.tx = tx;
-                    console.log(setup.data.tx.tx);
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'Withdrawn');
-                    await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'RewardPaid'); // <-- for some reason this isn't triggering, even though the reward has been paid out
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'RewardPaid'); 
                     let balance = BigInt(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     expect(rewardEarned).to.equal(balance);
                     expect((await setup.balancer.pool.balanceOf(setup.incentives.stakingRewards.address)).toString()).to.equal(toWei('0'));
