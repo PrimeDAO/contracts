@@ -67,10 +67,9 @@ contract('PrimeToken', (accounts) => {
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.token4rep.contract, 'Redeem');
             });
-            it('it should release tokens', async () => {
-                let tx = await setup.token4rep.contract.release(setup.root, lockingId);
-                setup.data.tx = tx;
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.token4rep.contract, 'Release');
+            it('it should fail on attempt to lock unregistered token', async () => {
+                await setup.tokens.erc20s[1].approve(setup.token4rep.contract.address, tokenLockAmount);
+                await expectRevert(setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.erc20s[1].address,"0x0000000000000000000000000000000000000000"), 'numerator should be > 0.');
             });
         });
     });
