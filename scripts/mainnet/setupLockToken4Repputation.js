@@ -1,5 +1,6 @@
 const PrimeToken = artifacts.require('PrimeToken');
 const PriceOracle = artifacts.require('PriceOracle');
+const Locking4Reputation = artifacts.require('Locking4Reputation');
 
 
 const contracts = require('../../contractAddresses.json');
@@ -13,12 +14,16 @@ module.exports = async function(callback) {
 
 	const prime = contracts.mainnet.PrimeToken;
 	const oracle = await PriceOracle.at(contracts.mainnet.PriceOracle);
+    const lt4r = await LockingToken4Reputation.at(contracts.mainnet.LockingToken4Reputation);
 
     try {
 
 		await console.log("***   Setting token price");
 		await oracle.setTokenPrice(prime, numerator, denominator);
 		await console.log("***   Success");
+
+        await console.log("***   Initializing LockingToken4Reputation");
+        await lt4r.initialize(contracts.mainnet.Avatar, "80000000000000000000000", 1581120000, 1584230400, 10520000, contracts.mainnet.PriceOracle, "0x0000000000000000000000000000000000000000");
 
     } catch(error) {
 
