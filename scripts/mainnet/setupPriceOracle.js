@@ -9,7 +9,7 @@ module.exports = async function(callback) {
 	const { toWei } = web3.utils;
 
     const numerator = toWei('1');
-    const denominator = toWei('137'); 
+    const denominator = toWei('1'); 
 
 	const prime = contracts.mainnet.PrimeToken;
 	const oracle = await PriceOracle.at(contracts.mainnet.PriceOracle);
