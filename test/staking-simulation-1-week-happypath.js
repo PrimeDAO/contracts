@@ -197,13 +197,6 @@ contract('Staking: 1 week happypath', (accounts) => {
                 it('reduction in stakingRewards prime balance > 99.999% of total reward amount', async () => {
                     let remainingPrimeBalance = BigNumber(await setup.tokens.primeToken.balanceOf(setup.incentives.stakingRewards.address));
 
-                    /*
-                    * Remaining token balance is: ~190000 if everyone calls exit() on day 7 (which considering we're using an 18 decimal token is fractional)
-                    *                             ~13213979828042328659724 if everyone calls exit() on day 6
-                    *                             ~26428265542328043366944 if everyone calls exit() on day 5
-                    */
-                    // console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/' + _initreward);
-
                     let balance = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     let balance2 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[2]));
                     let balance3 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[3]));
