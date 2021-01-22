@@ -1,10 +1,9 @@
-/*global web3, artifacts, contract, before, it, context*/
+/*global web3, contract, before, it, context*/
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { time, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
-const RepRedeemer = artifacts.require('RepRedeemer');
 const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {
@@ -35,6 +34,7 @@ contract('RepRedeemer', (accounts) => {
     let tokenLockAmount;
     let staker1;
     let staker2;
+    let staker3;
 
     before('!! deploy setup', async () => {
         setup = await deploy(accounts);
@@ -48,31 +48,31 @@ contract('RepRedeemer', (accounts) => {
         await setup.tokens.primeToken.transfer(staker3, tokenLockAmount);
     });
     context('» redeem reputation in batch', () => {
-            it('it should lock tokens for reputation', async () => {
-                //approve tokens from all stakers
-                await setup.tokens.primeToken.approve(setup.token4rep.contract.address, tokenLockAmount, {from: staker1});
-                await setup.tokens.primeToken.approve(setup.token4rep.contract.address, tokenLockAmount, {from: staker2});
-                await setup.tokens.primeToken.approve(setup.token4rep.contract.address, tokenLockAmount, {from: staker3});
-                // stake tokens from all stakers
-                setup.data.tx1 = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000", {from: staker1});
-                setup.data.tx2 = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000", {from: staker2});
-                setup.data.tx3 = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000", {from: staker3});
-                // check events
-                await expectEvent.inTransaction(setup.data.tx1.tx, setup.token4rep.contract, 'LockToken');
-                await expectEvent.inTransaction(setup.data.tx2.tx, setup.token4rep.contract, 'LockToken');
-                await expectEvent.inTransaction(setup.data.tx3.tx, setup.token4rep.contract, 'LockToken');
+        it('it should lock tokens for reputation', async () => {
+            //approve tokens from all stakers
+            await setup.tokens.primeToken.approve(setup.token4rep.contract.address, tokenLockAmount, {from: staker1});
+            await setup.tokens.primeToken.approve(setup.token4rep.contract.address, tokenLockAmount, {from: staker2});
+            await setup.tokens.primeToken.approve(setup.token4rep.contract.address, tokenLockAmount, {from: staker3});
+            // stake tokens from all stakers
+            setup.data.tx1 = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000", {from: staker1});
+            setup.data.tx2 = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000", {from: staker2});
+            setup.data.tx3 = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000", {from: staker3});
+            // check events
+            await expectEvent.inTransaction(setup.data.tx1.tx, setup.token4rep.contract, 'LockToken');
+            await expectEvent.inTransaction(setup.data.tx2.tx, setup.token4rep.contract, 'LockToken');
+            await expectEvent.inTransaction(setup.data.tx3.tx, setup.token4rep.contract, 'LockToken');
                 
-                // increase time
-                await time.increase(time.duration.weeks(10));
+            // increase time
+            await time.increase(time.duration.weeks(10));
 
-                let repBeforeRedeem = (await setup.organization.reputation.balanceOf(staker2)).toNumber();
+            let repBeforeRedeem = (await setup.organization.reputation.balanceOf(staker2)).toNumber();
 
-                // redeem rep in batch
-                await setup.repRedeemer.redeemLocking4Reputation(setup.token4rep.contract.address, [staker1, staker2, staker3]);
+            // redeem rep in batch
+            await setup.repRedeemer.redeemLocking4Reputation(setup.token4rep.contract.address, [staker1, staker2, staker3]);
 
-                let repAfterRedeem = (await setup.organization.reputation.balanceOf(staker2)).toNumber();
+            let repAfterRedeem = (await setup.organization.reputation.balanceOf(staker2)).toNumber();
 
-                expect(repAfterRedeem).to.be.above(repBeforeRedeem);
-            });
+            expect(repAfterRedeem).to.be.above(repBeforeRedeem);
+        });
     });
 });
