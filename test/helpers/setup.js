@@ -201,8 +201,8 @@ const token4rep = async (setup) => {
   const params = {
         reputationReward: 850000,
         lockingStartTime: await time.latest(), // start of the locking period
-        lockingEndTime: await time.latest() + (30*60*60), // one month after the start of the locking period
-        redeemEnableTime: (45*60*60), // 6 weeks after the start of the locking period
+        lockingEndTime: (await time.latest()).add(await time.duration.days(30)), // one month after the start of the locking period
+        redeemEnableTime: (await time.latest()).add(await time.duration.weeks(6)), // 6 weeks after the start of the locking period
         maxLockingPeriod: (180*60*60), // 6 months
         agreementHash: "0x0000000000000000000000000000000000000000"
   }
@@ -215,7 +215,7 @@ const token4rep = async (setup) => {
     params.reputationReward,
     params.lockingStartTime,
     params.lockingEndTime,
-    params.redeemEnableTime + await time.latest(),
+    params.redeemEnableTime,
     params.maxLockingPeriod,
     priceOracle.address,
     params.agreementHash
