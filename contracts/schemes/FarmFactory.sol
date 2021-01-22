@@ -64,7 +64,8 @@ contract FarmFactory {
     	address _stakingToken,
     	uint256 _initreward,
     	uint256 _starttime,
-    	uint256 _duration
+    	uint256 _duration,
+      address _avatarAddress
 	)
 	public
 	payable
@@ -80,7 +81,7 @@ contract FarmFactory {
         .externalTokenTransfer(IERC20(_rewardToken), newFarm, _initreward, avatar);
 
         // initialize farm
-        StakingRewards(newFarm).initialize(_rewardToken, _stakingToken, _initreward, _starttime, _duration);
+        StakingRewards(newFarm).initialize(_rewardToken, _stakingToken, _initreward, _starttime, _duration, _avatarAddress);
 
         return newFarm;
 	}
