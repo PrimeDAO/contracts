@@ -36,18 +36,18 @@ module.exports = async function (deployer, network) {
 
     } else if (network === 'kovan') {
 
-        // await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks.kovan.from);
-        // await deployer.deploy(StakingRewards);
-        // await deployer.deploy(PriceOracle);
-        // await deployer.deploy(BalancerProxy);
-        // await deployer.deploy(VestingFactory);
+        await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks.kovan.from);
+        await deployer.deploy(StakingRewards);
+        await deployer.deploy(PriceOracle);
+        await deployer.deploy(BalancerProxy);
+        await deployer.deploy(VestingFactory);
         await deployer.deploy(RepRedeemer);
 
-        // contracts.kovan.PrimeToken = PrimeToken.address;
-        // contracts.kovan.StakingRewards = StakingRewards.address;
-        // contracts.kovan.PriceOracle = PriceOracle.address;
-        // contracts.kovan.BalancerProxy = BalancerProxy.address;
-        // contracts.kovan.VestingFactory = VestingFactory.address;
+        contracts.kovan.PrimeToken = PrimeToken.address;
+        contracts.kovan.StakingRewards = StakingRewards.address;
+        contracts.kovan.PriceOracle = PriceOracle.address;
+        contracts.kovan.BalancerProxy = BalancerProxy.address;
+        contracts.kovan.VestingFactory = VestingFactory.address;
         contracts.kovan.RepRedeemer = RepRedeemer.address;
 
         // overwrite contranctAddresses.json
