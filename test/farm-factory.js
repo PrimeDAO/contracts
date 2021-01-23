@@ -5,7 +5,6 @@ const { expect } = require('chai');
 const { constants, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const FarmFactory = artifacts.require('FarmFactory');
-// const BigNumber = require('bignumber.js');
 const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {

@@ -26,8 +26,8 @@ contract FarmFactory {
 	Avatar public avatar;
 	bool   public initialized;
 
-	event FarmCreated(address newFarm);
-	event TokenRescued(address farm, address token, address to);
+	  event FarmCreated(address newFarm);
+	  event TokenRescued(address farm, address token, address to);
 
 	modifier initializer() {
 		require(!initialized, 					"FarmFactory: contract already initialized");

@@ -62,7 +62,7 @@ contract('PrimeToken', (accounts) => {
                 lockingId = await setup.data.tx.logs[0].args._lockingId;
             });
             it('it should redeem reputation', async () => {
-                await time.increase(setup.token4rep.params.redeemEnableTime + await time.latest());
+                await time.increase(await time.duration.weeks(7));
                 let tx = await setup.token4rep.contract.redeem(setup.root);
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.token4rep.contract, 'Redeem');
@@ -201,6 +201,7 @@ contract('PrimeToken', (accounts) => {
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.vesting.factory, 'VestingCreated');
                 vestingAddress = setup.data.tx.logs[0].args.vestingContractAddress;
+                vestingContract = await TokenVesting.at(vestingAddress);
                 tokenVestAmount = toWei('100000');
                 await setup.tokens.primeToken.transfer(vestingAddress, tokenVestAmount);
                 expect((await setup.tokens.primeToken.balanceOf(vestingAddress)).toString()).to.equal(tokenVestAmount.toString());
