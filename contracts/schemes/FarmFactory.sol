@@ -74,8 +74,6 @@ contract FarmFactory {
 		// create new farm
 		address newFarm = _create();
 
-		//TODO: _createFarm()
-
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
 			.externalTokenTransfer(
@@ -176,8 +174,6 @@ contract FarmFactory {
 	{
 		// create new farm
 		address newFarm = _create();
-
-		//TODO: _createFarm()
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
