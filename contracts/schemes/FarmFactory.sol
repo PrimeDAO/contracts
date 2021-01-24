@@ -28,6 +28,7 @@ contract FarmFactory {
 
 	event FarmCreated(address newFarm);
 	event TokenRescued(address farm, address token, address to);
+	event RewardIncreased(address farm, uint amount);
 
 	modifier initializer() {
 		require(!initialized, 					"FarmFactory: contract already initialized");
@@ -63,16 +64,17 @@ contract FarmFactory {
 		address _stakingToken,
 		uint256 _initreward,
 		uint256 _starttime,
-		uint256 _duration//,
-		// address _avatarAddress
+		uint256 _duration
 	)
-		public
-		payable
-		protected
-		returns(address)
-		{
+	public
+	payable
+	protected
+	returns(address)
+	{
 		// create new farm
 		address newFarm = _create();
+
+		//TODO: _createFarm()
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
@@ -89,12 +91,26 @@ contract FarmFactory {
 			_stakingToken,
 			_initreward,
 			_starttime,
-			_duration//,
-			// _avatarAddress
+			_duration,
+			address(avatar)
 		);
 
 		return newFarm;
-		}
+	}
+
+	function increaseReward(
+		address _farm,
+		uint    _amount
+	)
+	public
+	protected
+	{
+		address _rewardToken = StakingRewards(_farm).rewardToken();
+
+		_increaseReward(_farm, _amount);
+
+		emit RewardIncreased(_farm, _amount);
+	}
 
 	/**
 	  * @dev           			Rescues tokens from an existing farm.
@@ -125,6 +141,67 @@ contract FarmFactory {
 		emit FarmCreated(address(_newFarm));
 		return address(_newFarm);
 	}
+
+	function _increaseReward(
+		address _farm,
+		uint    _amount
+	)
+	internal
+	{
+		address _rewardToken = StakingRewards(_farm).rewardToken();
+
+		//transfer tokens to staking rewards contract
+		Controller(avatar.owner())
+			.externalTokenTransfer(
+				IERC20(_rewardToken),
+				_farm,
+				_amount,
+				avatar
+		);
+
+		//call notify reward amount 
+		StakingRewards(_farm).notifyRewardAmount(
+			_amount
+		);
+	}
+
+	function _createFarm(
+		address _rewardToken,
+		address _stakingToken,
+		uint256 _initreward,
+		uint256 _starttime,
+		uint256 _duration
+	)
+	internal
+	{
+		// create new farm
+		address newFarm = _create();
+
+		//TODO: _createFarm()
+
+		// transfer rewards to the new farm
+		Controller(avatar.owner())
+			.externalTokenTransfer(
+				IERC20(_rewardToken),
+				newFarm,
+				_initreward,
+				avatar
+		);
+
+		// initialize farm
+		StakingRewards(newFarm).initialize(
+			_rewardToken,
+			_stakingToken,
+			_initreward,
+			_starttime,
+			_duration,
+			address(avatar)
+		);
+
+		return newFarm;
+	}
+
+
 
 	function _rescueTokens(
 		StakingRewards 	_stakingRewards,

@@ -54,7 +54,8 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
       address _stakingToken,
       uint256 _initreward,
       uint256 _starttime,
-      uint256 _duration
+      uint256 _duration,
+      address _avatar
     ) external initializer {
         require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be null");
         require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be null");
@@ -68,7 +69,7 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         starttime = _starttime;
         DURATION = (_duration * 24 hours);
 
-        rewardDistribution = msg.sender;
+        rewardDistribution = _avatar;
     }
 
     uint256 public DURATION;
