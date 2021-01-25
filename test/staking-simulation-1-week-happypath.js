@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { constants, time, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const BigNumber = require('bignumber.js');
 
