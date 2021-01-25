@@ -487,7 +487,7 @@ contract('StakingRewards', (accounts) => {
                 stakeAmount = toWei('100');
                 rewardAmount = toWei('100');
             });
-            context('» reverts when balanceOf reward tokens > reward amount update', async () => {
+            context('» reverts when caller != rewardDistribution', async () => {
                 before('!! initialize contract', async () => {
                     await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
 
@@ -502,14 +502,6 @@ contract('StakingRewards', (accounts) => {
                         amount: _badInitReward
                     });
                 });
-                it.skip('reverts', async () => {
-                    await expectRevert(
-                        setup.incentives.stakingRewards.notifyRewardAmount(_initreward),
-                        'StakingRewards: Provided reward too high'
-                    );
-                });
-            });
-            context('» reverts when caller != rewardDistribution', async () => {
                 it('reverts', async () => {
                     await expectRevert(
                         setup.incentives.stakingRewards.notifyRewardAmount(rewardAmount, { from: accounts[1] }),
