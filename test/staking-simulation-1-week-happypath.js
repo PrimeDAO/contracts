@@ -81,9 +81,6 @@ contract('Staking: 1 week happypath', (accounts) => {
                     await setup.balancer.pool.transfer(accounts[9], quarterStake);
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, quarterStake, { from: accounts[9] });
 
-                    // await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
-                    // await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.primeDAO.avatar);
-                    // await setup.incentives.stakingRewards.notifyRewardAmount(_initreward);
                     await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
