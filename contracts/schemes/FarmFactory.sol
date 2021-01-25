@@ -23,6 +23,10 @@ import "../incentives/StakingRewards.sol";
  * @dev   Enable primeDAO governance to start new yield farming programs.
  */
 contract FarmFactory {
+	string constant ERROR_INCREASE_REWARD            = "FarmFactory: increaseReward failed";
+	string constant ERROR_RESCUE_TOKENS              = "FarmFactory: rescueTokens failed";
+
+
 	Avatar public avatar;
 	bool   public initialized;
 
@@ -103,9 +107,9 @@ contract FarmFactory {
 	public
 	protected
 	{
-		address _rewardToken = StakingRewards(_farm).rewardToken();
+		StakingRewards stakingRewards = StakingRewards(_farm);
 
-		_increaseReward(_farm, _amount);
+		_increaseReward(stakingRewards, _amount);
 
 		emit RewardIncreased(_farm, _amount);
 	}
@@ -141,26 +145,36 @@ contract FarmFactory {
 	}
 
 	function _increaseReward(
-		address _farm,
-		uint    _amount
+		StakingRewards _farm,
+		uint    	   _amount
 	)
 	internal
 	{
-		address _rewardToken = StakingRewards(_farm).rewardToken();
+		bool success;
+
+		address _rewardToken = _farm.rewardToken();
+		Controller controller = Controller(avatar.owner());
 
 		//transfer tokens to staking rewards contract
-		Controller(avatar.owner())
-			.externalTokenTransfer(
-				IERC20(_rewardToken),
-				_farm,
-				_amount,
-				avatar
+		controller.externalTokenTransfer(
+			IERC20(_rewardToken),
+			address(_farm),
+			_amount,
+			avatar
 		);
 
 		//call notify reward amount 
-		StakingRewards(_farm).notifyRewardAmount(
-			_amount
+		(success,) = controller.genericCall(
+			address(_farm),
+			abi.encodeWithSelector(
+				_farm.notifyRewardAmount.selector,
+				_amount
+			),
+			avatar,
+			0
 		);
+
+		require(success, ERROR_INCREASE_REWARD);
 	}
 
 	function _rescueTokens(
@@ -185,5 +199,6 @@ contract FarmFactory {
 			avatar,
 			0
 		);
+		require(success, ERROR_RESCUE_TOKENS);
 	}
 }
