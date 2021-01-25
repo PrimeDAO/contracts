@@ -5104,9 +5104,123 @@
     "name": "solc",
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
-  "networks": {},
-  "schemaVersion": "3.3.0",
-  "updatedAt": "2021-01-04T09:54:30.638Z",
+  "networks": {
+    "1": {
+      "events": {
+        "0xd173f98f4a2080eab40a0bff4d9a575753270cb2401c74efdec1feb0ba31b426": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_locker",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "_lockingId",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_period",
+              "type": "uint256"
+            }
+          ],
+          "name": "Lock",
+          "type": "event"
+        },
+        "0x09ae2accb7909b2605e5e74e2584c7f5aa396bc6ab76290633ae3819ff650e9f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "_lockingId",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_numerator",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_denominator",
+              "type": "uint256"
+            }
+          ],
+          "name": "LockToken",
+          "type": "event"
+        },
+        "0x222838db2794d11532d940e8dec38ae307ed0b63cd97c233322e221f998767a6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_beneficiary",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "Redeem",
+          "type": "event"
+        },
+        "0xcb7ab693259d2332e08e7666832578144deb74443e37a762847e848793fc2981": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "_lockingId",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "_beneficiary",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "Release",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xCF4eE5412eb92ADDcC4cf9d3b91c526CcE107ff4"
+    }
+  },
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2021-01-25T18:58:23.699Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "getAgreementHash()": {
