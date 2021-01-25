@@ -27,8 +27,8 @@ contract FarmFactory {
     Avatar public avatar;
     bool   public initialized;
 
-	event FarmCreated(address newFarm);
-	event TokenRescued(address farm, address token, address to);
+	  event FarmCreated(address newFarm);
+	  event TokenRescued(address farm, address token, address to);
 
     modifier initializer() {
     	require(!initialized, 					"FarmFactory: contract already initialized");
@@ -90,7 +90,7 @@ contract FarmFactory {
       * @param _stakingRewards  Existing Staking Rewards contract.
       * @param _amount		 	Staking token address.
       * @param _token 			Token address to be rescued.
-      * @param _to 				Rescue to an address.
+      * @param _to 				  Rescue to an address.
       */
 	function rescueTokens(
 		StakingRewards 	_stakingRewards,
