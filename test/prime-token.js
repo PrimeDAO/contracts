@@ -35,7 +35,6 @@ contract('PrimeToken', (accounts) => {
     let setup;
     let testSetup;
     let tokenLockAmount;
-    let lockingId;
     let owner; // vesting contract owner
     let beneficiary; // vesting beneficiary
     let start; // vesting start
@@ -59,7 +58,6 @@ contract('PrimeToken', (accounts) => {
                 let tx = await setup.token4rep.contract.lock(tokenLockAmount, setup.token4rep.params.maxLockingPeriod, setup.tokens.primeToken.address,"0x0000000000000000000000000000000000000000");
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.token4rep.contract, 'LockToken');
-                lockingId = await setup.data.tx.logs[0].args._lockingId;
             });
             it('it should redeem reputation', async () => {
                 await time.increase(setup.token4rep.params.redeemEnableTime + await time.latest());
