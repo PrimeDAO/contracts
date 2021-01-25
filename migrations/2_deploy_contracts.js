@@ -8,8 +8,8 @@ const BalancerProxy = artifacts.require('BalancerProxy');
 const PrimeToken = artifacts.require('PrimeToken');
 const PriceOracle = artifacts.require('PriceOracle');
 const VestingFactory = artifacts.require('VestingFactory');
-
 const StakingRewards = artifacts.require('StakingRewards');
+const RepRedeemer = artifacts.require('RepRedeemer');
 
 const LockingToken4Reputation = artifacts.require('LockingToken4Reputation');
 
@@ -45,12 +45,14 @@ module.exports = async function (deployer, network) {
         await deployer.deploy(PriceOracle);
         await deployer.deploy(BalancerProxy);
         await deployer.deploy(VestingFactory);
+        await deployer.deploy(RepRedeemer);
 
         contracts.kovan.PrimeToken = PrimeToken.address;
         contracts.kovan.StakingRewards = StakingRewards.address;
         contracts.kovan.PriceOracle = PriceOracle.address;
         contracts.kovan.BalancerProxy = BalancerProxy.address;
         contracts.kovan.VestingFactory = VestingFactory.address;
+        contracts.kovan.RepRedeemer = RepRedeemer.address;
 
         // overwrite contranctAddresses.json
         fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {
