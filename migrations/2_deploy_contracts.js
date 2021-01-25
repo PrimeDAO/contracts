@@ -19,7 +19,7 @@ const fs = require("fs");
 module.exports = async function (deployer, network) {
     const { toWei } = web3.utils;
 
-    if (network === 'mainnet' ) {
+    if (network === 'mainnet') {
 
         await deployer.deploy(StakingRewards);
         await deployer.deploy(PriceOracle);
