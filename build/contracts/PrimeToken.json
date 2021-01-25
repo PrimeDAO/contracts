@@ -1354,8 +1354,9 @@
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.3",
-  "updatedAt": "2021-01-25T14:12:42.464Z",
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2021-01-25T18:58:23.664Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "allowance(address,address)": {

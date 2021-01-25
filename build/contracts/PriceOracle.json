@@ -909,824 +909,789 @@
     "src": "1177:725:6"
   },
   "legacyAST": {
-    "attributes": {
-      "absolutePath": "/home/tengree/Projects/primedao/contracts/contracts/utils/PriceOracle.sol",
-      "exportedSymbols": {
-        "PriceOracle": [
-          1941
-        ]
-      }
+    "absolutePath": "/home/tengree/Projects/primedao/contracts/contracts/utils/PriceOracle.sol",
+    "exportedSymbols": {
+      "PriceOracle": [
+        1941
+      ]
     },
-    "children": [
+    "id": 1942,
+    "nodeType": "SourceUnit",
+    "nodes": [
       {
-        "attributes": {
-          "literals": [
-            "solidity",
-            "^",
-            "0.5",
-            ".13"
-          ]
-        },
         "id": 1882,
-        "name": "PragmaDirective",
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
         "src": "1177:24:6"
       },
       {
-        "attributes": {
-          "SourceUnit": 6050,
-          "absolutePath": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
-          "file": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
-          "scope": 1942,
-          "symbolAliases": [
-            null
-          ],
-          "unitAlias": ""
-        },
+        "absolutePath": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
+        "file": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
         "id": 1883,
-        "name": "ImportDirective",
-        "src": "1203:66:6"
+        "nodeType": "ImportDirective",
+        "scope": 1942,
+        "sourceUnit": 6050,
+        "src": "1203:66:6",
+        "symbolAliases": [],
+        "unitAlias": ""
       },
       {
-        "attributes": {
-          "SourceUnit": 12469,
-          "absolutePath": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
-          "file": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
-          "scope": 1942,
-          "symbolAliases": [
-            null
-          ],
-          "unitAlias": ""
-        },
+        "absolutePath": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
+        "file": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
         "id": 1884,
-        "name": "ImportDirective",
-        "src": "1270:63:6"
+        "nodeType": "ImportDirective",
+        "scope": 1942,
+        "sourceUnit": 12469,
+        "src": "1270:63:6",
+        "symbolAliases": [],
+        "unitAlias": ""
       },
       {
-        "attributes": {
-          "contractDependencies": [
-            6049,
-            11825,
-            12468
-          ],
-          "contractKind": "contract",
-          "documentation": null,
-          "fullyImplemented": true,
-          "linearizedBaseContracts": [
-            1941,
-            12468,
-            11825,
-            6049
-          ],
-          "name": "PriceOracle",
-          "scope": 1942
-        },
-        "children": [
+        "baseContracts": [
           {
-            "attributes": {
-              "arguments": null
-            },
-            "children": [
-              {
-                "attributes": {
-                  "contractScope": null,
-                  "name": "PriceOracleInterface",
-                  "referencedDeclaration": 6049,
-                  "type": "contract PriceOracleInterface"
-                },
-                "id": 1885,
-                "name": "UserDefinedTypeName",
-                "src": "1360:20:6"
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1885,
+              "name": "PriceOracleInterface",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 6049,
+              "src": "1360:20:6",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_PriceOracleInterface_$6049",
+                "typeString": "contract PriceOracleInterface"
               }
-            ],
+            },
             "id": 1886,
-            "name": "InheritanceSpecifier",
+            "nodeType": "InheritanceSpecifier",
             "src": "1360:20:6"
           },
           {
-            "attributes": {
-              "arguments": null
-            },
-            "children": [
-              {
-                "attributes": {
-                  "contractScope": null,
-                  "name": "Ownable",
-                  "referencedDeclaration": 12468,
-                  "type": "contract Ownable"
-                },
-                "id": 1887,
-                "name": "UserDefinedTypeName",
-                "src": "1382:7:6"
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1887,
+              "name": "Ownable",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 12468,
+              "src": "1382:7:6",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Ownable_$12468",
+                "typeString": "contract Ownable"
               }
-            ],
+            },
             "id": 1888,
-            "name": "InheritanceSpecifier",
+            "nodeType": "InheritanceSpecifier",
             "src": "1382:7:6"
-          },
-          {
-            "attributes": {
-              "canonicalName": "PriceOracle.Price",
-              "name": "Price",
-              "scope": 1941,
-              "visibility": "public"
-            },
-            "children": [
-              {
-                "attributes": {
-                  "constant": false,
-                  "name": "numerator",
-                  "scope": 1893,
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "type": "uint256",
-                  "value": null,
-                  "visibility": "internal"
-                },
-                "children": [
-                  {
-                    "attributes": {
-                      "name": "uint256",
-                      "type": "uint256"
-                    },
-                    "id": 1889,
-                    "name": "ElementaryTypeName",
-                    "src": "1420:7:6"
-                  }
-                ],
-                "id": 1890,
-                "name": "VariableDeclaration",
-                "src": "1420:17:6"
-              },
-              {
-                "attributes": {
-                  "constant": false,
-                  "name": "denominator",
-                  "scope": 1893,
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "type": "uint256",
-                  "value": null,
-                  "visibility": "internal"
-                },
-                "children": [
-                  {
-                    "attributes": {
-                      "name": "uint256",
-                      "type": "uint256"
-                    },
-                    "id": 1891,
-                    "name": "ElementaryTypeName",
-                    "src": "1447:7:6"
-                  }
-                ],
-                "id": 1892,
-                "name": "VariableDeclaration",
-                "src": "1447:19:6"
-              }
-            ],
-            "id": 1893,
-            "name": "StructDefinition",
-            "src": "1397:76:6"
-          },
-          {
-            "attributes": {
-              "constant": false,
-              "name": "tokenPrices",
-              "scope": 1941,
-              "stateVariable": true,
-              "storageLocation": "default",
-              "type": "mapping(address => struct PriceOracle.Price)",
-              "value": null,
-              "visibility": "public"
-            },
-            "children": [
-              {
-                "attributes": {
-                  "type": "mapping(address => struct PriceOracle.Price)"
-                },
-                "children": [
-                  {
-                    "attributes": {
-                      "name": "address",
-                      "type": "address"
-                    },
-                    "id": 1894,
-                    "name": "ElementaryTypeName",
-                    "src": "1510:7:6"
-                  },
-                  {
-                    "attributes": {
-                      "contractScope": null,
-                      "name": "Price",
-                      "referencedDeclaration": 1893,
-                      "type": "struct PriceOracle.Price"
-                    },
-                    "id": 1895,
-                    "name": "UserDefinedTypeName",
-                    "src": "1521:5:6"
-                  }
-                ],
-                "id": 1896,
-                "name": "Mapping",
-                "src": "1501:26:6"
-              }
-            ],
-            "id": 1897,
-            "name": "VariableDeclaration",
-            "src": "1501:45:6"
-          },
-          {
-            "attributes": {
-              "documentation": null,
-              "implemented": true,
-              "isConstructor": false,
-              "kind": "function",
-              "name": "setTokenPrice",
-              "scope": 1941,
-              "stateMutability": "nonpayable",
-              "superFunction": null,
-              "visibility": "public"
-            },
-            "children": [
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "token",
-                      "scope": 1918,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "stateMutability": "nonpayable",
-                          "type": "address"
-                        },
-                        "id": 1898,
-                        "name": "ElementaryTypeName",
-                        "src": "1576:7:6"
-                      }
-                    ],
-                    "id": 1899,
-                    "name": "VariableDeclaration",
-                    "src": "1576:13:6"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "numerator",
-                      "scope": 1918,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint256",
-                          "type": "uint256"
-                        },
-                        "id": 1900,
-                        "name": "ElementaryTypeName",
-                        "src": "1591:7:6"
-                      }
-                    ],
-                    "id": 1901,
-                    "name": "VariableDeclaration",
-                    "src": "1591:17:6"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "denominator",
-                      "scope": 1918,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint256",
-                          "type": "uint256"
-                        },
-                        "id": 1902,
-                        "name": "ElementaryTypeName",
-                        "src": "1610:7:6"
-                      }
-                    ],
-                    "id": 1903,
-                    "name": "VariableDeclaration",
-                    "src": "1610:19:6"
-                  }
-                ],
-                "id": 1904,
-                "name": "ParameterList",
-                "src": "1575:55:6"
-              },
-              {
-                "attributes": {
-                  "parameters": [
-                    null
-                  ]
-                },
-                "children": [],
-                "id": 1907,
-                "name": "ParameterList",
-                "src": "1648:0:6"
-              },
-              {
-                "attributes": {
-                  "arguments": null
-                },
-                "children": [
-                  {
-                    "attributes": {
-                      "argumentTypes": null,
-                      "overloadedDeclarations": [
-                        null
-                      ],
-                      "referencedDeclaration": 12401,
-                      "type": "modifier ()",
-                      "value": "onlyOwner"
-                    },
-                    "id": 1905,
-                    "name": "Identifier",
-                    "src": "1638:9:6"
-                  }
-                ],
-                "id": 1906,
-                "name": "ModifierInvocation",
-                "src": "1638:9:6"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "attributes": {
-                          "argumentTypes": null,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "lValueRequested": false,
-                          "operator": "=",
-                          "type": "struct PriceOracle.Price storage ref"
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": true,
-                              "isPure": false,
-                              "lValueRequested": true,
-                              "type": "struct PriceOracle.Price storage ref"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1897,
-                                  "type": "mapping(address => struct PriceOracle.Price storage ref)",
-                                  "value": "tokenPrices"
-                                },
-                                "id": 1908,
-                                "name": "Identifier",
-                                "src": "1658:11:6"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1899,
-                                  "type": "address",
-                                  "value": "token"
-                                },
-                                "id": 1909,
-                                "name": "Identifier",
-                                "src": "1670:5:6"
-                              }
-                            ],
-                            "id": 1910,
-                            "name": "IndexAccess",
-                            "src": "1658:18:6"
-                          },
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "isStructConstructorCall": true,
-                              "lValueRequested": false,
-                              "names": [
-                                null
-                              ],
-                              "type": "struct PriceOracle.Price memory",
-                              "type_conversion": false
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": [
-                                    {
-                                      "typeIdentifier": "t_uint256",
-                                      "typeString": "uint256"
-                                    },
-                                    {
-                                      "typeIdentifier": "t_uint256",
-                                      "typeString": "uint256"
-                                    }
-                                  ],
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1893,
-                                  "type": "type(struct PriceOracle.Price storage pointer)",
-                                  "value": "Price"
-                                },
-                                "id": 1911,
-                                "name": "Identifier",
-                                "src": "1679:5:6"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1901,
-                                  "type": "uint256",
-                                  "value": "numerator"
-                                },
-                                "id": 1912,
-                                "name": "Identifier",
-                                "src": "1685:9:6"
-                              },
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1903,
-                                  "type": "uint256",
-                                  "value": "denominator"
-                                },
-                                "id": 1913,
-                                "name": "Identifier",
-                                "src": "1696:11:6"
-                              }
-                            ],
-                            "id": 1914,
-                            "name": "FunctionCall",
-                            "src": "1679:29:6"
-                          }
-                        ],
-                        "id": 1915,
-                        "name": "Assignment",
-                        "src": "1658:50:6"
-                      }
-                    ],
-                    "id": 1916,
-                    "name": "ExpressionStatement",
-                    "src": "1658:50:6"
-                  }
-                ],
-                "id": 1917,
-                "name": "Block",
-                "src": "1648:67:6"
-              }
-            ],
-            "id": 1918,
-            "name": "FunctionDefinition",
-            "src": "1553:162:6"
-          },
-          {
-            "attributes": {
-              "documentation": null,
-              "implemented": true,
-              "isConstructor": false,
-              "kind": "function",
-              "modifiers": [
-                null
-              ],
-              "name": "getPrice",
-              "scope": 1941,
-              "stateMutability": "view",
-              "superFunction": 6048,
-              "visibility": "public"
-            },
-            "children": [
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "token",
-                      "scope": 1940,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "address",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "address",
-                          "stateMutability": "nonpayable",
-                          "type": "address"
-                        },
-                        "id": 1919,
-                        "name": "ElementaryTypeName",
-                        "src": "1743:7:6"
-                      }
-                    ],
-                    "id": 1920,
-                    "name": "VariableDeclaration",
-                    "src": "1743:13:6"
-                  }
-                ],
-                "id": 1921,
-                "name": "ParameterList",
-                "src": "1742:15:6"
-              },
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "",
-                      "scope": 1940,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 1922,
-                        "name": "ElementaryTypeName",
-                        "src": "1779:4:6"
-                      }
-                    ],
-                    "id": 1923,
-                    "name": "VariableDeclaration",
-                    "src": "1779:4:6"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "",
-                      "scope": 1940,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "uint256",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "uint",
-                          "type": "uint256"
-                        },
-                        "id": 1924,
-                        "name": "ElementaryTypeName",
-                        "src": "1785:4:6"
-                      }
-                    ],
-                    "id": 1925,
-                    "name": "VariableDeclaration",
-                    "src": "1785:4:6"
-                  }
-                ],
-                "id": 1926,
-                "name": "ParameterList",
-                "src": "1778:12:6"
-              },
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "assignments": [
-                        1928
-                      ]
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "constant": false,
-                          "name": "price",
-                          "scope": 1939,
-                          "stateVariable": false,
-                          "storageLocation": "memory",
-                          "type": "struct PriceOracle.Price",
-                          "value": null,
-                          "visibility": "internal"
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "contractScope": null,
-                              "name": "Price",
-                              "referencedDeclaration": 1893,
-                              "type": "struct PriceOracle.Price"
-                            },
-                            "id": 1927,
-                            "name": "UserDefinedTypeName",
-                            "src": "1801:5:6"
-                          }
-                        ],
-                        "id": 1928,
-                        "name": "VariableDeclaration",
-                        "src": "1801:18:6"
-                      },
-                      {
-                        "attributes": {
-                          "argumentTypes": null,
-                          "isConstant": false,
-                          "isLValue": true,
-                          "isPure": false,
-                          "lValueRequested": false,
-                          "type": "struct PriceOracle.Price storage ref"
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "overloadedDeclarations": [
-                                null
-                              ],
-                              "referencedDeclaration": 1897,
-                              "type": "mapping(address => struct PriceOracle.Price storage ref)",
-                              "value": "tokenPrices"
-                            },
-                            "id": 1929,
-                            "name": "Identifier",
-                            "src": "1822:11:6"
-                          },
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "overloadedDeclarations": [
-                                null
-                              ],
-                              "referencedDeclaration": 1920,
-                              "type": "address",
-                              "value": "token"
-                            },
-                            "id": 1930,
-                            "name": "Identifier",
-                            "src": "1834:5:6"
-                          }
-                        ],
-                        "id": 1931,
-                        "name": "IndexAccess",
-                        "src": "1822:18:6"
-                      }
-                    ],
-                    "id": 1932,
-                    "name": "VariableDeclarationStatement",
-                    "src": "1801:39:6"
-                  },
-                  {
-                    "attributes": {
-                      "functionReturnParameters": 1926
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "argumentTypes": null,
-                          "isConstant": false,
-                          "isInlineArray": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "lValueRequested": false,
-                          "type": "tuple(uint256,uint256)"
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": true,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "member_name": "numerator",
-                              "referencedDeclaration": 1890,
-                              "type": "uint256"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1928,
-                                  "type": "struct PriceOracle.Price memory",
-                                  "value": "price"
-                                },
-                                "id": 1933,
-                                "name": "Identifier",
-                                "src": "1858:5:6"
-                              }
-                            ],
-                            "id": 1934,
-                            "name": "MemberAccess",
-                            "src": "1858:15:6"
-                          },
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": true,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "member_name": "denominator",
-                              "referencedDeclaration": 1892,
-                              "type": "uint256"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 1928,
-                                  "type": "struct PriceOracle.Price memory",
-                                  "value": "price"
-                                },
-                                "id": 1935,
-                                "name": "Identifier",
-                                "src": "1875:5:6"
-                              }
-                            ],
-                            "id": 1936,
-                            "name": "MemberAccess",
-                            "src": "1875:17:6"
-                          }
-                        ],
-                        "id": 1937,
-                        "name": "TupleExpression",
-                        "src": "1857:36:6"
-                      }
-                    ],
-                    "id": 1938,
-                    "name": "Return",
-                    "src": "1850:43:6"
-                  }
-                ],
-                "id": 1939,
-                "name": "Block",
-                "src": "1791:109:6"
-              }
-            ],
-            "id": 1940,
-            "name": "FunctionDefinition",
-            "src": "1725:175:6"
           }
         ],
+        "contractDependencies": [
+          6049,
+          11825,
+          12468
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
         "id": 1941,
-        "name": "ContractDefinition",
+        "linearizedBaseContracts": [
+          1941,
+          12468,
+          11825,
+          6049
+        ],
+        "name": "PriceOracle",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "PriceOracle.Price",
+            "id": 1893,
+            "members": [
+              {
+                "constant": false,
+                "id": 1890,
+                "name": "numerator",
+                "nodeType": "VariableDeclaration",
+                "scope": 1893,
+                "src": "1420:17:6",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1889,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1420:7:6",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1892,
+                "name": "denominator",
+                "nodeType": "VariableDeclaration",
+                "scope": 1893,
+                "src": "1447:19:6",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1891,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1447:7:6",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Price",
+            "nodeType": "StructDefinition",
+            "scope": 1941,
+            "src": "1397:76:6",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1897,
+            "name": "tokenPrices",
+            "nodeType": "VariableDeclaration",
+            "scope": 1941,
+            "src": "1501:45:6",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Price_$1893_storage_$",
+              "typeString": "mapping(address => struct PriceOracle.Price)"
+            },
+            "typeName": {
+              "id": 1896,
+              "keyType": {
+                "id": 1894,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1510:7:6",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "1501:26:6",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Price_$1893_storage_$",
+                "typeString": "mapping(address => struct PriceOracle.Price)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 1895,
+                "name": "Price",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 1893,
+                "src": "1521:5:6",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Price_$1893_storage_ptr",
+                  "typeString": "struct PriceOracle.Price"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1917,
+              "nodeType": "Block",
+              "src": "1648:67:6",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 1915,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "id": 1908,
+                        "name": "tokenPrices",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1897,
+                        "src": "1658:11:6",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Price_$1893_storage_$",
+                          "typeString": "mapping(address => struct PriceOracle.Price storage ref)"
+                        }
+                      },
+                      "id": 1910,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 1909,
+                        "name": "token",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1899,
+                        "src": "1670:5:6",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "1658:18:6",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Price_$1893_storage",
+                        "typeString": "struct PriceOracle.Price storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 1912,
+                          "name": "numerator",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 1901,
+                          "src": "1685:9:6",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        {
+                          "argumentTypes": null,
+                          "id": 1913,
+                          "name": "denominator",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 1903,
+                          "src": "1696:11:6",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        ],
+                        "id": 1911,
+                        "name": "Price",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1893,
+                        "src": "1679:5:6",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_type$_t_struct$_Price_$1893_storage_ptr_$",
+                          "typeString": "type(struct PriceOracle.Price storage pointer)"
+                        }
+                      },
+                      "id": 1914,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "structConstructorCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "1679:29:6",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Price_$1893_memory",
+                        "typeString": "struct PriceOracle.Price memory"
+                      }
+                    },
+                    "src": "1658:50:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Price_$1893_storage",
+                      "typeString": "struct PriceOracle.Price storage ref"
+                    }
+                  },
+                  "id": 1916,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1658:50:6"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1918,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": null,
+                "id": 1906,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1905,
+                  "name": "onlyOwner",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 12401,
+                  "src": "1638:9:6",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1638:9:6"
+              }
+            ],
+            "name": "setTokenPrice",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1904,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1899,
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1918,
+                  "src": "1576:13:6",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1898,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1576:7:6",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1901,
+                  "name": "numerator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1918,
+                  "src": "1591:17:6",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1900,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1591:7:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1903,
+                  "name": "denominator",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1918,
+                  "src": "1610:19:6",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1902,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1610:7:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1575:55:6"
+            },
+            "returnParameters": {
+              "id": 1907,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1648:0:6"
+            },
+            "scope": 1941,
+            "src": "1553:162:6",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 1939,
+              "nodeType": "Block",
+              "src": "1791:109:6",
+              "statements": [
+                {
+                  "assignments": [
+                    1928
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 1928,
+                      "name": "price",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 1939,
+                      "src": "1801:18:6",
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_Price_$1893_memory_ptr",
+                        "typeString": "struct PriceOracle.Price"
+                      },
+                      "typeName": {
+                        "contractScope": null,
+                        "id": 1927,
+                        "name": "Price",
+                        "nodeType": "UserDefinedTypeName",
+                        "referencedDeclaration": 1893,
+                        "src": "1801:5:6",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Price_$1893_storage_ptr",
+                          "typeString": "struct PriceOracle.Price"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 1932,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "id": 1929,
+                      "name": "tokenPrices",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1897,
+                      "src": "1822:11:6",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Price_$1893_storage_$",
+                        "typeString": "mapping(address => struct PriceOracle.Price storage ref)"
+                      }
+                    },
+                    "id": 1931,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 1930,
+                      "name": "token",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 1920,
+                      "src": "1834:5:6",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "1822:18:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Price_$1893_storage",
+                      "typeString": "struct PriceOracle.Price storage ref"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1801:39:6"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "components": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 1933,
+                          "name": "price",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 1928,
+                          "src": "1858:5:6",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Price_$1893_memory_ptr",
+                            "typeString": "struct PriceOracle.Price memory"
+                          }
+                        },
+                        "id": 1934,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "numerator",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 1890,
+                        "src": "1858:15:6",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 1935,
+                          "name": "price",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 1928,
+                          "src": "1875:5:6",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Price_$1893_memory_ptr",
+                            "typeString": "struct PriceOracle.Price memory"
+                          }
+                        },
+                        "id": 1936,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "denominator",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 1892,
+                        "src": "1875:17:6",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "id": 1937,
+                    "isConstant": false,
+                    "isInlineArray": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "TupleExpression",
+                    "src": "1857:36:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$_t_uint256_$_t_uint256_$",
+                      "typeString": "tuple(uint256,uint256)"
+                    }
+                  },
+                  "functionReturnParameters": 1926,
+                  "id": 1938,
+                  "nodeType": "Return",
+                  "src": "1850:43:6"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 1940,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPrice",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1921,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1920,
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1940,
+                  "src": "1743:13:6",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1919,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1743:7:6",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1742:15:6"
+            },
+            "returnParameters": {
+              "id": 1926,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1923,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1940,
+                  "src": "1779:4:6",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1922,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1779:4:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1925,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1940,
+                  "src": "1785:4:6",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1924,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1785:4:6",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1778:12:6"
+            },
+            "scope": 1941,
+            "src": "1725:175:6",
+            "stateMutability": "view",
+            "superFunction": 6048,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1942,
         "src": "1336:566:6"
       }
     ],
-    "id": 1942,
-    "name": "SourceUnit",
     "src": "1177:725:6"
   },
   "compiler": {
     "name": "solc",
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
-  "networks": {},
-  "schemaVersion": "3.3.3",
-  "updatedAt": "2021-01-25T14:12:42.513Z",
+  "networks": {
+    "1": {
+      "events": {
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3EBa98C360E032D355A943E2760956c7f052df21",
+      "transactionHash": "0xe1ffd8aed4ff75f1174eab048ae5f85fe8ae047b8846de58e6eeeaf15114ae49"
+    }
+  },
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2021-01-25T18:58:23.667Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "isOwner()": {

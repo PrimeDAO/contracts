@@ -11,7 +11,7 @@ module.exports = {
             provider: () => new HDWalletProvider(process.env.KEY, process.env.PROVIDER),
             network_id: 1,       // mainnet
             gas: 2000000,  
-            gasPrice: 70000000000,  // check https://ethgasstation.info/
+            gasPrice: 65000000000,  // check https://ethgasstation.info/
             confirmations: 2,    // # of confs to wait between deployments. (default: 0)
             timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
             skipDryRun: false     // Skip dry run before migrations? (default: false for public nets )

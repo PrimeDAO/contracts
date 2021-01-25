@@ -21,7 +21,7 @@ module.exports = async function(callback) {
         await console.log("***   Success");
 
         await console.log("***   Initializing LockingToken4Reputation");
-        await lt4r.initialize(contracts.mainnet.Avatar, "80000000000000000000000", 1581120000, 1583625600, 1584230400, 10520000, contracts.mainnet.PriceOracle, "0x0000000000000000000000000000000000000000");
+        await lt4r.initialize(contracts.mainnet.Avatar, "8000000000000000000000", 1612742400, 1615161600, 1615766400, 10520000, contracts.mainnet.PriceOracle, "0x0000000000000000000000000000000000000000");
         await console.log("***   Success");
 
     } catch(error) {

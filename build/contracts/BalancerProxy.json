@@ -27339,8 +27339,9 @@
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.3",
-  "updatedAt": "2021-01-25T14:12:42.488Z",
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2021-01-25T18:58:23.643Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "Enable primeDAO governance of a Configurable Rights Balancer Pool.",
     "methods": {
