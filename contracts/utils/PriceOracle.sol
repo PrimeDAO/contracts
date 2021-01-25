@@ -1,3 +1,16 @@
+/*
+
+██████╗░██████╗░██╗███╗░░░███╗███████╗██████╗░░█████╗░░█████╗░
+██╔══██╗██╔══██╗██║████╗░████║██╔════╝██╔══██╗██╔══██╗██╔══██╗
+██████╔╝██████╔╝██║██╔████╔██║█████╗░░██║░░██║███████║██║░░██║
+██╔═══╝░██╔══██╗██║██║╚██╔╝██║██╔══╝░░██║░░██║██╔══██║██║░░██║
+██║░░░░░██║░░██║██║██║░╚═╝░██║███████╗██████╔╝██║░░██║╚█████╔╝
+╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═╝░░╚═╝░╚════╝░
+
+*/
+
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 pragma solidity ^0.5.13;
 
 import "@daostack/arc/contracts/schemes/PriceOracleInterface.sol";
@@ -11,7 +24,7 @@ contract PriceOracle is PriceOracleInterface, Ownable {
         uint256 denominator;
     }
 
-    // user => amount
+    // token => Price
     mapping (address => Price) public tokenPrices;
 
     function setTokenPrice(address token, uint256 numerator, uint256 denominator) public onlyOwner {

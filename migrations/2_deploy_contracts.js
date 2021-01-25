@@ -11,6 +11,8 @@ const VestingFactory = artifacts.require('VestingFactory');
 const StakingRewards = artifacts.require('StakingRewards');
 const RepRedeemer = artifacts.require('RepRedeemer');
 
+const LockingToken4Reputation = artifacts.require('LockingToken4Reputation');
+
 const contracts = require('../contractAddresses.json');
 const fs = require("fs");
 
@@ -21,11 +23,13 @@ module.exports = async function (deployer, network) {
 
         await deployer.deploy(StakingRewards);
         await deployer.deploy(PriceOracle);
+        await deployer.deploy(LockingToken4Reputation);
         await deployer.deploy(BalancerProxy);
         await deployer.deploy(VestingFactory);
 
         contracts.mainnet.StakingRewards = StakingRewards.address;
         contracts.mainnet.PriceOracle = PriceOracle.address;
+        contracts.mainnet.LockingToken4Reputation = LockingToken4Reputation.address;
         contracts.mainnet.BalancerProxy = BalancerProxy.address;
         contracts.mainnet.VestingFactory = VestingFactory.address;
 

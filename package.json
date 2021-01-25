@@ -14,7 +14,7 @@
     "innit:staking:kovan": "npx truffle exec scripts/kovan/innitRewards.js --network kovan",
     "deploy:contracts:mainnet": "truffle migrate --network mainnet --reset",
     "deploy:dao:mainnet": "npx run scripts/mainnet/migrateDAO.js --network mainnet",
-    "setup:oracle:mainnet": "npx truffle exec scripts/mainnet/setupPriceOracle.js --network mainnet",
+    "setup:lock4rep:mainnet": "npx truffle exec scripts/mainnet/setupLockToken4Repputation.js --network mainnet",
     "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
     "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
     "innit:staking:mainnet": "npx truffle exec scripts/mainnet/innitRewards.js --network mainnet",
