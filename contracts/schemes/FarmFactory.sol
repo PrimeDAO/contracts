@@ -163,42 +163,6 @@ contract FarmFactory {
 		);
 	}
 
-	function _createFarm(
-		address _rewardToken,
-		address _stakingToken,
-		uint256 _initreward,
-		uint256 _starttime,
-		uint256 _duration
-	)
-	internal
-	{
-		// create new farm
-		address newFarm = _create();
-
-		// transfer rewards to the new farm
-		Controller(avatar.owner())
-			.externalTokenTransfer(
-				IERC20(_rewardToken),
-				newFarm,
-				_initreward,
-				avatar
-		);
-
-		// initialize farm
-		StakingRewards(newFarm).initialize(
-			_rewardToken,
-			_stakingToken,
-			_initreward,
-			_starttime,
-			_duration,
-			address(avatar)
-		);
-
-		return newFarm;
-	}
-
-
-
 	function _rescueTokens(
 		StakingRewards 	_stakingRewards,
 		uint    	 	_amount,
