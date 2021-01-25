@@ -18,9 +18,10 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "../utils/interfaces/IRewardDistributionRecipient.sol";
 
-contract StakingRewards is Ownable, ReentrancyGuard {
+
+contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
 
     using SafeMath for uint256;
     using SafeERC20 for address;
@@ -53,7 +54,8 @@ contract StakingRewards is Ownable, ReentrancyGuard {
       address _stakingToken,
       uint256 _initreward,
       uint256 _starttime,
-      uint256 _duration
+      uint256 _duration,
+      address _avatar
     ) external initializer {
         require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be null");
         require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be null");
@@ -67,10 +69,7 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         starttime = _starttime;
         DURATION = (_duration * 24 hours);
 
-        require(_initreward == IERC20(rewardToken).balanceOf(address(this)),
-                "StakingRewards: wrong reward amount supplied");
-
-        _notifyRewardAmount(_initreward);
+        rewardDistribution = _avatar;
     }
 
     uint256 public DURATION;
@@ -103,6 +102,52 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         _;
     }
 
+    function notifyRewardAmount(uint256 reward) external protected onlyRewardDistribution updateReward(address(0)) {
+         if (block.timestamp >= periodFinish) {
+             rewardRate = reward.div(DURATION);
+         } else {
+             uint256 remaining = periodFinish.sub(block.timestamp);
+             uint256 leftover = remaining.mul(rewardRate);
+             rewardRate = reward.add(leftover).div(DURATION);
+         }
+
+         // Ensure the provided reward amount is not more than the balance in the contract.
+         // This keeps the reward rate in the right range, preventing overflows due to
+         // very high values of rewardRate in the earned and rewardsPerToken functions;
+         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
+         uint balance = IERC20(rewardToken).balanceOf(address(this));
+         require(rewardRate <= balance.div(DURATION), "StakingRewards: Provided reward too high");
+
+         lastUpdateTime = block.timestamp;
+         periodFinish = block.timestamp.add(DURATION);
+         emit RewardAdded(reward);
+     }
+
+    // This function allows governance to take unsupported tokens out of the
+    // contract, since this one exists longer than the other pools.
+    // This is in an effort to make someone whole, should they seriously
+    // mess up. There is no guarantee governance will vote to return these.
+    // It also allows for removal of airdropped tokens.
+    function rescueTokens(address _token, uint256 amount, address to)
+        external
+        protected
+    {
+        // only gov
+        require(msg.sender == owner(), "StakingRewards: !governance");
+        // cant take staked asset
+        require(_token != stakingToken, "StakingRewards: stakingToken");
+        // cant take reward asset
+        require(_token != rewardToken, "StakingRewards: rewardToken");
+
+        // transfer to
+        _token.safeTransfer(to, amount);
+    }
+
+    function exit() external {
+        withdraw(_balances[msg.sender]);
+        getReward();
+    }
+
     function lastTimeRewardApplicable() public view returns (uint256) {
         return Math.min(block.timestamp, periodFinish);
     }
@@ -129,28 +174,18 @@ contract StakingRewards is Ownable, ReentrancyGuard {
                 .add(rewards[account]);
     }
 
-    /* stake visibility is public as overriding LPTokenWrapper's stake() function */
-    /* added nonReentrant modifier as calling _stake(): calls token contract */
      function stake(uint256 amount) public nonReentrant updateReward(msg.sender) protected checkStart {
         require(amount > 0, "StakingRewards: cannot stake 0");
         _stake(amount);
         emit Staked(msg.sender, amount);
     }
 
-    /* added nonReentrant modifier as calling _withdraw(): calls token contract */
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) protected checkStart {
         require(amount > 0, "StakingRewards: Cannot withdraw 0");
         _withdraw(amount);
         emit Withdrawn(msg.sender, amount);
     }
 
-    /* added nonReentrant modifier as calling withdraw() and getReward(): these call token contract */
-    function exit() external {
-        withdraw(_balances[msg.sender]);
-        getReward();
-    }
-
-    /* added nonReentrant modifier as calling token contract */
     function getReward() public nonReentrant updateReward(msg.sender) protected checkStart {
         uint256 reward = earned(msg.sender);
         if (reward > 0) {
@@ -163,26 +198,6 @@ contract StakingRewards is Ownable, ReentrancyGuard {
     modifier checkStart(){
         require(block.timestamp >= starttime,"StakingRewards: not start");
         _;
-    }
-
-    // This function allows governance to take unsupported tokens out of the
-    // contract, since this one exists longer than the other pools.
-    // This is in an effort to make someone whole, should they seriously
-    // mess up. There is no guarantee governance will vote to return these.
-    // It also allows for removal of airdropped tokens.
-    function rescueTokens(address _token, uint256 amount, address to)
-        external
-        protected
-    {
-        // only gov
-        require(msg.sender == owner(), "StakingRewards: !governance");
-        // cant take staked asset
-        require(_token != stakingToken, "StakingRewards: stakingToken");
-        // cant take reward asset
-        require(_token != rewardToken, "StakingRewards: rewardToken");
-
-        // transfer to
-        _token.safeTransfer(to, amount);
     }
 
     function totalSupply() public view returns (uint256) {
@@ -205,10 +220,4 @@ contract StakingRewards is Ownable, ReentrancyGuard {
         stakingToken.safeTransfer(msg.sender, _amount);
     }
 
-    function _notifyRewardAmount(uint256 reward) internal updateReward(address(0)) {
-        rewardRate = reward.div(DURATION);
-        lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(DURATION);
-        emit RewardAdded(reward);
-    }
 }

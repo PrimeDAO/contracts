@@ -23,48 +23,52 @@ import "../incentives/StakingRewards.sol";
  * @dev   Enable primeDAO governance to start new yield farming programs.
  */
 contract FarmFactory {
+	string constant ERROR_INCREASE_REWARD            = "FarmFactory: increaseReward failed";
+	string constant ERROR_RESCUE_TOKENS              = "FarmFactory: rescueTokens failed";
 
-    Avatar public avatar;
-    bool   public initialized;
 
-	  event FarmCreated(address newFarm);
-	  event TokenRescued(address farm, address token, address to);
+	Avatar public avatar;
+	bool   public initialized;
 
-    modifier initializer() {
-    	require(!initialized, 					"FarmFactory: contract already initialized");
-    	initialized = true;
-    	_;
-    }
+	event FarmCreated(address newFarm);
+	event TokenRescued(address farm, address token, address to);
+	event RewardIncreased(address farm, uint amount);
 
-    modifier protected() {
-    	require(initialized,					"FarmFactory: contract not initialized");
-    	require(msg.sender == address(avatar),	"FarmFactory: protected operation");
-    	_;
-    }
+	modifier initializer() {
+		require(!initialized, 					"FarmFactory: contract already initialized");
+		initialized = true;
+		_;
+	}
 
-    /**
-      * @dev           Initialize proxy.
-      * @param _avatar The address of the Avatar controlling this contract.
-      */
+	modifier protected() {
+		require(initialized,					"FarmFactory: contract not initialized");
+		require(msg.sender == address(avatar),	"FarmFactory: protected operation");
+		_;
+	}
+
+	/**
+	  * @dev           Initialize proxy.
+	  * @param _avatar The address of the Avatar controlling this contract.
+	  */
 	function initialize(Avatar _avatar) external initializer {
-    	require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
+		require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
 		avatar = _avatar;
 	}
 
-    /**
-      * @dev           			Create new farm.
-      * @param _rewardToken  	Reward token address.
-      * @param _stakingToken 	staking token address.
-      * @param _initreward 		Initial reward.
-      * @param _starttime 		Program start time.
-      * @param _duration 		Program duration.
-      */
+	/**
+	  * @dev           			Create new farm.
+	  * @param _rewardToken  	Reward token address.
+	  * @param _stakingToken 	staking token address.
+	  * @param _initreward 		Initial reward.
+	  * @param _starttime 		Program start time.
+	  * @param _duration 		Program duration.
+	  */
 	function createFarm(
-    	address _rewardToken,
-    	address _stakingToken,
-    	uint256 _initreward,
-    	uint256 _starttime,
-    	uint256 _duration
+		address _rewardToken,
+		address _stakingToken,
+		uint256 _initreward,
+		uint256 _starttime,
+		uint256 _duration
 	)
 	public
 	payable
@@ -75,23 +79,48 @@ contract FarmFactory {
 		address newFarm = _create();
 
 		// transfer rewards to the new farm
-		Controller(
-        avatar.owner())
-        .externalTokenTransfer(IERC20(_rewardToken), newFarm, _initreward, avatar);
+		Controller(avatar.owner())
+			.externalTokenTransfer(
+				IERC20(_rewardToken),
+				newFarm,
+				_initreward,
+				avatar
+		);
 
-        // initialize farm
-        StakingRewards(newFarm).initialize(_rewardToken, _stakingToken, _initreward, _starttime, _duration);
+		// initialize farm
+		StakingRewards(newFarm).initialize(
+			_rewardToken,
+			_stakingToken,
+			_initreward,
+			_starttime,
+			_duration,
+			address(avatar)
+		);
 
-        return newFarm;
+		return newFarm;
 	}
 
-    /**
-      * @dev           			Rescues tokens from an existing farm.
-      * @param _stakingRewards  Existing Staking Rewards contract.
-      * @param _amount		 	Staking token address.
-      * @param _token 			Token address to be rescued.
-      * @param _to 				  Rescue to an address.
-      */
+	function increaseReward(
+		address _farm,
+		uint    _amount
+	)
+	public
+	protected
+	{
+		StakingRewards stakingRewards = StakingRewards(_farm);
+
+		_increaseReward(stakingRewards, _amount);
+
+		emit RewardIncreased(_farm, _amount);
+	}
+
+	/**
+	  * @dev           			Rescues tokens from an existing farm.
+	  * @param _stakingRewards  Existing Staking Rewards contract.
+	  * @param _amount		 	Staking token address.
+	  * @param _token 			Token address to be rescued.
+	  * @param _to 				Rescue to an address.
+	  */
 	function rescueTokens(
 		StakingRewards 	_stakingRewards,
 		uint    		_amount,
@@ -102,38 +131,74 @@ contract FarmFactory {
 	protected
 	{
 		_rescueTokens(_stakingRewards, _amount, _token, _to);
-        emit TokenRescued(address(_stakingRewards), _token, _to);
+		emit TokenRescued(address(_stakingRewards), _token, _to);
 	}
 
-    /* internal helpers functions */
+	/* internal helpers functions */
 
 	function _create() internal returns(address) {
-        StakingRewards _newFarm = new StakingRewards();
-        _newFarm.transferOwnership(address(avatar));
+		StakingRewards _newFarm = new StakingRewards();
+		_newFarm.transferOwnership(address(avatar));
 
-        emit FarmCreated(address(_newFarm));
-        return address(_newFarm);
-    }
+		emit FarmCreated(address(_newFarm));
+		return address(_newFarm);
+	}
 
-  function _rescueTokens(
-  		StakingRewards 	_stakingRewards,
-  		uint    	 	_amount,
-  		address 		_token,
-  		address 		_to
-      ) internal {
-      bool success;
-      Controller controller = Controller(avatar.owner());
+	function _increaseReward(
+		StakingRewards _farm,
+		uint    	   _amount
+	)
+	internal
+	{
+		bool success;
 
-      (success,) = controller.genericCall(
-          address(_stakingRewards),
-          abi.encodeWithSelector(
-              _stakingRewards.rescueTokens.selector,
-              _token,
-              _amount,
-              _to
-          ),
-          avatar,
-          0
-      );
-    }
+		address _rewardToken = _farm.rewardToken();
+		Controller controller = Controller(avatar.owner());
+
+		//transfer tokens to staking rewards contract
+		controller.externalTokenTransfer(
+			IERC20(_rewardToken),
+			address(_farm),
+			_amount,
+			avatar
+		);
+
+		//call notify reward amount
+		(success,) = controller.genericCall(
+			address(_farm),
+			abi.encodeWithSelector(
+				_farm.notifyRewardAmount.selector,
+				_amount
+			),
+			avatar,
+			0
+		);
+
+		require(success, ERROR_INCREASE_REWARD);
+	}
+
+	function _rescueTokens(
+		StakingRewards 	_stakingRewards,
+		uint    	 	_amount,
+		address 		_token,
+		address 		_to
+	)
+	internal
+	{
+		bool success;
+		Controller controller = Controller(avatar.owner());
+
+		(success,) = controller.genericCall(
+			address(_stakingRewards),
+			abi.encodeWithSelector(
+				_stakingRewards.rescueTokens.selector,
+				_token,
+				_amount,
+				_to
+			),
+			avatar,
+			0
+		);
+		require(success, ERROR_RESCUE_TOKENS);
+	}
 }

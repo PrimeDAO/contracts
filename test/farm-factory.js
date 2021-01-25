@@ -36,7 +36,7 @@ contract('FarmFactory', (accounts) => {
     let receipt;
     let newFarm;
     let rewardAmount = toWei('9249.999999999999475712');
-    let rescueAmount = toWei('100'); 
+    let rescueAmount = toWei('100');
 
     let starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
     let durationDays = 7;
@@ -69,11 +69,11 @@ contract('FarmFactory', (accounts) => {
                 stakingToken = await setup.tokens.erc20s[1];
                 rescueToken = await setup.tokens.erc20s[2];
 
-                await rewardToken.transfer(setup.organization.avatar.address, rewardAmount);                
+                await rewardToken.transfer(setup.organization.avatar.address, rewardAmount);
             });
             it('creates a farm', async () => {
 
-                const calldata = helpers.encodeCreateFarm(rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays);
+                const calldata = helpers.encodeCreateFarm(rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
                 const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
@@ -86,7 +86,7 @@ contract('FarmFactory', (accounts) => {
                 newFarm = receipt.args[0];
 
                 // send rescue token to the farm address
-                await rescueToken.transfer(newFarm, rescueAmount);                
+                await rescueToken.transfer(newFarm, rescueAmount);
 
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rescueToken.address, accounts[1]);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);

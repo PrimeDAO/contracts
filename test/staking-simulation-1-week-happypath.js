@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { time } = require('@openzeppelin/test-helpers');
+const { constants, time, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const BigNumber = require('bignumber.js');
 
@@ -81,8 +81,17 @@ contract('Staking: 1 week happypath', (accounts) => {
                     await setup.balancer.pool.transfer(accounts[9], quarterStake);
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, quarterStake, { from: accounts[9] });
 
-                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays);
+                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
+                    const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
+                    const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                    const proposalId = helpers.getNewProposalId(_tx);
+                    const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    setup.data.tx = tx;
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'RewardIncreased', {
+                        farm: setup.incentives.stakingRewards.address,
+                        amount: _initreward
+                    });
                 });
                 it('multiple users stake entire bPrime balance', async () => {
                     expect((await setup.incentives.stakingRewards.rewardPerTokenStored()).toString()).to.equal('0');
@@ -152,7 +161,7 @@ contract('Staking: 1 week happypath', (accounts) => {
             context('» day 7: exit', () => {
                 it('users exit with correct bPrime balances', async () => {
 
-                    await time.increase(time.duration.days(5));
+                    await time.increase(time.duration.days(6));
 
                     await setup.incentives.stakingRewards.exit( {from: accounts[1]} );
                     let bPrimeBalance1 = (await setup.balancer.pool.balanceOf(accounts[1])).toString();
@@ -193,15 +202,8 @@ contract('Staking: 1 week happypath', (accounts) => {
                 it('Contract bPRIME balance == 0', async () => {
                     expect((await setup.balancer.pool.balanceOf(setup.incentives.stakingRewards.address)).toString()).to.equal('0'); // all stake removed
                 });
-                it('reduction in stakingRewards prime balance == ~total reward payout amount', async () => {
+                it('reduction in stakingRewards prime balance > 99.999% of total reward amount', async () => {
                     let remainingPrimeBalance = BigNumber(await setup.tokens.primeToken.balanceOf(setup.incentives.stakingRewards.address));
-
-                    /*
-                    * Remaining token balance is: ~190000 if everyone calls exit() on day 7 (which considering we're using an 18 decimal token is fractional)
-                    *                             ~13213979828042328659724 if everyone calls exit() on day 6
-                    *                             ~26428265542328043366944 if everyone calls exit() on day 5
-                    */
-                    console.log('            remainingPrimeBalance: ' + remainingPrimeBalance.toString() + '/92500000000000002949500');
 
                     let balance = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     let balance2 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[2]));
@@ -214,7 +216,9 @@ contract('Staking: 1 week happypath', (accounts) => {
                     let balance9 = BigNumber(await setup.tokens.primeToken.balanceOf(accounts[9]));
 
                     let payout = BigNumber(balance.plus(balance2).plus(balance3).plus(balance4).plus(balance5).plus(balance6).plus(balance7).plus(balance8).plus(balance9)).toFixed(18);
-                    expect( (BigNumber(_initreward).minus(payout)).toFixed(18) ).to.equal(remainingPrimeBalance.toFixed(18));
+                    expect((BigNumber(_initreward).minus(payout)).toFixed(18)).to.equal(remainingPrimeBalance.toFixed(18));
+                    let rewardFraction = (_initreward/100000);
+                    expect(remainingPrimeBalance.toNumber()).to.be.at.most(rewardFraction); // remaining prime < 0.001% of reward amount
                 });
             });
         });
