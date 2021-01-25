@@ -163,7 +163,7 @@ contract FarmFactory {
 			avatar
 		);
 
-		//call notify reward amount 
+		//call notify reward amount
 		(success,) = controller.genericCall(
 			address(_farm),
 			abi.encodeWithSelector(

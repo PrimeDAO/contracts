@@ -41,6 +41,9 @@ const encodeCreateFarm = (rewardToken, stakingToken, initreward, starttime, dura
 const encodeRescueTokens = (stakingRewards, amount, token, to) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.rescueTokens(stakingRewards, amount, token, to).encodeABI();
 };
+const encodeIncreaseReward = (farm, amount) => {
+  return new web3.eth.Contract(FarmFactory.abi).methods.increaseReward(farm, amount).encodeABI();
+};
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
   /**
    *
@@ -99,6 +102,7 @@ module.exports = {
   encodeUpdateWeight,
   encodeCreateFarm,
   encodeRescueTokens,
+  encodeIncreaseReward,
   encodeJoinPool,
   encodeExitPool,
   getNewProposalId,

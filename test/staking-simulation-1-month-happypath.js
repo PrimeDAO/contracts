@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { time } = require('@openzeppelin/test-helpers');
+const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const BigNumber = require('bignumber.js');
 
@@ -82,9 +82,20 @@ contract('Staking: 1 month happypath', (accounts) => {
                     await setup.balancer.pool.transfer(accounts[9], quarterStake);
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, quarterStake, { from: accounts[9] });
 
-                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays);
-                    await setup.incentives.stakingRewards.notifyRewardAmount(_initreward);
+                    // await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
+                    // await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays);
+                    // await setup.incentives.stakingRewards.notifyRewardAmount(_initreward);
+                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
+                    const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
+                    const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                    const proposalId = helpers.getNewProposalId(_tx);
+                    const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    setup.data.tx = tx;
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'RewardIncreased', {
+                        farm: setup.incentives.stakingRewards.address,
+                        amount: _initreward
+                    });
                 });
                 it('multiple users stake entire bPrime balance', async () => {
                     expect((await setup.incentives.stakingRewards.rewardPerTokenStored()).toString()).to.equal('0');
