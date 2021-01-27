@@ -1,6 +1,9 @@
-# PrimeDAO contracts package
+[![banner](https://i.ibb.co/NWjZc4N/Artboard-44.png)](https://primedao.eth.link/#/)
 
-> 🤖 PrimeDAO Smart contracts
+# 🤖 PrimeDAO Smart Contracts
+[![<ORG_NAME>](https://circleci.com/gh/PrimeDAO/contracts.svg?style=svg)](https://app.circleci.com/pipelines/github/PrimeDAO)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 
 This repo contains the smart contracts making up PrimeDAO, the mission of which is to [facilitate wide adoption of open finance by coordinating and cultivating projects that promote safety, reliability, liquidity, and open access](https://docs.primedao.io/primedao/intro).
 
