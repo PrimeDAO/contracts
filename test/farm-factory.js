@@ -34,6 +34,7 @@ contract('FarmFactory', (accounts) => {
     let stakingToken;
     let rescueToken;
     let receipt;
+    let name;
     let newFarm;
     let rewardAmount = toWei('9249.999999999999475712');
     let rescueAmount = toWei('100');
@@ -65,6 +66,7 @@ contract('FarmFactory', (accounts) => {
         context('» avatar parameter is valid', () => {
             before('!! deploy farm manager', async () => {
                 setup = await deploy(accounts);
+                name = 'newFarm';
                 rewardToken = await setup.tokens.erc20s[0];
                 stakingToken = await setup.tokens.erc20s[1];
                 rescueToken = await setup.tokens.erc20s[2];
@@ -73,7 +75,7 @@ contract('FarmFactory', (accounts) => {
             });
             it('creates a farm', async () => {
 
-                const calldata = helpers.encodeCreateFarm(rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
+                const calldata = helpers.encodeCreateFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
                 const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);

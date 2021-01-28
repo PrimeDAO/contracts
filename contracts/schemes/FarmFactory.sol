@@ -34,6 +34,13 @@ contract FarmFactory {
 	event TokenRescued(address farm, address token, address to);
 	event RewardIncreased(address farm, uint amount);
 
+    struct Farm {
+        string 	name;
+        address pool;
+    }
+
+    mapping(address=>Farm) public farms;
+
 	modifier initializer() {
 		require(!initialized, 					"FarmFactory: contract already initialized");
 		initialized = true;
@@ -57,6 +64,7 @@ contract FarmFactory {
 
 	/**
 	  * @dev           			Create new farm.
+	  * @param _name  			Farm name.
 	  * @param _rewardToken  	Reward token address.
 	  * @param _stakingToken 	staking token address.
 	  * @param _initreward 		Initial reward.
@@ -64,11 +72,12 @@ contract FarmFactory {
 	  * @param _duration 		Program duration.
 	  */
 	function createFarm(
-		address _rewardToken,
-		address _stakingToken,
-		uint256 _initreward,
-		uint256 _starttime,
-		uint256 _duration
+		string memory _name,
+		address 	  _rewardToken,
+		address 	  _stakingToken,
+		uint256 	  _initreward,
+		uint256 	  _starttime,
+		uint256 	  _duration
 	)
 	public
 	payable
@@ -77,6 +86,9 @@ contract FarmFactory {
 	{
 		// create new farm
 		address newFarm = _create();
+
+		farms[newFarm].name = _name;
+		farms[newFarm].pool = _stakingToken;
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())

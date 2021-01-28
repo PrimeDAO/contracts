@@ -35,8 +35,8 @@ const encodeExitPool = (poolAmountIn, minAmountsOut) => {
 const encodeUpdateWeight = (token, newWeight) => {
   return new web3.eth.Contract(BalancerProxy.abi).methods.updateWeight(token, newWeight).encodeABI();
 };
-const encodeCreateFarm = (rewardToken, stakingToken, initreward, starttime, duration) => {
-  return new web3.eth.Contract(FarmFactory.abi).methods.createFarm(rewardToken, stakingToken, initreward, starttime, duration).encodeABI();
+const encodeCreateFarm = (name, rewardToken, stakingToken, initreward, starttime, duration) => {
+  return new web3.eth.Contract(FarmFactory.abi).methods.createFarm(name, rewardToken, stakingToken, initreward, starttime, duration).encodeABI();
 };
 const encodeRescueTokens = (stakingRewards, amount, token, to) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.rescueTokens(stakingRewards, amount, token, to).encodeABI();
