@@ -38,6 +38,7 @@ contract('StakingRewards', (accounts) => {
     let stakeAmount;
     let halfStake;
     let rewardAmount;
+    let _name = 'newFarm';
     let _initreward = toWei('9249.999999999999475712');
     let _badInitReward;
     let _starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
@@ -53,7 +54,7 @@ contract('StakingRewards', (accounts) => {
                 await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
             });
             it('it initializes contract', async () => {
-                await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
             });
         });
         context('» deploying account is owner', () => {
@@ -74,7 +75,7 @@ contract('StakingRewards', (accounts) => {
                 setup.data.incentives = await StakingRewards.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.data.incentives.initialize(constants.ZERO_ADDRESS, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address),
+                await expectRevert(setup.data.incentives.initialize(_name, constants.ZERO_ADDRESS, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address),
                     'StakingRewards: rewardToken cannot be null');
             });
         });
@@ -83,7 +84,7 @@ contract('StakingRewards', (accounts) => {
                 setup.data.incentives = await StakingRewards.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.data.incentives.initialize(setup.tokens.primeToken.address, constants.ZERO_ADDRESS, _initreward, _starttime, _durationDays, setup.organization.avatar.address),
+                await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, constants.ZERO_ADDRESS, _initreward, _starttime, _durationDays, setup.organization.avatar.address),
                     'StakingRewards: stakingToken cannot be null');
             });
         });
@@ -92,7 +93,7 @@ contract('StakingRewards', (accounts) => {
                 setup.data.incentives = await StakingRewards.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.data.incentives.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, 0, _starttime, _durationDays, setup.organization.avatar.address),
+                await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, 0, _starttime, _durationDays, setup.organization.avatar.address),
                     'StakingRewards: initreward cannot be null');
             });
         });
@@ -101,7 +102,7 @@ contract('StakingRewards', (accounts) => {
                 setup.data.incentives = await StakingRewards.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.data.incentives.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, 0, _durationDays, setup.organization.avatar.address),
+                await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, 0, _durationDays, setup.organization.avatar.address),
                     'StakingRewards: starttime cannot be null');
             });
         });
@@ -110,7 +111,7 @@ contract('StakingRewards', (accounts) => {
                 setup.data.incentives = await StakingRewards.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.data.incentives.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, 0, setup.organization.avatar.address),
+                await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, 0, setup.organization.avatar.address),
                     'StakingRewards: duration cannot be null');
             });
         });
@@ -118,7 +119,7 @@ contract('StakingRewards', (accounts) => {
     context('» contract is already initialized', () => {
         // contract has already been initialized during setup
         it('it reverts', async () => {
-            await expectRevert(setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address),
+            await expectRevert(setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address),
                 'StakingRewards: contract already initialized');
         });
     });
@@ -142,7 +143,7 @@ contract('StakingRewards', (accounts) => {
             context('» stake parameter is not valid', () => {
                 before('!! fund & initialize contract', async () => {
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                 });
                 it('it reverts', async () => {
                     await expectRevert(
@@ -189,7 +190,7 @@ contract('StakingRewards', (accounts) => {
             context('» withdraw parameter is not valid: too low', () => {
                 before('!! fund & initialize contract', async () => {
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                 });
                 it('it reverts', async () => {
                     await expectRevert(
@@ -248,7 +249,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» getReward param valid: rewards 0', async () => {
                 before('!! fund & initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                     // transfer reward tokens to avatar for increaseReward() call
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     // call increaseReward() via farmManager
@@ -316,7 +317,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» cannot exit with 0', async () => {
                 before('!! fund & initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
                     const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
@@ -391,7 +392,7 @@ contract('StakingRewards', (accounts) => {
             context('» rescueTokens token parameter is not valid: governance', () => {
                 before('!! fund & initialize contract', async () => {
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                 });
                 it('it reverts', async () => {
                     await expectRevert(
@@ -437,7 +438,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» periodFinish is 0 on deployment', async () => {
                 before('!! initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                 });
                 it('returns 0', async () => {
                     let periodFinish = (await setup.incentives.stakingRewards.periodFinish()).toString();
@@ -489,7 +490,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» reverts when caller != rewardDistribution', async () => {
                 before('!! initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
 
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _badInitReward);
@@ -558,7 +559,7 @@ contract('StakingRewards', (accounts) => {
         context('» generics', () => {
             before('!! deploy setup & initialize contract', async () => {
                 setup = await deploy(accounts);
-                await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
             });
             context('» only deployer can change variable', async () => {
                 it(' owner can change setRewardDistribution', async () => {
@@ -578,7 +579,7 @@ contract('StakingRewards', (accounts) => {
             before('!! deploy setup & initialize contract', async () => {
                 let _badStart = ((await time.latest()).toNumber()) + 100000;
                 setup = await deploy(accounts);
-                await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _badStart, _durationDays, setup.organization.avatar.address);
+                await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _badStart, _durationDays, setup.organization.avatar.address);
                 await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                 const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
@@ -635,7 +636,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» balanceOf', async () => {
                 before('!! fund & initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
                     const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
@@ -676,7 +677,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» totalSupply', async () => {
                 before('!! fund & initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
                     const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);

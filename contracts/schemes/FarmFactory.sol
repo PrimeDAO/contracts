@@ -30,16 +30,9 @@ contract FarmFactory {
 	Avatar public avatar;
 	bool   public initialized;
 
-	event FarmCreated(address newFarm);
+	event FarmCreated(address indexed newFarm, address indexed pool);
 	event TokenRescued(address farm, address token, address to);
 	event RewardIncreased(address farm, uint amount);
-
-    struct Farm {
-        string 	name;
-        address pool;
-    }
-
-    mapping(address=>Farm) public farms;
 
 	modifier initializer() {
 		require(!initialized, 					"FarmFactory: contract already initialized");
@@ -87,9 +80,6 @@ contract FarmFactory {
 		// create new farm
 		address newFarm = _create();
 
-		farms[newFarm].name = _name;
-		farms[newFarm].pool = _stakingToken;
-
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
 			.externalTokenTransfer(
@@ -101,6 +91,7 @@ contract FarmFactory {
 
 		// initialize farm
 		StakingRewards(newFarm).initialize(
+			_name,
 			_rewardToken,
 			_stakingToken,
 			_initreward,
@@ -108,6 +99,8 @@ contract FarmFactory {
 			_duration,
 			address(avatar)
 		);
+
+		emit FarmCreated(newFarm, _stakingToken);
 
 		return newFarm;
 	}
@@ -152,7 +145,6 @@ contract FarmFactory {
 		StakingRewards _newFarm = new StakingRewards();
 		_newFarm.transferOwnership(address(avatar));
 
-		emit FarmCreated(address(_newFarm));
 		return address(_newFarm);
 	}
 

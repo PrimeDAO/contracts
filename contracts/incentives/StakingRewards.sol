@@ -26,10 +26,12 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for address;
 
+    string  public name;
+
     address public rewardToken;
     address public stakingToken;
 
-    bool   public initialized;
+    bool    public initialized;
 
     modifier initializer() {
         require(!initialized, "StakingRewards: contract already initialized");
@@ -43,19 +45,21 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     }
 
     /**
-      * @dev           Initialize contract.
-      * @param _rewardToken  The address
-      * @param _stakingToken The address
-      * @param _initreward Initial reward
-      * @param _starttime Start time
+      * @dev                 Initialize contract.
+      * @param _name         Farm name
+      * @param _rewardToken  Reward token contract address
+      * @param _stakingToken Staking token contract address
+      * @param _initreward   Initial reward
+      * @param _starttime    Start time
       */
     function initialize(
-      address _rewardToken,
-      address _stakingToken,
-      uint256 _initreward,
-      uint256 _starttime,
-      uint256 _duration,
-      address _avatar
+      string calldata _name,
+      address         _rewardToken,
+      address         _stakingToken,
+      uint256         _initreward,
+      uint256         _starttime,
+      uint256         _duration,
+      address         _avatar
     ) external initializer {
         require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be null");
         require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be null");
@@ -63,6 +67,7 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         require(_starttime != 0,                              "StakingRewards: starttime cannot be null");
         require(_duration != 0,                               "StakingRewards: duration cannot be null");
 
+        name = _name;
         rewardToken  = _rewardToken;
         stakingToken = _stakingToken;
         initreward = _initreward;
