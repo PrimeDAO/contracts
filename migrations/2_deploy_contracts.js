@@ -26,12 +26,14 @@ module.exports = async function (deployer, network) {
         await deployer.deploy(LockingToken4Reputation);
         await deployer.deploy(BalancerProxy);
         await deployer.deploy(VestingFactory);
+        await deployer.deploy(RepRedeemer);
 
         contracts.mainnet.StakingRewards = StakingRewards.address;
         contracts.mainnet.PriceOracle = PriceOracle.address;
         contracts.mainnet.LockingToken4Reputation = LockingToken4Reputation.address;
         contracts.mainnet.BalancerProxy = BalancerProxy.address;
         contracts.mainnet.VestingFactory = VestingFactory.address;
+        contracts.mainnet.RepRedeemer = RepRedeemer.address;
 
         // overwrite contranctAddresses.json
         fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {

@@ -39,6 +39,7 @@
 		"VestingFactory":"",
 		"PrimeToken":"0xE59064a8185Ed1Fca1D17999621eFedfab4425c9",
 		"EnsRegistry":"0x314159265dd8dbb310642f98f50c066173c1259b",
-		"EnsPublicResolver":"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41"
+		"EnsPublicResolver":"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
+		"RepRedeemer":""
 		}
 }
