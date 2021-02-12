@@ -25,6 +25,7 @@ import "../incentives/StakingRewards.sol";
 contract FarmFactory {
 	string constant ERROR_INCREASE_REWARD            = "FarmFactory: increaseReward failed";
 	string constant ERROR_RESCUE_TOKENS              = "FarmFactory: rescueTokens failed";
+	string constant ERROR_CREATE_FARM                = "FarmFactory: create failed";
 
 
 	Avatar public avatar;
@@ -80,6 +81,9 @@ contract FarmFactory {
 		// create new farm
 		address newFarm = _create();
 
+		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _initreward,
+			     ERROR_CREATE_FARM);
+
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
 			.externalTokenTransfer(
@@ -112,6 +116,7 @@ contract FarmFactory {
 	public
 	protected
 	{
+
 		StakingRewards stakingRewards = StakingRewards(_farm);
 
 		_increaseReward(stakingRewards, _amount);
@@ -155,10 +160,11 @@ contract FarmFactory {
 	internal
 	{
 		bool success;
-
 		address _rewardToken = _farm.rewardToken();
-		Controller controller = Controller(avatar.owner());
+		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
+			 	 ERROR_INCREASE_REWARD);
 
+		Controller controller = Controller(avatar.owner());
 		//transfer tokens to staking rewards contract
 		controller.externalTokenTransfer(
 			IERC20(_rewardToken),
@@ -191,6 +197,8 @@ contract FarmFactory {
 	{
 		bool success;
 		Controller controller = Controller(avatar.owner());
+		require( IERC20(_token).balanceOf(address(_stakingRewards)) >= _amount,
+			ERROR_RESCUE_TOKENS);
 
 		(success,) = controller.genericCall(
 			address(_stakingRewards),
