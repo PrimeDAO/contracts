@@ -78,11 +78,11 @@ contract FarmFactory {
 	protected
 	returns(address)
 	{
+		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _initreward,
+			ERROR_CREATE_FARM);
+
 		// create new farm
 		address newFarm = _create();
-
-		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _initreward,
-			     ERROR_CREATE_FARM);
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
@@ -161,6 +161,8 @@ contract FarmFactory {
 	{
 		bool success;
 		address _rewardToken = _farm.rewardToken();
+		uint oldBalance = IERC20(_rewardToken).balanceOf(address(_farm));
+
 		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
 			 	 ERROR_INCREASE_REWARD);
 
@@ -178,13 +180,11 @@ contract FarmFactory {
 			address(_farm),
 			abi.encodeWithSelector(
 				_farm.notifyRewardAmount.selector,
-				_amount
+				_amount + oldBalance
 			),
 			avatar,
 			0
 		);
-
-		require(success, ERROR_INCREASE_REWARD);
 	}
 
 	function _rescueTokens(

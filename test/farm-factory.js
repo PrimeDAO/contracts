@@ -78,6 +78,7 @@ contract('FarmFactory', (accounts) => {
 
                 await rewardToken.transfer(setup.organization.avatar.address, rewardAmount);
             });
+
             it('creates a farm', async () => {
 
                 const calldata = helpers.encodeCreateFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
@@ -110,6 +111,11 @@ contract('FarmFactory', (accounts) => {
                 await expectEvent.notEmitted(setup.data.tx, setup.farmFactory, 'FarmCreated', {});
                 expect(BigInt(balanceBefore)).to.equal(BigInt(balance));
             });
+
+
+
+
+
             it('fails to increase a reward because of low balance', async () => {
                 newFarm = receipt.args[0];
 
@@ -140,7 +146,25 @@ contract('FarmFactory', (accounts) => {
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'RewardIncreased', {});
                 expect(BigInt(balance)).to.equal(BigInt(balanceBefore) + BigInt(stakingAmount));
             });
-            it('fails to rescue tokens, as asked for more then staked', async () => {
+
+
+
+            it('fails to rescue tokens, because asked for more then staked', async () => {
+
+                await rescueToken.transfer(newFarm, rescueAmount);
+                const balanceBefore = await rescueToken.balanceOf(newFarm);
+                const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount+100000 , rescueToken.address, accounts[1]);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                // store data
+                setup.data.tx = tx;
+
+                const balance = await rescueToken.balanceOf(newFarm);
+                await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
+                expect(BigInt(balance)).to.equal(BigInt(balanceBefore));
+            });
+            it('fails to rescue tokens, because asked to rescue rewardTokens', async () => {
                 const balanceBefore = await rewardToken.balanceOf(newFarm);
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rewardToken.address, accounts[1]);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
@@ -155,7 +179,6 @@ contract('FarmFactory', (accounts) => {
             });
             it('rescues tokens', async () => {
                 // send rescue token to the farm address
-                await rescueToken.transfer(newFarm, rescueAmount);
                 const balanceBefore = await rescueToken.balanceOf(newFarm);
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rescueToken.address, accounts[1]);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
