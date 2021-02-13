@@ -529,6 +529,18 @@ contract('StakingRewards', (accounts) => {
                     });
                     expect(rewardBefore).to.not.equal(await setup.incentives.stakingRewards.rewardRate());
                 });
+                it('reverts because of too high reward', async () => {
+                    await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
+                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, rewardAmount);
+                    await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
+                    let rewardBefore = await setup.incentives.stakingRewards.rewardRate();
+
+                    await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
+                    await expectRevert(setup.incentives.stakingRewards.notifyRewardAmount(rewardBefore+1000000000000000, { from: setup.organization.avatar.address}),
+                        "StakingRewards: Provided reward too high");
+                    const reward =  await setup.incentives.stakingRewards.rewardRate();
+                    expect(BigInt(reward)).to.equal(BigInt(rewardBefore));
+                });
             });
             context('updates reward : block.timestamp < periodFinish', async () => {
                 before('!! setup', async () => {
