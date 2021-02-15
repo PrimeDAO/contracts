@@ -108,7 +108,7 @@ contract('FarmFactory', (accounts) => {
                 setup.data.tx = tx;
                 const balance = await rewardToken.balanceOf(setup.organization.avatar.address);
                 await expectEvent.notEmitted(setup.data.tx, setup.farmFactory, 'FarmCreated', {});
-                expect(BigInt(balanceBefore)).to.equal(BigInt(balance));
+                expect(Number(balanceBefore)).to.equal(Number(balance));
             });
 
 
@@ -128,7 +128,7 @@ contract('FarmFactory', (accounts) => {
                 // store data
                 setup.data.tx = tx;
                 await expectEvent.notEmitted(setup.data.tx, 'RewardIncreased');
-                expect(BigInt(balance)).to.equal(BigInt(balanceBefore));
+                expect(Number(balance)).to.equal(Number(balanceBefore));
             });
             it('increases a reward', async () => {
                 const balanceBefore = await rewardToken.balanceOf(newFarm);
@@ -143,7 +143,7 @@ contract('FarmFactory', (accounts) => {
                 setup.data.tx = tx;
                 const balance = await rewardToken.balanceOf(newFarm);
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'RewardIncreased', {});
-                expect(BigInt(balance)).to.equal(BigInt(balanceBefore) + BigInt(stakingAmount));
+                expect(Number(balance)).to.equal(Number(balanceBefore) + Number(stakingAmount));
             });
 
 
@@ -161,7 +161,7 @@ contract('FarmFactory', (accounts) => {
 
                 const balance = await rescueToken.balanceOf(newFarm);
                 await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
-                expect(BigInt(balance)).to.equal(BigInt(balanceBefore));
+                expect(Number(balance)).to.equal(Number(balanceBefore));
             });
             it('fails to rescue tokens, because asked to rescue rewardTokens', async () => {
                 const balanceBefore = await rewardToken.balanceOf(newFarm);
@@ -174,7 +174,7 @@ contract('FarmFactory', (accounts) => {
 
                 const balance = await rewardToken.balanceOf(newFarm);
                 await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
-                expect(BigInt(balance)).to.equal(BigInt(balanceBefore));
+                expect(Number(balance)).to.equal(Number(balanceBefore));
             });
             it('rescues tokens', async () => {
                 // send rescue token to the farm address
@@ -188,7 +188,7 @@ contract('FarmFactory', (accounts) => {
 
                 const balance = await rescueToken.balanceOf(newFarm);
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'TokenRescued', {});
-                expect(BigInt(balance)).to.equal(BigInt(balanceBefore)-BigInt(rescueAmount));
+                expect(Number(balance)).to.equal(Number(balanceBefore)-Number(rescueAmount));
             });
 
         });

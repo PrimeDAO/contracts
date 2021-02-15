@@ -23,6 +23,9 @@ import "../incentives/StakingRewards.sol";
  * @dev   Enable primeDAO governance to start new yield farming programs.
  */
 contract FarmFactory {
+
+	using SafeMath for uint256;
+
 	string constant ERROR_INCREASE_REWARD            = "FarmFactory: increaseReward failed";
 	string constant ERROR_RESCUE_TOKENS              = "FarmFactory: rescueTokens failed";
 	string constant ERROR_CREATE_FARM                = "FarmFactory: create failed";
@@ -180,7 +183,7 @@ contract FarmFactory {
 			address(_farm),
 			abi.encodeWithSelector(
 				_farm.notifyRewardAmount.selector,
-				_amount + oldBalance
+				_amount.add(oldBalance)
 			),
 			avatar,
 			0
