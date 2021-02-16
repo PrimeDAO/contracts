@@ -285,12 +285,12 @@ contract('StakingRewards', (accounts) => {
                     await setup.incentives.stakingRewards.stake(stakeAmount, { from: accounts[1] });
                     // fast-forward
                     await time.increase(time.duration.days(2));
-                    let earned = BigInt(await setup.incentives.stakingRewards.earned(accounts[1]));
+                    let earned = Number(await setup.incentives.stakingRewards.earned(accounts[1]));
                     let tx = await setup.incentives.stakingRewards.getReward( { from: accounts[1] } );
                     setup.data.tx = tx;
 
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'RewardPaid');
-                    let balance = BigInt(await setup.tokens.primeToken.balanceOf(accounts[1]));
+                    let balance = Number(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     expect(earned).to.equal(balance);
                 });
             });
@@ -358,12 +358,12 @@ contract('StakingRewards', (accounts) => {
                     expect((await setup.tokens.primeToken.balanceOf(accounts[1])).toString()).to.equal('0');
                     await time.increase(time.duration.days(2));
 
-                    let rewardEarned = BigInt(await setup.incentives.stakingRewards.earned(accounts[1]));
+                    let rewardEarned = Number(await setup.incentives.stakingRewards.earned(accounts[1]));
                     let tx = await setup.incentives.stakingRewards.exit( {from: accounts[1] });
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'Withdrawn');
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'RewardPaid');
-                    let balance = BigInt(await setup.tokens.primeToken.balanceOf(accounts[1]));
+                    let balance = Number(await setup.tokens.primeToken.balanceOf(accounts[1]));
                     expect(rewardEarned).to.equal(balance);
                     expect((await setup.balancer.pool.balanceOf(setup.incentives.stakingRewards.address)).toString()).to.equal(toWei('0'));
                     expect((await setup.balancer.pool.balanceOf(accounts[1])).toString()).to.equal(stakeAmount);
@@ -528,6 +528,18 @@ contract('StakingRewards', (accounts) => {
                         amount: _initreward
                     });
                     expect(rewardBefore).to.not.equal(await setup.incentives.stakingRewards.rewardRate());
+                });
+                it('reverts because of too high reward', async () => {
+                    await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
+                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, rewardAmount);
+                    await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
+                    let rewardBefore = await setup.incentives.stakingRewards.rewardRate();
+
+                    await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
+                    await expectRevert(setup.incentives.stakingRewards.notifyRewardAmount(rewardBefore+1000000000000000, { from: setup.organization.avatar.address}),
+                        "StakingRewards: Provided reward too high");
+                    const reward =  await setup.incentives.stakingRewards.rewardRate();
+                    expect(Number(reward)).to.equal(Number(rewardBefore));
                 });
             });
             context('updates reward : block.timestamp < periodFinish', async () => {

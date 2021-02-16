@@ -38,6 +38,7 @@ contract('FarmFactory', (accounts) => {
     let newFarm;
     let rewardAmount = toWei('9249.999999999999475712');
     let rescueAmount = toWei('100');
+    let stakingAmount = toWei('100');
 
     let starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
     let durationDays = 7;
@@ -51,6 +52,9 @@ contract('FarmFactory', (accounts) => {
             it('it initializes farm manager', async () => {
                 expect(await setup.farmFactory.initialized()).to.equal(true);
                 expect(await setup.farmFactory.avatar()).to.equal(setup.organization.avatar.address);
+            });
+            it('it reverts', async () => {
+                await expectRevert(setup.farmFactory.initialize(setup.organization.avatar.address), 'FarmFactory: contract already initialized');
             });
         });
         context('» avatar parameter is not valid', () => {
@@ -73,6 +77,7 @@ contract('FarmFactory', (accounts) => {
 
                 await rewardToken.transfer(setup.organization.avatar.address, rewardAmount);
             });
+
             it('creates a farm', async () => {
 
                 const calldata = helpers.encodeCreateFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
@@ -81,15 +86,99 @@ contract('FarmFactory', (accounts) => {
                 const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                 // store data
                 setup.data.tx = tx;
-
                 receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'FarmCreated', {});
             });
-            it('rescues tokens', async () => {
+            it('fails to run create on uninitialized farm', async () => {
+                const farmFactory = await FarmFactory.new();
+                await expectRevert( farmFactory.createFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays),
+                    'FarmFactory: contract not initialized');
+            });
+            it('fails to create a farm not using avatar', async () => {
+
+                await expectRevert( setup.farmFactory.createFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays),
+                    'FarmFactory: protected operation');
+            });
+            it('fails to create a farm because of low balance', async () => {
+                const balanceBefore = await rewardToken.balanceOf(setup.organization.avatar.address);
+                const calldata = helpers.encodeCreateFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                // store data
+                setup.data.tx = tx;
+                const balance = await rewardToken.balanceOf(setup.organization.avatar.address);
+                await expectEvent.notEmitted(setup.data.tx, setup.farmFactory, 'FarmCreated', {});
+                expect(Number(balanceBefore)).to.equal(Number(balance));
+            });
+
+
+
+
+
+            it('fails to increase a reward because of low balance', async () => {
                 newFarm = receipt.args[0];
 
-                // send rescue token to the farm address
-                await rescueToken.transfer(newFarm, rescueAmount);
+                const balanceBefore = await rewardToken.balanceOf(newFarm);
+                const calldata = helpers.encodeIncreaseReward(newFarm, stakingAmount);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, accounts[1]);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0,  constants.ZERO_ADDRESS);
 
+                const balance = await rewardToken.balanceOf(newFarm);
+                // store data
+                setup.data.tx = tx;
+                await expectEvent.notEmitted(setup.data.tx, 'RewardIncreased');
+                expect(Number(balance)).to.equal(Number(balanceBefore));
+            });
+            it('increases a reward', async () => {
+                const balanceBefore = await rewardToken.balanceOf(newFarm);
+                await rewardToken.transfer((setup.organization.avatar.address), stakingAmount);
+
+                const calldata = helpers.encodeIncreaseReward(newFarm, stakingAmount);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, accounts[1]);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0,  constants.ZERO_ADDRESS);
+
+                // store data
+                setup.data.tx = tx;
+                const balance = await rewardToken.balanceOf(newFarm);
+                await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'RewardIncreased', {});
+                expect(Number(balance)).to.equal(Number(balanceBefore) + Number(stakingAmount));
+            });
+
+
+
+            it('fails to rescue tokens, because asked for more then staked', async () => {
+
+                await rescueToken.transfer(newFarm, rescueAmount);
+                const balanceBefore = await rescueToken.balanceOf(newFarm);
+                const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount+100000 , rescueToken.address, accounts[1]);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                // store data
+                setup.data.tx = tx;
+
+                const balance = await rescueToken.balanceOf(newFarm);
+                await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
+                expect(Number(balance)).to.equal(Number(balanceBefore));
+            });
+            it('fails to rescue tokens, because asked to rescue rewardTokens', async () => {
+                const balanceBefore = await rewardToken.balanceOf(newFarm);
+                const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rewardToken.address, accounts[1]);
+                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const proposalId = helpers.getNewProposalId(_tx);
+                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                // store data
+                setup.data.tx = tx;
+
+                const balance = await rewardToken.balanceOf(newFarm);
+                await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
+                expect(Number(balance)).to.equal(Number(balanceBefore));
+            });
+            it('rescues tokens', async () => {
+                // send rescue token to the farm address
+                const balanceBefore = await rescueToken.balanceOf(newFarm);
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rescueToken.address, accounts[1]);
                 const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
@@ -97,8 +186,11 @@ contract('FarmFactory', (accounts) => {
                 // store data
                 setup.data.tx = tx;
 
+                const balance = await rescueToken.balanceOf(newFarm);
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'TokenRescued', {});
+                expect(Number(balance)).to.equal(Number(balanceBefore)-Number(rescueAmount));
             });
+
         });
     });
 

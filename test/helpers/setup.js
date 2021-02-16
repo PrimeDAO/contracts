@@ -14,7 +14,7 @@ const FarmFactory = artifacts.require('./FarmFactory.sol');
 const ConfigurableRightsPool = artifacts.require('ConfigurableRightsPool');
 const BPool = artifacts.require('BPool');
 const BFactory = artifacts.require('BFactory');
-const CRPFactory = artifacts.require('CRPFactory')
+const CRPFactory = artifacts.require('CRPFactory');
 const BalancerSafeMath = artifacts.require('BalancerSafeMath');
 const RightsManager = artifacts.require('RightsManager');
 const SmartPoolManager = artifacts.require('SmartPoolManager');
@@ -42,240 +42,240 @@ const PRIME_SUPPLY = toWei('21000000');
 const REPUTATION = '1000';
 
 const deployOrganization = async (daoCreator, daoCreatorOwner, founderToken, founderReputation, cap = 0) => {
-  var org = {};
-  var tx = await daoCreator.forgeOrg('primeDAO', 'PrimeDAO token', 'PDAO', daoCreatorOwner, founderToken, founderReputation, cap, { gas: constants.ARC_GAS_LIMIT });
-  assert.equal(tx.logs.length, 1);
-  assert.equal(tx.logs[0].event, 'NewOrg');
-  var avatarAddress = tx.logs[0].args._avatar;
-  org.avatar = await Avatar.at(avatarAddress);
-  var tokenAddress = await org.avatar.nativeToken();
-  org.token = await DAOToken.at(tokenAddress);
-  var reputationAddress = await org.avatar.nativeReputation();
-  org.reputation = await Reputation.at(reputationAddress);
-  return org;
+    var org = {};
+    var tx = await daoCreator.forgeOrg('primeDAO', 'PrimeDAO token', 'PDAO', daoCreatorOwner, founderToken, founderReputation, cap, { gas: constants.ARC_GAS_LIMIT });
+    assert.equal(tx.logs.length, 1);
+    assert.equal(tx.logs[0].event, 'NewOrg');
+    var avatarAddress = tx.logs[0].args._avatar;
+    org.avatar = await Avatar.at(avatarAddress);
+    var tokenAddress = await org.avatar.nativeToken();
+    org.token = await DAOToken.at(tokenAddress);
+    var reputationAddress = await org.avatar.nativeReputation();
+    org.reputation = await Reputation.at(reputationAddress);
+    return org;
 };
 
 const setAbsoluteVote = async (voteOnBehalf = constants.ZERO_ADDRESS, precReq = 50) => {
-  var votingMachine = {};
-  votingMachine.absoluteVote = await AbsoluteVote.new();
-  // register some parameters
-  await votingMachine.absoluteVote.setParameters(precReq, voteOnBehalf);
-  votingMachine.params = await votingMachine.absoluteVote.getParametersHash(precReq, voteOnBehalf);
-  return votingMachine;
+    var votingMachine = {};
+    votingMachine.absoluteVote = await AbsoluteVote.new();
+    // register some parameters
+    await votingMachine.absoluteVote.setParameters(precReq, voteOnBehalf);
+    votingMachine.params = await votingMachine.absoluteVote.getParametersHash(precReq, voteOnBehalf);
+    return votingMachine;
 };
 
 const initialize = async (root) => {
-  const setup = {};
-  setup.root = root;
-  setup.data = {};
-  setup.data.balances = [];
-  return setup;
+    const setup = {};
+    setup.root = root;
+    setup.data = {};
+    setup.data.balances = [];
+    return setup;
 };
 
 const tokens = async (setup) => {
-  const erc20s = [await ERC20.new('DAI Stablecoin', 'DAI', 18), await ERC20.new('USDC Stablecoin', 'USDC', 15), await ERC20.new('USDT Stablecoin', 'USDT', 18)];
+    const erc20s = [await ERC20.new('DAI Stablecoin', 'DAI', 18), await ERC20.new('USDC Stablecoin', 'USDC', 15), await ERC20.new('USDT Stablecoin', 'USDT', 18)];
 
-  const primeToken = await PrimeToken.new(PRIME_SUPPLY, PRIME_CAP, setup.root);
+    const primeToken = await PrimeToken.new(PRIME_SUPPLY, PRIME_CAP, setup.root);
 
-  return { erc20s, primeToken};
+    return { erc20s, primeToken};
 };
 
 const incentives = async (setup) => {
-  const stakingRewards = await StakingRewards.new();
+    const stakingRewards = await StakingRewards.new();
 
-  return { stakingRewards };
+    return { stakingRewards };
 };
 
 const repRedeemer = async (setup) => {
-  const repRedeemer = await RepRedeemer.new();
+    const repRedeemer = await RepRedeemer.new();
 
-  return repRedeemer;
+    return repRedeemer;
 };
 
 const farmFactory = async (setup) => {
-  const farmFactory = await FarmFactory.new();
-  let tx = await farmFactory.initialize(setup.organization.avatar.address);
+    const farmFactory = await FarmFactory.new();
+    let tx = await farmFactory.initialize(setup.organization.avatar.address);
 
-  return farmFactory;
+    return farmFactory;
 };
 
 const balancer = async (setup) => {
-  // deploy balancer infrastructure
-  const bfactory = await BFactory.new();
+    // deploy balancer infrastructure
+    const bfactory = await BFactory.new();
 
-  const balancerSafeMath = await BalancerSafeMath.new();
-  const rightsManager = await RightsManager.new();
-  const smartPoolManager = await SmartPoolManager.new();
+    const balancerSafeMath = await BalancerSafeMath.new();
+    const rightsManager = await RightsManager.new();
+    const smartPoolManager = await SmartPoolManager.new();
 
-  await CRPFactory.link("BalancerSafeMath", balancerSafeMath.address);
-  await CRPFactory.link("RightsManager", rightsManager.address);
-  await CRPFactory.link("SmartPoolManager", smartPoolManager.address);
+    await CRPFactory.link("BalancerSafeMath", balancerSafeMath.address);
+    await CRPFactory.link("RightsManager", rightsManager.address);
+    await CRPFactory.link("SmartPoolManager", smartPoolManager.address);
 
-  const crpFactory = await CRPFactory.new();
+    const crpFactory = await CRPFactory.new();
 
-  const usdc = await setup.tokens.erc20s[1];
-  const dai = await setup.tokens.erc20s[0];
-  const primetoken = await setup.tokens.primeToken;
-  const usdt = await setup.tokens.erc20s[2];
+    const usdc = await setup.tokens.erc20s[1];
+    const dai = await setup.tokens.erc20s[0];
+    const primetoken = await setup.tokens.primeToken;
+    const usdt = await setup.tokens.erc20s[2];
 
-  const USDC = await usdc.address;
-  const DAI = await dai.address;
-  const PRIMEToken = await primetoken.address;
+    const USDC = await usdc.address;
+    const DAI = await dai.address;
+    const PRIMEToken = await primetoken.address;
 
-  const tokenAddresses = [PRIMEToken, DAI, USDC];
+    const tokenAddresses = [PRIMEToken, DAI, USDC];
 
-  const swapFee = 10 ** 15;
-  const startWeights = [toWei('8'), toWei('1'), toWei('1')];
-  const startBalances = [toWei('10000'), toWei('5000'), toWei('5000')];
-  const SYMBOL = 'BPOOL';
-  const NAME = 'Prime Balancer Pool Token';
+    const swapFee = 10 ** 15;
+    const startWeights = [toWei('8'), toWei('1'), toWei('1')];
+    const startBalances = [toWei('10000'), toWei('5000'), toWei('5000')];
+    const SYMBOL = 'BPOOL';
+    const NAME = 'Prime Balancer Pool Token';
 
-  const permissions = {
+    const permissions = {
         canPauseSwapping: true,
         canChangeSwapFee: true,
         canChangeWeights: true,
         canAddRemoveTokens: true,
         canWhitelistLPs: false,
-  };
+    };
 
-  const poolParams = {
+    const poolParams = {
         poolTokenSymbol: SYMBOL,
         poolTokenName: NAME,
         constituentTokens: tokenAddresses,
         tokenBalances: startBalances,
         tokenWeights: startWeights,
         swapFee: swapFee,
-  };
+    };
 
-  POOL = await crpFactory.newCrp.call(
-          bfactory.address,
-          poolParams,
-          permissions,
-  );
+    POOL = await crpFactory.newCrp.call(
+        bfactory.address,
+        poolParams,
+        permissions,
+    );
 
-  await crpFactory.newCrp(
-          bfactory.address,
-          poolParams,
-          permissions,
-  );
+    await crpFactory.newCrp(
+        bfactory.address,
+        poolParams,
+        permissions,
+    );
 
-  const pool = await ConfigurableRightsPool.at(POOL);
+    const pool = await ConfigurableRightsPool.at(POOL);
 
-  await usdc.approve(POOL, MAX);
-  await dai.approve(POOL, MAX);
-  await primetoken.approve(POOL, MAX);
+    await usdc.approve(POOL, MAX);
+    await dai.approve(POOL, MAX);
+    await primetoken.approve(POOL, MAX);
 
-  await pool.createPool(toWei('1000'), 10, 10);
+    await pool.createPool(toWei('1000'), 10, 10);
 
-  // move ownership to avatar
-  await pool.setController(setup.organization.avatar.address);
+    // move ownership to avatar
+    await pool.setController(setup.organization.avatar.address);
 
-  // deploy proxy
-  const proxy = await BalancerProxy.new();
-  // initialize proxy
-  await proxy.initialize(setup.organization.avatar.address, pool.address, await pool.bPool());
+    // deploy proxy
+    const proxy = await BalancerProxy.new();
+    // initialize proxy
+    await proxy.initialize(setup.organization.avatar.address, pool.address, await pool.bPool());
 
-  return { pool, proxy };
+    return { pool, proxy };
 };
 
 const DAOStack = async () => {
-  const controllerCreator = await ControllerCreator.new();
-  const daoTracker = await DAOTracker.new();
-  const daoCreator = await DaoCreator.new(controllerCreator.address, daoTracker.address);
+    const controllerCreator = await ControllerCreator.new();
+    const daoTracker = await DAOTracker.new();
+    const daoCreator = await DaoCreator.new(controllerCreator.address, daoTracker.address);
 
-  return { controllerCreator, daoTracker, daoCreator };
+    return { controllerCreator, daoTracker, daoCreator };
 };
 
 const organization = async (setup) => {
-  // deploy organization
-  const organization = await deployOrganization(setup.DAOStack.daoCreator, [setup.root], [PDAO_TOKENS], [REPUTATION]);
+    // deploy organization
+    const organization = await deployOrganization(setup.DAOStack.daoCreator, [setup.root], [PDAO_TOKENS], [REPUTATION]);
 
-  return organization;
+    return organization;
 };
 
 const token4rep = async (setup) => {
-  const priceOracle = await PriceOracle.new();
+    const priceOracle = await PriceOracle.new();
 
-  await priceOracle.setTokenPrice(setup.tokens.primeToken.address, 100, 4);
-  // scheme parameters
-  const params = {
+    await priceOracle.setTokenPrice(setup.tokens.primeToken.address, 100, 4);
+    // scheme parameters
+    const params = {
         reputationReward: 850000,
         lockingStartTime: await time.latest(), // start of the locking period
         lockingEndTime: (await time.latest()).add(await time.duration.days(30)), // one month after the start of the locking period
         redeemEnableTime: (await time.latest()).add(await time.duration.weeks(6)), // 6 weeks after the start of the locking period
         maxLockingPeriod: (180*60*60), // 6 months
         agreementHash: "0x0000000000000000000000000000000000000000"
-  }
+    };
 
-  // deploy token4rep contract
-  const contract = await LockingToken4Reputation.new();
-  // initialize token4rep contract
-  await contract.initialize(
-    setup.organization.avatar.address,
-    params.reputationReward,
-    params.lockingStartTime,
-    params.lockingEndTime,
-    params.redeemEnableTime,
-    params.maxLockingPeriod,
-    priceOracle.address,
-    params.agreementHash
+    // deploy token4rep contract
+    const contract = await LockingToken4Reputation.new();
+    // initialize token4rep contract
+    await contract.initialize(
+        setup.organization.avatar.address,
+        params.reputationReward,
+        params.lockingStartTime,
+        params.lockingEndTime,
+        params.redeemEnableTime,
+        params.maxLockingPeriod,
+        priceOracle.address,
+        params.agreementHash
     );
 
-  return { params, contract, priceOracle };
+    return { params, contract, priceOracle };
 };
 
 const vesting = async (setup) => {
-  // vesting parameters
-  const params = {
+    // vesting parameters
+    const params = {
         cliffDuration: 0,
         duration: 45*60*60,
         revocable: true
-  }
+    };
 
-  const factory = await VestingFactory.new();
+    const factory = await VestingFactory.new();
 
-  return { factory, params };
+    return { factory, params };
 };
 
 
 const primeDAO = async (setup) => {
-  // deploy balancer generic scheme
-  const poolManager = await GenericScheme.new();
-  // deploy balancer scheme voting machine
-  poolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, poolManager.address);
-  // initialize balancer scheme
-  await poolManager.initialize(setup.organization.avatar.address, poolManager.voting.absoluteVote.address, poolManager.voting.params, setup.balancer.proxy.address);
+    // deploy balancer generic scheme
+    const poolManager = await GenericScheme.new();
+    // deploy balancer scheme voting machine
+    poolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, poolManager.address);
+    // initialize balancer scheme
+    await poolManager.initialize(setup.organization.avatar.address, poolManager.voting.absoluteVote.address, poolManager.voting.params, setup.balancer.proxy.address);
 
-  // setup farmManager
-  const farmManager = await GenericScheme.new();
-  // deploy farmFactory scheme voting machine
-  farmManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);
+    // setup farmManager
+    const farmManager = await GenericScheme.new();
+    // deploy farmFactory scheme voting machine
+    farmManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);
 
-  await farmManager.initialize(setup.organization.avatar.address, farmManager.voting.absoluteVote.address, farmManager.voting.params, setup.farmFactory.address);
+    await farmManager.initialize(setup.organization.avatar.address, farmManager.voting.absoluteVote.address, farmManager.voting.params, setup.farmFactory.address);
 
-  // register schemes
-  const permissions = '0x00000010';
-  await setup.DAOStack.daoCreator.setSchemes(
-    setup.organization.avatar.address,
-    [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address],
-    [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
-    [permissions, permissions, permissions, permissions, permissions],
-    'metaData'
-  );
+    // register schemes
+    const permissions = '0x00000010';
+    await setup.DAOStack.daoCreator.setSchemes(
+        setup.organization.avatar.address,
+        [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address],
+        [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
+        [permissions, permissions, permissions, permissions, permissions],
+        'metaData'
+    );
 
-  return {poolManager, farmManager};
+    return {poolManager, farmManager};
 };
 
 module.exports = {
-  initialize,
-  incentives,
-  repRedeemer,
-  tokens,
-  vesting,
-  balancer,
-  DAOStack,
-  organization,
-  farmFactory,
-  token4rep,
-  primeDAO,
+    initialize,
+    incentives,
+    repRedeemer,
+    tokens,
+    vesting,
+    balancer,
+    DAOStack,
+    organization,
+    farmFactory,
+    token4rep,
+    primeDAO,
 };
