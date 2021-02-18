@@ -241,15 +241,14 @@ const vesting = async (setup) => {
 
 const primeDAO = async (setup) => {
     // deploy balancer generic scheme
-    // const poolManager = await GenericScheme.new();
-    const poolManager = await GenericSchemeMultiCall.new();
+    const poolManager = await GenericScheme.new();
+    // const poolManager = await GenericSchemeMultiCall.new();
     // deploy balancer scheme voting machine
     poolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, poolManager.address);
     // initialize balancer scheme
-    await poolManager.initialize(setup.organization.avatar.address, poolManager.voting.absoluteVote.address, poolManager.voting.params, constants.ZERO_ADDRESS);
+    await poolManager.initialize(setup.organization.avatar.address, poolManager.voting.absoluteVote.address, poolManager.voting.params, setup.balancer.proxy.address);
 
     // setup farmManager
-    // const farmManager = await GenericScheme.new();
     const farmManager = await GenericSchemeMultiCall.new();
     // deploy farmFactory scheme voting machine
     farmManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);

@@ -130,8 +130,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeSetPublicSwap(publicSwap);
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     //store data
                     setup.data.tx = tx;
 
@@ -175,8 +174,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeSetSwapFee(swapFee);
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     //store data
                     setup.data.tx = tx;
 
@@ -218,8 +216,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeCommitAddToken(setup.tokens.erc20s[2].address, toWei('1000'), toWei('1'));
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     //store data
                     setup.data.tx = tx;
                 });
@@ -244,8 +241,8 @@ contract('BalancerProxy', (accounts) => {
                         const calldata = helpers.encodeApplyAddToken();
                         const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                         const proposalId = helpers.getNewProposalId(_tx);
-                        await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                        const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                        const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+
                         setup.data.tx = tx;
                         await expectEvent.inTransaction(setup.data.tx.tx, setup.balancer.proxy, 'ApplyAddToken');
                     });
@@ -267,8 +264,7 @@ contract('BalancerProxy', (accounts) => {
                                 const calldata = helpers.encodeRemoveToken(setup.tokens.erc20s[2].address);
                                 const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                                 const proposalId = helpers.getNewProposalId(_tx);
-                                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                                const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                                const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
 
                                 setup.data.tx = tx;
                                 await expectEvent.inTransaction(setup.data.tx.tx, setup.balancer.proxy, 'RemoveToken');
@@ -329,8 +325,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeUpdateWeight(token.address, newWeight);
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     // store data
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.balancer.proxy, 'UpdateWeight');
@@ -378,8 +373,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeUpdateWeightsGradually(newWeights, startBLock, endBlock);
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     //store data
                     setup.data.tx = tx;
 
@@ -419,8 +413,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeJoinPool(poolAmountOut, maxAmountsIn);
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     // store data
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.balancer.proxy, 'JoinPool');
@@ -458,8 +451,7 @@ contract('BalancerProxy', (accounts) => {
                     const calldata = helpers.encodeJoinPool(poolAmountOut, maxAmountsIn);
                     const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                    const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     // store data
                     setup.data.tx = tx;
 
@@ -473,8 +465,7 @@ contract('BalancerProxy', (accounts) => {
                         const calldata = helpers.encodeExitPool(poolAmountIn, minAmountsOut);
                         const _tx = await setup.primeDAO.poolManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
                         const proposalId = helpers.getNewProposalId(_tx);
-                        await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                        const tx = await setup.primeDAO.farmManager.execute(proposalId);
+                        const tx = await  setup.primeDAO.poolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                         // store data
                         setup.data.tx = tx;
 
