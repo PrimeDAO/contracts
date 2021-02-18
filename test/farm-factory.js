@@ -81,9 +81,10 @@ contract('FarmFactory', (accounts) => {
             it('creates a farm', async () => {
 
                 const calldata = helpers.encodeCreateFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                const tx = await setup.primeDAO.farmManager.execute(proposalId);
                 // store data
                 setup.data.tx = tx;
                 receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'FarmCreated', {});
@@ -101,13 +102,11 @@ contract('FarmFactory', (accounts) => {
             it('fails to create a farm because of low balance', async () => {
                 const balanceBefore = await rewardToken.balanceOf(setup.organization.avatar.address);
                 const calldata = helpers.encodeCreateFarm(name, rewardToken.address, stakingToken.address, rewardAmount, starttime, durationDays, setup.organization.avatar.address);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                // store data
-                setup.data.tx = tx;
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                 const balance = await rewardToken.balanceOf(setup.organization.avatar.address);
-                await expectEvent.notEmitted(setup.data.tx, setup.farmFactory, 'FarmCreated', {});
+                await expectRevert(setup.primeDAO.farmManager.execute(proposalId), 'Proposal call failed.');
                 expect(Number(balanceBefore)).to.equal(Number(balance));
             });
 
@@ -120,14 +119,14 @@ contract('FarmFactory', (accounts) => {
 
                 const balanceBefore = await rewardToken.balanceOf(newFarm);
                 const calldata = helpers.encodeIncreaseReward(newFarm, stakingAmount);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, accounts[1]);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], accounts[1]);
+
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0,  constants.ZERO_ADDRESS);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
 
                 const balance = await rewardToken.balanceOf(newFarm);
                 // store data
-                setup.data.tx = tx;
-                await expectEvent.notEmitted(setup.data.tx, 'RewardIncreased');
+                await expectRevert(setup.primeDAO.farmManager.execute(proposalId), 'Proposal call failed.');
                 expect(Number(balance)).to.equal(Number(balanceBefore));
             });
             it('increases a reward', async () => {
@@ -135,9 +134,10 @@ contract('FarmFactory', (accounts) => {
                 await rewardToken.transfer((setup.organization.avatar.address), stakingAmount);
 
                 const calldata = helpers.encodeIncreaseReward(newFarm, stakingAmount);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, accounts[1]);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], accounts[1]);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0,  constants.ZERO_ADDRESS);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                const tx = await  setup.primeDAO.farmManager.execute(proposalId);
 
                 // store data
                 setup.data.tx = tx;
@@ -153,36 +153,33 @@ contract('FarmFactory', (accounts) => {
                 await rescueToken.transfer(newFarm, rescueAmount);
                 const balanceBefore = await rescueToken.balanceOf(newFarm);
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount+100000 , rescueToken.address, accounts[1]);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                 // store data
-                setup.data.tx = tx;
-
                 const balance = await rescueToken.balanceOf(newFarm);
-                await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
+                await expectRevert( setup.primeDAO.farmManager.execute(proposalId), 'Proposal call failed.');
                 expect(Number(balance)).to.equal(Number(balanceBefore));
             });
             it('fails to rescue tokens, because asked to rescue rewardTokens', async () => {
                 const balanceBefore = await rewardToken.balanceOf(newFarm);
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rewardToken.address, accounts[1]);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                 // store data
-                setup.data.tx = tx;
-
                 const balance = await rewardToken.balanceOf(newFarm);
-                await expectEvent.notEmitted(setup.data.tx, 'TokenRescued');
+                await expectRevert( setup.primeDAO.farmManager.execute(proposalId), 'Proposal call failed.');
                 expect(Number(balance)).to.equal(Number(balanceBefore));
             });
             it('rescues tokens', async () => {
                 // send rescue token to the farm address
                 const balanceBefore = await rescueToken.balanceOf(newFarm);
                 const calldata = helpers.encodeRescueTokens(newFarm, rescueAmount, rescueToken.address, accounts[1]);
-                const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
                 const proposalId = helpers.getNewProposalId(_tx);
-                const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                const tx = await  setup.primeDAO.farmManager.execute(proposalId);
                 // store data
                 setup.data.tx = tx;
 
