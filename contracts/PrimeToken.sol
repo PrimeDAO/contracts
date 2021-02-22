@@ -25,8 +25,8 @@ contract PrimeToken is ERC20, ERC20Capped, ERC20Detailed {
     	address genesisMultisig
     )
     ERC20Detailed("PrimeDAO Token", "PRIME", 18)
-    ERC20Capped(cap) 
-    public 
+    ERC20Capped(cap)
+    public
     {
         _mint(genesisMultisig, initialSupply);
     }
