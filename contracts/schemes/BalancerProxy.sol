@@ -177,7 +177,7 @@ contract BalancerProxy {
             avatar,
             0
         );
-//        require(success, ERROR_SET_PUBLIC_SWAP);
+        require(success, ERROR_SET_PUBLIC_SWAP);
         emit SetPublicSwap(_publicSwap);
     }
 
@@ -194,7 +194,7 @@ contract BalancerProxy {
             avatar,
             0
         );
-//        require(success, ERROR_SET_SWAP_FEE);
+        require(success, ERROR_SET_SWAP_FEE);
         emit SetSwapFee(_swapFee);
     }
 
@@ -256,7 +256,7 @@ contract BalancerProxy {
             avatar,
             0
         );
-//        require(success, COMMIT_TOKEN);
+        require(success, COMMIT_TOKEN);
         emit CommitAddToken(_token, _balance, _denormalizedWeight);
     }
 
@@ -272,7 +272,7 @@ contract BalancerProxy {
             avatar,
             0
         );
-//        require(success, ADD_TOKEN);
+        require(success, ADD_TOKEN);
         emit ApplyAddToken(success);
     }
 
