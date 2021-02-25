@@ -2,6 +2,7 @@
 
 # 🤖 PrimeDAO Smart Contracts
 [![<ORG_NAME>](https://circleci.com/gh/PrimeDAO/contracts.svg?style=svg)](https://app.circleci.com/pipelines/github/PrimeDAO)
+[![codecov](https://codecov.io/gh/PrimeDAO/contracts/branch/main/graph/badge.svg?token=BG6I17TXEL)](https://codecov.io/gh/PrimeDAO/contracts)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
