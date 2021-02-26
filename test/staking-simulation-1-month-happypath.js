@@ -86,9 +86,10 @@ contract('Staking: 1 month happypath', (accounts) => {
                     await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
-                    const _tx = await setup.primeDAO.farmManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                    const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address], [calldata], [0], constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    const tx = await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.farmManager.execute(proposalId);
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'RewardIncreased', {
                         farm: setup.incentives.stakingRewards.address,
