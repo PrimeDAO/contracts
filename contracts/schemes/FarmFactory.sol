@@ -100,7 +100,6 @@ contract FarmFactory is CloneFactory {
 
 		// create new farm
 		address newFarm = createClone(address(father));
-		//		StakingRewards(newFarm).transferOwnership(address(avatar));
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
@@ -163,13 +162,6 @@ contract FarmFactory is CloneFactory {
 	}
 
 	/* internal helpers functions */
-
-	//	function _create() internal returns(address) {
-	//		StakingRewards _newFarm = new StakingRewards();
-	//		_newFarm.transferOwnership(address(avatar));
-	//
-	//		return address(_newFarm);
-	//	}
 
 	function _increaseReward(
 		StakingRewards _farm,
