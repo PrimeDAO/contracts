@@ -33,7 +33,7 @@ contract FarmFactory is CloneFactory {
 
 
 	Avatar public avatar;
-	StakingRewards public father;
+	StakingRewards public parent;
 	bool   public initialized;
 
 	event FarmCreated(address indexed newFarm, address indexed pool);
@@ -54,23 +54,23 @@ contract FarmFactory is CloneFactory {
 
 	/**
 	  * @dev           Initialize proxy.
-	  * @param _avatar The address of the Avatar controlling this contract.
+	  * @param _avatar The address of the Avatar controlling this contract.\
+	  * @param _parent The address of the StakingRewards contract which will be a parent for all of the cloness.
 	  */
-	function initialize(Avatar _avatar) external initializer {
+	function initialize(Avatar _avatar, StakingRewards _parent) external initializer {
 		require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
+		require(_parent != StakingRewards(0), 	"FarmFactory: parent cannot be null");
 		avatar = _avatar;
-		//		TODO: there is a possibility to make it more flexible, and to send father address as a constructor parameter
-		father = new StakingRewards();
-		father.transferOwnership(address(avatar));
+		parent = _parent;
 	}
 
 	/**
   	* @dev             Update StakingReward contract which works as a base for clones.
-  	* @param newFather The address of the new StakingReward basis.
+  	* @param newParent The address of the new StakingReward basis.
   	*/
-	function changeFather(StakingRewards newFather) public protected{
-		father = newFather;
-		father.transferOwnership(address(avatar));
+	function changeParent(StakingRewards newParent) public protected{
+		parent = newParent;
+		parent.transferOwnership(address(avatar));
 	}
 
 	/**
@@ -99,7 +99,7 @@ contract FarmFactory is CloneFactory {
 			ERROR_CREATE_FARM);
 
 		// create new farm
-		address newFarm = createClone(address(father));
+		address newFarm = createClone(address(parent));
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())

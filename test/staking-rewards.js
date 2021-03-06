@@ -490,8 +490,8 @@ contract('StakingRewards', (accounts) => {
             });
             context('» lastTimeRewardApplicable returns smallest of timestamp & periodFinish', async () => {
                 before('!! fund & initialize contract', async () => {
-                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                     initTime = await time.latest();
+                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                 });
                 it('returns block.timestamp', async () => {
                     let ltra = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toNumber();

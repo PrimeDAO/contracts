@@ -15,6 +15,7 @@ contract IRewardDistributionRecipient is Ownable {
         _;
     }
 
+//    TODO: do we really need this, it isn't used anywhere
     function setRewardDistribution(address _rewardDistribution)
         external
         onlyOwner
