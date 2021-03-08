@@ -54,7 +54,7 @@ contract('FarmFactory', (accounts) => {
                 expect(await setup.farmFactory.avatar()).to.equal(setup.organization.avatar.address);
             });
             it('it reverts', async () => {
-                await expectRevert(setup.farmFactory.initialize(setup.organization.avatar.address), 'FarmFactory: contract already initialized');
+                await expectRevert(setup.farmFactory.initialize(setup.organization.avatar.address, constants.ZERO_ADDRESS), 'FarmFactory: contract already initialized');
             });
         });
         context('» avatar parameter is not valid', () => {
@@ -62,7 +62,7 @@ contract('FarmFactory', (accounts) => {
                 setup.farmFactory = await FarmFactory.new();
             });
             it('it reverts', async () => {
-                await expectRevert(setup.farmFactory.initialize(constants.ZERO_ADDRESS), 'FarmFactory: avatar cannot be null');
+                await expectRevert(setup.farmFactory.initialize(constants.ZERO_ADDRESS, constants.ZERO_ADDRESS), 'FarmFactory: avatar cannot be null');
             });
         });
     });

@@ -397,25 +397,37 @@ contract('StakingRewards', (accounts) => {
                     await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
                 });
                 it('it reverts', async () => {
+                    const calldata = helpers.encodeRescueTokens(setup.incentives.stakingRewards.address, stakeAmount, setup.tokens.erc20s[0].address,  accounts[1]);
+                    const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const proposalId = helpers.getNewProposalId(_tx);
+                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     await expectRevert(
-                        setup.incentives.stakingRewards.rescueTokens(setup.tokens.erc20s[0].address, stakeAmount, accounts[1], { from: accounts[1]} ),
-                        'StakingRewards: !governance'
+                        setup.primeDAO.farmManager.execute(proposalId),
+                        'Proposal call failed.'
                     );
                 });
             });
             context('» rescueTokens token parameter is not valid: rewardToken', () => {
                 it('it reverts', async () => {
+                    const calldata = helpers.encodeRescueTokens(setup.incentives.stakingRewards.address, stakeAmount, setup.tokens.primeToken.address,  accounts[1]);
+                    const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const proposalId = helpers.getNewProposalId(_tx);
+                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     await expectRevert(
-                        setup.incentives.stakingRewards.rescueTokens(setup.tokens.primeToken.address, stakeAmount, accounts[1]),
-                        'StakingRewards: rewardToken'
+                        setup.primeDAO.farmManager.execute(proposalId),
+                        'Proposal call failed.'
                     );
                 });
             });
             context('» rescueTokens token parameter is not valid: stakingToken', () => {
                 it('it reverts', async () => {
+                    const calldata = helpers.encodeRescueTokens(setup.incentives.stakingRewards.address, stakeAmount, setup.balancer.pool.address,  accounts[1]);
+                    const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const proposalId = helpers.getNewProposalId(_tx);
+                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                     await expectRevert(
-                        setup.incentives.stakingRewards.rescueTokens(setup.balancer.pool.address, stakeAmount, accounts[1]),
-                        'StakingRewards: stakingToken'
+                        setup.primeDAO.farmManager.execute(proposalId),
+                        'Proposal call failed.'
                     );
                 });
             });
@@ -424,7 +436,12 @@ contract('StakingRewards', (accounts) => {
                     await setup.tokens.erc20s[0].transfer(setup.incentives.stakingRewards.address, stakeAmount);
                 });
                 it('rescues', async () => {
-                    await setup.incentives.stakingRewards.rescueTokens(setup.tokens.erc20s[0].address, stakeAmount, accounts[1]);
+                    const calldata = helpers.encodeRescueTokens(setup.incentives.stakingRewards.address, stakeAmount, setup.tokens.erc20s[0].address,  accounts[1]);
+                    const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const proposalId = helpers.getNewProposalId(_tx);
+                    await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+
+                    await setup.primeDAO.farmManager.execute(proposalId);
                     expect((await setup.tokens.erc20s[0].balanceOf(setup.incentives.stakingRewards.address)).toString()).to.equal(toWei('0'));
                     expect((await setup.tokens.erc20s[0].balanceOf(accounts[1])).toString()).to.equal(stakeAmount);
                 });
@@ -473,8 +490,8 @@ contract('StakingRewards', (accounts) => {
             });
             context('» lastTimeRewardApplicable returns smallest of timestamp & periodFinish', async () => {
                 before('!! fund & initialize contract', async () => {
-                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                     initTime = await time.latest();
+                    await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                 });
                 it('returns block.timestamp', async () => {
                     let ltra = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toNumber();

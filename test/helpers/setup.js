@@ -95,7 +95,8 @@ const repRedeemer = async (setup) => {
 
 const farmFactory = async (setup) => {
     const farmFactory = await FarmFactory.new();
-    let tx = await farmFactory.initialize(setup.organization.avatar.address);
+    const stakingRewards = await StakingRewards.new();
+    let tx = await farmFactory.initialize(setup.organization.avatar.address, stakingRewards.address);
 
     return farmFactory;
 };

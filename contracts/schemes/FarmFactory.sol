@@ -16,13 +16,14 @@ pragma solidity 0.5.13;
 import "@daostack/arc/contracts/controller/Avatar.sol";
 import "@daostack/arc/contracts/controller/Controller.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "../utils/CloneFactory.sol";
 import "../incentives/StakingRewards.sol";
 
 /**
  * @title primeDAO Yield Farming contracts factory
  * @dev   Enable primeDAO governance to start new yield farming programs.
  */
-contract FarmFactory {
+contract FarmFactory is CloneFactory {
 
 	using SafeMath for uint256;
 
@@ -32,6 +33,7 @@ contract FarmFactory {
 
 
 	Avatar public avatar;
+	StakingRewards public parent;
 	bool   public initialized;
 
 	event FarmCreated(address indexed newFarm, address indexed pool);
@@ -52,11 +54,23 @@ contract FarmFactory {
 
 	/**
 	  * @dev           Initialize proxy.
-	  * @param _avatar The address of the Avatar controlling this contract.
+	  * @param _avatar The address of the Avatar controlling this contract.\
+	  * @param _parent The address of the StakingRewards contract which will be a parent for all of the cloness.
 	  */
-	function initialize(Avatar _avatar) external initializer {
+	function initialize(Avatar _avatar, StakingRewards _parent) external initializer {
 		require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
+		require(_parent != StakingRewards(0), 	"FarmFactory: parent cannot be null");
 		avatar = _avatar;
+		parent = _parent;
+	}
+
+	/**
+  	* @dev             Update StakingReward contract which works as a base for clones.
+  	* @param newParent The address of the new StakingReward basis.
+  	*/
+	function changeParent(StakingRewards newParent) public protected{
+		parent = newParent;
+		parent.transferOwnership(address(avatar));
 	}
 
 	/**
@@ -85,15 +99,15 @@ contract FarmFactory {
 			ERROR_CREATE_FARM);
 
 		// create new farm
-		address newFarm = _create();
+		address newFarm = createClone(address(parent));
 
 		// transfer rewards to the new farm
 		Controller(avatar.owner())
-			.externalTokenTransfer(
-				IERC20(_rewardToken),
-				newFarm,
-				_initreward,
-				avatar
+		.externalTokenTransfer(
+			IERC20(_rewardToken),
+			newFarm,
+			_initreward,
+			avatar
 		);
 
 		// initialize farm
@@ -149,13 +163,6 @@ contract FarmFactory {
 
 	/* internal helpers functions */
 
-	function _create() internal returns(address) {
-		StakingRewards _newFarm = new StakingRewards();
-		_newFarm.transferOwnership(address(avatar));
-
-		return address(_newFarm);
-	}
-
 	function _increaseReward(
 		StakingRewards _farm,
 		uint    	   _amount
@@ -167,7 +174,7 @@ contract FarmFactory {
 		uint oldBalance = IERC20(_rewardToken).balanceOf(address(_farm));
 
 		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
-			 	 ERROR_INCREASE_REWARD);
+			ERROR_INCREASE_REWARD);
 
 		Controller controller = Controller(avatar.owner());
 		//transfer tokens to staking rewards contract
