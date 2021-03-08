@@ -1689,8 +1689,8 @@
       "transactionHash": "0xe1ffd8aed4ff75f1174eab048ae5f85fe8ae047b8846de58e6eeeaf15114ae49"
     }
   },
-  "schemaVersion": "3.2.4",
-  "updatedAt": "2021-01-25T18:58:23.667Z",
+  "schemaVersion": "3.3.3",
+  "updatedAt": "2021-03-08T13:25:22.197Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {

@@ -5218,8 +5218,8 @@
       "address": "0xCF4eE5412eb92ADDcC4cf9d3b91c526CcE107ff4"
     }
   },
-  "schemaVersion": "3.2.4",
-  "updatedAt": "2021-01-25T18:58:23.699Z",
+  "schemaVersion": "3.3.3",
+  "updatedAt": "2021-03-08T13:25:22.232Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {
