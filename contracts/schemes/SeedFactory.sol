@@ -20,8 +20,17 @@ import "./Seed.sol";
  * @dev   Enable primeDAO governance to start new seeds.
  */
 contract SeedFactory {
+    address public avatar;
+    address[] whitelist;
 
+	function deploySeed() public returns(address) {
 
+		Seed _newSeed = new Seed();
+		// _newSeed.transferOwnership(address(avatar));
+		if (msg.sender == avatar){
+			whitelist.push(address(_newSeed));
+		}
 
-
+		return address(_newSeed);
+	}
 }

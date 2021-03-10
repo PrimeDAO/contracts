@@ -25,6 +25,11 @@ contract Seed {
     using SafeMath for uint256;
     using SafeMath for uint16;
 
+    uint256 constant internal SECONDS_PER_DAY = 86400;
+    
+    uint16 internal VESTING_DURATION;
+    uint16 internal VESTING_CLIFF;
+
     struct Lock {
         uint256 startTime;
         uint256 amount;
@@ -38,12 +43,13 @@ contract Seed {
     ERC20 public seedToken;
     ERC20 public fundingToken;
 
-    mapping (uint256 => Grant) public tokenLocks;
+    mapping (uint256 => Lock) public tokenLocks;
     // mapping (address => uint[]) private activeGrants;
+    uint256 public totalLockCount;
 
 
     function calculateClaim(uint256 _lockId) public view returns (uint16, uint256) {
-        Lock storage tokenLock = tokenLock[_lockId];
+        Lock storage tokenLock = tokenLocks[_lockId];
 
         // For grants created with a future start date, that hasn't been reached, return 0, 0
         if (_currentTime() < tokenLock.startTime) {
@@ -76,12 +82,19 @@ contract Seed {
         (daysVested, amountVested) = calculateClaim(_lockId);
         require(amountVested > 0, "amountVested is 0");
 
-        Lock storage tokenLock = tokenLocks[_lock];
+        Lock storage tokenLock = tokenLocks[_lockId];
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
-        
-        require(token.seedToken(tokenLock.recipient, amountVested), "no tokens");
+
+        require(seedToken.transfer(tokenLock.recipient, amountVested), "no tokens");
         // emit GrantTokensClaimed(tokenLock.recipient, amountVested);
+    }
+
+    function buy(uint256 amount) external {
+        require(fundingToken.transferFrom(msg.sender, address(this), amount), "no tokens");
+
+        // TODO: ADD calculate lockAmount/buyAmount
+        _addLock(msg.sender, block.timestamp, amount, VESTING_DURATION, VESTING_CLIFF);
     }
 
     // INTERNAL FUNCTIONS
@@ -118,10 +131,10 @@ contract Seed {
             totalClaimed: 0,
             recipient: _recipient
         });
-        tokenLocks[totalVestingCount] = lock;
+        tokenLocks[totalLockCount] = lock;
         // activeGrants[_recipient].push(totalVestingCount);
         // emit GrantAdded(_recipient, totalVestingCount);
-        // totalVestingCount++;
+        totalLockCount++;
     }
 
 }
