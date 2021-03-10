@@ -46,8 +46,6 @@ contract('BalancerMulticall', (accounts) => {
     let poolAmountIn;
     let maxAmountsIn;
     let minAmountsOut;
-    let badAmountsIn;
-    let badAmountsOut;
 
     before('!! deploy setup', async () => {
         setup = await deploy(accounts);
