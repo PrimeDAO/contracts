@@ -256,17 +256,25 @@ const primeDAO = async (setup) => {
 
     await farmManager.initialize(setup.organization.avatar.address, farmManager.voting.absoluteVote.address, farmManager.voting.params, constants.ZERO_ADDRESS);
 
+    // setup farmManager
+    const multicallPoolManager = await GenericSchemeMultiCall.new();
+    // deploy farmFactory scheme voting machine
+    multicallPoolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);
+
+    await multicallPoolManager.initialize(setup.organization.avatar.address, multicallPoolManager.voting.absoluteVote.address, multicallPoolManager.voting.params, constants.ZERO_ADDRESS);
+
+
     // register schemes
     const permissions = '0x00000010';
     await setup.DAOStack.daoCreator.setSchemes(
         setup.organization.avatar.address,
-        [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address],
-        [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
-        [permissions, permissions, permissions, permissions, permissions],
+        [setup.balancer.proxy.address, setup.balancer.pool.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address, multicallPoolManager.address],
+        [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
+        [permissions, permissions, permissions, permissions, permissions, permissions, permissions],
         'metaData'
     );
 
-    return {poolManager, farmManager};
+    return {poolManager, farmManager, multicallPoolManager};
 };
 
 module.exports = {

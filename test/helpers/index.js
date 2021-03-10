@@ -1,7 +1,9 @@
 const { BN } = require('@openzeppelin/test-helpers');
 const setup = require('./setup');
 const BalancerProxy = artifacts.require('BalancerProxy');
+const BalancerPool = artifacts.require('IConfigurableRightsPool');
 const FarmFactory = artifacts.require('FarmFactory');
+const IERC20 = artifacts.require('IERC20');
 
 const AMOUNT = new BN('1000');
 const EXPECTED = new BN('500');
@@ -9,31 +11,31 @@ const RETURNED = new BN('996');
 const RETURNED2 = new BN('997');
 
 const encodeSetPublicSwap = (publicSwap) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.setPublicSwap(publicSwap).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.setPublicSwap(publicSwap).encodeABI();
 };
 const encodeSetSwapFee = (swapFee) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.setSwapFee(swapFee).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.setSwapFee(swapFee).encodeABI();
 };
 const encodeCommitAddToken = (token, balance, denormalizedWeight) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.commitAddToken(token, balance, denormalizedWeight).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.commitAddToken(token, balance, denormalizedWeight).encodeABI();
 };
 const encodeApplyAddToken = () => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.applyAddToken().encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.applyAddToken().encodeABI();
 };
 const encodeRemoveToken = (token) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.removeToken(token).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.removeToken(token).encodeABI();
 };
 const encodeUpdateWeightsGradually = (newWeights, startBlock, endBlock) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.updateWeightsGradually(newWeights, startBlock, endBlock).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.updateWeightsGradually(newWeights, startBlock, endBlock).encodeABI();
 };
 const encodeJoinPool = (poolAmountOut, maxAmountsIn) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.joinPool(poolAmountOut, maxAmountsIn).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.joinPool(poolAmountOut, maxAmountsIn).encodeABI();
 };
 const encodeExitPool = (poolAmountIn, minAmountsOut) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.exitPool(poolAmountIn, minAmountsOut).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.exitPool(poolAmountIn, minAmountsOut).encodeABI();
 };
 const encodeUpdateWeight = (token, newWeight) => {
-  return new web3.eth.Contract(BalancerProxy.abi).methods.updateWeight(token, newWeight).encodeABI();
+  return new web3.eth.Contract(BalancerPool.abi).methods.updateWeight(token, newWeight).encodeABI();
 };
 const encodeCreateFarm = (name, rewardToken, stakingToken, initreward, starttime, duration) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.createFarm(name, rewardToken, stakingToken, initreward, starttime, duration).encodeABI();
@@ -44,6 +46,10 @@ const encodeRescueTokens = (stakingRewards, amount, token, to) => {
 const encodeIncreaseReward = (farm, amount) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.increaseReward(farm, amount).encodeABI();
 };
+const encodeApprove = (spender, amount) => {
+  return new web3.eth.Contract(IERC20.abi).methods.approve(spender, amount).encodeABI();
+};
+
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
   /**
    *
@@ -106,6 +112,7 @@ module.exports = {
   encodeJoinPool,
   encodeExitPool,
   getNewProposalId,
+  encodeApprove,
   values: {
     AMOUNT,
     EXPECTED,
