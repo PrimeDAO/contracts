@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, time, expectRevert } = require('@openzeppelin/test-helpers');
+const { constants, time } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const BPool = artifacts.require('BPool');
 const bigInt = require('big-integer');
@@ -139,7 +139,7 @@ contract('BalancerMulticall', (accounts) => {
                         const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
 
 
-                        setup.data.tx = tx
+                        setup.data.tx = tx;
                     });
                     it('checks the balance of bPool', async () => {
                         expect((await setup.tokens.erc20s[2].balanceOf(await setup.balancer.pool.bPool())).toString()).to.equal(toWei('1000'));
@@ -234,15 +234,13 @@ contract('BalancerMulticall', (accounts) => {
                 poolAmountIn = toWei('250');
                 maxAmountsIn = [toWei('7000'), toWei('3000'), toWei('3000')];
                 minAmountsOut = [toWei('2000'), toWei('1000'), toWei('1000')];
-                badAmountsIn = [toWei('7000'), toWei('3000')];
-                badAmountsOut = [toWei('2000'), toWei('1000')];
             });
 
             context('» exitPool: not enough tokens', () => {
                 before('!! joinpool', async () => {
                     const calldata = helpers.encodeJoinPool(poolAmountOut, maxAmountsIn);
                     const pool = await  setup.balancer.pool.bPool();
-                    const bPool = await BPool.at(pool)
+                    const bPool = await BPool.at(pool);
                     const bPoolTokens = await bPool.getCurrentTokens();
                     expect(bPoolTokens.length).to.equal(maxAmountsIn.length);
                     let token_addresses = [];
@@ -290,7 +288,7 @@ contract('BalancerMulticall', (accounts) => {
                 it('joins pool', async () => {
                     const calldata = helpers.encodeJoinPool(poolAmountOut, maxAmountsIn);
                     const pool = await  setup.balancer.pool.bPool();
-                    const bPool = await BPool.at(pool)
+                    const bPool = await BPool.at(pool);
                     const bPoolTokens = await bPool.getCurrentTokens();
                     expect(bPoolTokens.length).to.equal(maxAmountsIn.length);
                     let token_addresses = [];
