@@ -493,7 +493,7 @@ contract('StakingRewards', (accounts) => {
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                 });
                 it('returns block.timestamp', async () => {
-                    let ltra = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toNumber();
+                    let ltra = (await setup.incentives.stakingRewards.lastUpdateTime()).toNumber();
                     expect(ltra).to.equal(initTime.toNumber());
                 });
             });
