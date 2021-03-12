@@ -483,9 +483,8 @@ contract('StakingRewards', (accounts) => {
                 });
                 it('returns correct finish', async () => {
                     let periodFinish = (await setup.incentives.stakingRewards.periodFinish()).toString();
-                    await time.increase(time.duration.weeks(1));
-                    let blockNow = (await time.latest()).toString();
-                    expect(blockNow).to.equal(periodFinish);
+                    const lastUpdateTime = (await setup.incentives.stakingRewards.lastUpdateTime()).toString();
+                    expect(Number(lastUpdateTime) + time.duration.weeks(1).toNumber()).to.equal(Number(periodFinish));
                 });
             });
             context('» lastTimeRewardApplicable returns smallest of timestamp & periodFinish', async () => {
