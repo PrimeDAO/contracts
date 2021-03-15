@@ -11,8 +11,6 @@
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// https://gist.github.com/rstormsf/7cfb0c6b7a835c0c67b4a394b4fd9383
-
 pragma solidity 0.5.13;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
@@ -25,10 +23,69 @@ contract Seed {
     using SafeMath for uint256;
     using SafeMath for uint16;
 
+    // Locked parameters
+    address public admin;
+    uint    public cap;
+    uint    public price;
+    uint    public startTime;
+    uint    public endTime;
+    bool    public isWhitelisted;
+    uint16  public vestingDuration;
+    uint16  public vestingCliff;
+    ERC20   public seedToken;
+    ERC20   public fundingToken;
+
     uint256 constant internal SECONDS_PER_DAY = 86400;
-    
-    uint16 internal VESTING_DURATION;
-    uint16 internal VESTING_CLIFF;
+
+    // Contract logic
+    bool      public closed;
+    bool      public paused;
+    uint256   public totalLockCount;
+
+    mapping (address => bool) public whitelisted; 
+    mapping (uint256 => Lock) public tokenLocks;
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Seed: caller should be admin");
+        _;
+    }
+
+    modifier protected() {
+        require(closed != true, "Seed: should not be closed");
+        require(paused != true, "Seed: should not be paused");
+        _;
+    }
+
+    modifier checked() {
+        require(isWhitelisted != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
+        _;
+    }
+
+    constructor(
+        address _admin,
+        address _seedToken,
+        address _fundingToken,
+        uint    _cap,
+        uint    _price,
+        uint    _startTime,
+        uint    _endTime,
+        uint16  _vestingDuration,
+        uint16  _vestingCliff,
+        bool    _isWhitelisted
+    )
+    public
+    {
+        admin           = _admin;
+        cap             = _cap;
+        price           = _price;
+        startTime       = _startTime;
+        endTime         = _endTime;
+        vestingDuration = _vestingDuration;
+        vestingCliff    = _vestingCliff;
+        isWhitelisted   = _isWhitelisted;
+        seedToken       = ERC20(_seedToken);
+        fundingToken    = ERC20(_fundingToken);
+    }
 
     struct Lock {
         uint256 startTime;
@@ -39,14 +96,6 @@ contract Seed {
         uint256 totalClaimed;
         address recipient;
     }
-
-    ERC20 public seedToken;
-    ERC20 public fundingToken;
-
-    mapping (uint256 => Lock) public tokenLocks;
-    // mapping (address => uint[]) private activeGrants;
-    uint256 public totalLockCount;
-
 
     function calculateClaim(uint256 _lockId) public view returns (uint16, uint256) {
         Lock storage tokenLock = tokenLocks[_lockId];
@@ -76,7 +125,7 @@ contract Seed {
         }
     }
 
-    function claimTokens(uint256 _lockId) external {
+    function claimLock(uint256 _lockId) public {
         uint16 daysVested;
         uint256 amountVested;
         (daysVested, amountVested) = calculateClaim(_lockId);
@@ -87,14 +136,57 @@ contract Seed {
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
         require(seedToken.transfer(tokenLock.recipient, amountVested), "no tokens");
-        // emit GrantTokensClaimed(tokenLock.recipient, amountVested);
+        // emit LockedTokensClaimed(tokenLock.recipient, amountVested);
     }
 
-    function buy(uint256 amount) external {
+    function buy(uint256 amount) public protected checked {
         require(fundingToken.transferFrom(msg.sender, address(this), amount), "no tokens");
 
-        // TODO: ADD calculate lockAmount/buyAmount
-        _addLock(msg.sender, block.timestamp, amount, VESTING_DURATION, VESTING_CLIFF);
+        // TODO: ADD fees
+        _addLock(msg.sender, block.timestamp, amount.mul(price));
+    }
+
+    // ADMIN ACTIONS
+
+    function init() public onlyAdmin {
+        require(seedAmount >= cap, "Seed: amount is higher than cap");
+        closed = false;
+        require(seedToken.transferFrom(admin, address(this), seedAmount), "Seed: should transfer seed tokens");
+    }
+
+    function pause() public onlyAdmin protected {
+        paused = true;
+    }
+
+    function unpause() public onlyAdmin {
+        require(closed != true, "Seed: should not be closed");
+        require(paused == true, "Seed: should be paused");
+
+        paused = false;
+    }
+
+    function close() public onlyAdmin protected {
+        // transfer all the tokens back to admin
+        require(fundingToken.transfer(admin, fundingToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");
+        require(seedToken.transfer(admin, seedToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");;
+
+        closed = true;
+    }
+
+    function whitelist(address buyer) public onlyAdmin protected {
+        require(isWhitelisted == true, "Seed: module is not whitelisted");
+
+        whitelisted[buyer] = true;
+    }
+
+    function unwhitelist(address buyer) public onlyAdmin protected {
+        require(isWhitelisted == true, "Seed: module is not whitelisted");
+
+        whitelisted[buyer] = false;
+    }
+
+    function withdraw() public onlyAdmin protected {
+        fundingToken.transfer(msg.sender, fundingToken.balanceOf(msg.sender));
     }
 
     // INTERNAL FUNCTIONS
@@ -106,33 +198,24 @@ contract Seed {
     function _addLock(
         address _recipient,
         uint256 _startTime,
-        uint256 _amount,
-        uint16 _vestingDurationInDays,
-        uint16 _vestingCliffInDays    
+        uint256 _amount
     ) 
         internal    
     {
-        // require(_vestingCliffInDays <= 10*365, "more than 10 years");
-        // require(_vestingDurationInDays <= 25*365, "more than 25 years");
-        // require(_vestingDurationInDays >= _vestingCliffInDays, "Duration < Cliff");
         
-        uint256 amountVestedPerDay = _amount.div(_vestingDurationInDays);
+        uint256 amountVestedPerDay = _amount.div(vestingDuration);
         require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
-
-        // Transfer the grant tokens under the control of the vesting contract
-        // require(token.transferFrom(v12MultiSig, address(this), _amount), "transfer failed");
 
         Lock memory lock = Lock({
             startTime: _startTime == 0 ? _currentTime() : _startTime,
             amount: _amount,
-            vestingDuration: _vestingDurationInDays,
-            vestingCliff: _vestingCliffInDays,
+            vestingDuration: vestingDuration,
+            vestingCliff: vestingCliff,
             daysClaimed: 0,
             totalClaimed: 0,
             recipient: _recipient
         });
         tokenLocks[totalLockCount] = lock;
-        // activeGrants[_recipient].push(totalVestingCount);
         // emit GrantAdded(_recipient, totalVestingCount);
         totalLockCount++;
     }
