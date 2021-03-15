@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const SeedFactory = artifacts.require('SeedFactory');
 const { toWei } = web3.utils;
@@ -31,11 +31,36 @@ const deploy = async (accounts) => {
 };
 
 contract('SeedFactory', (accounts) => {
+    let setup;
+    let admin;
+    let seedToken;
+    let fundingToken;
+    let cap;
+    let price;
+    let startTime;
+    let endTime;
+    let vestingDuration;
+    let vestingCliff;
+    let isWhitelisted;
 
-    context('» do nothing', () => {
-        context('» avatar parameter is not valid', () => {
-            it('it is ok', async () => {
-                await expect(true).to.equal(true);
+    context('» creator is not avatar', () => {
+        before('!! deploy setup', async () => {
+            setup = await deploy(accounts);
+            admin = accounts[1];
+            seedToken = setup.tokens.primeToken;
+            fundingToken = setup.tokens.erc20s[0];
+            cap = toWei('100');
+            price = toWei('0.01');
+            startTime  = await time.latest();
+            endTime = await startTime.add(await time.duration.days(7));
+            vestingDuration = 365; // 1 year
+            vestingCliff = 90; // 3 months
+            isWhitelisted = true;
+        });
+
+        context('» parameters are valid', () => {
+            it('it creates new seed contract', async () => {
+                await setup.seedFactory.deploySeed(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
             });
         });
     });

@@ -26,7 +26,7 @@ contract SeedFactory {
     constructor(address _avatar) public {
         avatar = _avatar;
 	}
-
+	// TODO: add change avatar
 	function deploySeed(
 		address _admin,
 		address _seedToken,

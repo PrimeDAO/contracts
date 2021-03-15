@@ -11,6 +11,7 @@ const AbsoluteVote = artifacts.require('./AbsoluteVote.sol');
 const LockingToken4Reputation = artifacts.require('./LockingToken4Reputation.sol');
 const PriceOracle = artifacts.require('./PriceOracle.sol');
 const FarmFactory = artifacts.require('./FarmFactory.sol');
+const SeedFactory = artifacts.require('./SeedFactory.sol');
 // Balancer imports
 const ConfigurableRightsPool = artifacts.require('ConfigurableRightsPool');
 const BPool = artifacts.require('BPool');
