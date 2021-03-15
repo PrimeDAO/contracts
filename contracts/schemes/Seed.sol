@@ -149,9 +149,9 @@ contract Seed {
     // ADMIN ACTIONS
 
     function init() public onlyAdmin {
-        require(seedAmount >= cap, "Seed: amount is higher than cap");
+        // require(seedAmount >= cap, "Seed: amount is higher than cap");
+        require(seedToken.transferFrom(admin, address(this), cap), "Seed: should transfer seed tokens");
         closed = false;
-        require(seedToken.transferFrom(admin, address(this), seedAmount), "Seed: should transfer seed tokens");
     }
 
     function pause() public onlyAdmin protected {
@@ -168,7 +168,7 @@ contract Seed {
     function close() public onlyAdmin protected {
         // transfer all the tokens back to admin
         require(fundingToken.transfer(admin, fundingToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");
-        require(seedToken.transfer(admin, seedToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");;
+        require(seedToken.transfer(admin, seedToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");
 
         closed = true;
     }

@@ -100,6 +100,12 @@ const farmFactory = async (setup) => {
     return farmFactory;
 };
 
+const seedFactory = async (setup) => {
+    const seedFactory = await SeedFactory.new(setup.organization.avatar.address);
+
+    return seedFactory;
+};
+
 const balancer = async (setup) => {
     // deploy balancer infrastructure
     const bfactory = await BFactory.new();
@@ -278,6 +284,7 @@ module.exports = {
     DAOStack,
     organization,
     farmFactory,
+    seedFactory,
     token4rep,
     primeDAO,
 };
