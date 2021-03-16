@@ -23,6 +23,8 @@ contract SeedFactory {
     address public avatar;
     address[] whitelist;
 
+	event SeedCreated(address indexed newSeed);
+
     constructor(address _avatar) public {
         avatar = _avatar;
 	}
@@ -60,6 +62,8 @@ contract SeedFactory {
 		if (msg.sender == avatar){
 			whitelist.push(address(_newSeed));
 		}
+
+		emit SeedCreated(address(_newSeed));
 
 		return address(_newSeed);
 	}

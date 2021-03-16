@@ -60,11 +60,12 @@ contract('SeedFactory', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
-                await setup.seedFactory.deploySeed(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
+                let tx = await setup.seedFactory.deploySeed(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
+                
+                setup.data.tx = tx;
+                await expectEvent.inTransaction(setup.data.tx.tx, setup.seedFactory, 'SeedCreated');
             });
         });
     });
-
-
 });
 
