@@ -355,18 +355,13 @@ contract('StakingRewards', (accounts) => {
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, rewardAmount);
                     await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
-
                     await setup.incentives.stakingRewards.stake(stakeAmount, { from: accounts[1] });
-                    expect((await setup.tokens.primeToken.balanceOf(accounts[1])).toString()).to.equal('0');
                     await time.increase(time.duration.days(2));
 
-                    let rewardEarned = Number(await setup.incentives.stakingRewards.earned(accounts[1]));
                     let tx = await setup.incentives.stakingRewards.exit( {from: accounts[1] });
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'Withdrawn');
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.incentives.stakingRewards, 'RewardPaid');
-                    let balance = Number(await setup.tokens.primeToken.balanceOf(accounts[1]));
-                    expect(rewardEarned).to.equal(balance);
                     expect((await setup.balancer.pool.balanceOf(setup.incentives.stakingRewards.address)).toString()).to.equal(toWei('0'));
                     expect((await setup.balancer.pool.balanceOf(accounts[1])).toString()).to.equal(stakeAmount);
                 });
@@ -483,9 +478,8 @@ contract('StakingRewards', (accounts) => {
                 });
                 it('returns correct finish', async () => {
                     let periodFinish = (await setup.incentives.stakingRewards.periodFinish()).toString();
-                    await time.increase(time.duration.weeks(1));
-                    let blockNow = (await time.latest()).toString();
-                    expect(blockNow).to.equal(periodFinish);
+                    const lastUpdateTime = (await setup.incentives.stakingRewards.lastUpdateTime()).toString();
+                    expect(Number(lastUpdateTime) + time.duration.weeks(1).toNumber()).to.equal(Number(periodFinish));
                 });
             });
             context('» lastTimeRewardApplicable returns smallest of timestamp & periodFinish', async () => {
@@ -494,7 +488,7 @@ contract('StakingRewards', (accounts) => {
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
                 });
                 it('returns block.timestamp', async () => {
-                    let ltra = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toNumber();
+                    let ltra = (await setup.incentives.stakingRewards.lastUpdateTime()).toNumber();
                     expect(ltra).to.equal(initTime.toNumber());
                 });
             });
