@@ -355,10 +355,7 @@ contract('StakingRewards', (accounts) => {
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
                     await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, rewardAmount);
                     await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
-
                     await setup.incentives.stakingRewards.stake(stakeAmount, { from: accounts[1] });
-
-
                     await time.increase(time.duration.days(2));
 
                     let tx = await setup.incentives.stakingRewards.exit( {from: accounts[1] });
