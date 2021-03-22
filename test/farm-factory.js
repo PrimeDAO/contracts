@@ -109,11 +109,6 @@ contract('FarmFactory', (accounts) => {
                 await expectRevert(setup.primeDAO.farmManager.execute(proposalId), 'Proposal call failed.');
                 expect(Number(balanceBefore)).to.equal(Number(balance));
             });
-
-
-
-
-
             it('fails to increase a reward because of low balance', async () => {
                 newFarm = receipt.args[0];
 
