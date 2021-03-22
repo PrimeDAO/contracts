@@ -42,8 +42,8 @@ contract Seed {
     bool      public paused;
     uint256   public totalLockCount;
 
-    mapping (address => bool) public whitelisted; 
-    mapping (uint256 => Lock) public tokenLocks;
+    mapping (address => bool) public whitelisted;
+    mapping (address => Lock) public tokenLocks; // locker to lock
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Seed: caller should be admin");
@@ -97,8 +97,8 @@ contract Seed {
         address recipient;
     }
 
-    function calculateClaim(uint256 _lockId) public view returns (uint16, uint256) {
-        Lock storage tokenLock = tokenLocks[_lockId];
+    function calculateClaim(address _locker) public view returns (uint16, uint256) {
+        Lock storage tokenLock = tokenLocks[_locker];
 
         // For grants created with a future start date, that hasn't been reached, return 0, 0
         if (_currentTime() < tokenLock.startTime) {
@@ -125,13 +125,13 @@ contract Seed {
         }
     }
 
-    function claimLock(uint256 _lockId) public {
+    function claimLock(address _locker) public {
         uint16 daysVested;
         uint256 amountVested;
-        (daysVested, amountVested) = calculateClaim(_lockId);
+        (daysVested, amountVested) = calculateClaim(_locker);
         require(amountVested > 0, "amountVested is 0");
 
-        Lock storage tokenLock = tokenLocks[_lockId];
+        Lock storage tokenLock = tokenLocks[_locker];
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
@@ -139,11 +139,12 @@ contract Seed {
         // emit LockedTokensClaimed(tokenLock.recipient, amountVested);
     }
 
-    function buy(uint256 amount) public protected checked {
-        require(fundingToken.transferFrom(msg.sender, address(this), amount), "no tokens");
+    function buy(uint256 _amount) public protected checked {
+        require(fundingToken.transferFrom(msg.sender, address(this), _amount), "no tokens");
 
         // TODO: ADD fees
-        _addLock(msg.sender, block.timestamp, amount.mul(price));
+        uint _lockTokens = tokenLocks[msg.sender].amount;
+        _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price));
     }
 
     // ADMIN ACTIONS
@@ -215,7 +216,7 @@ contract Seed {
             totalClaimed: 0,
             recipient: _recipient
         });
-        tokenLocks[totalLockCount] = lock;
+        tokenLocks[_recipient] = lock;
         // emit GrantAdded(_recipient, totalVestingCount);
         totalLockCount++;
     }
