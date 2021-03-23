@@ -45,6 +45,8 @@ contract Seed {
     mapping (address => bool) public whitelisted;
     mapping (address => Lock) public tokenLocks; // locker to lock
 
+    event LockAdded(address indexed recipient, uint256 locked);
+
     modifier onlyAdmin() {
         require(msg.sender == admin, "Seed: caller should be admin");
         _;
@@ -149,7 +151,7 @@ contract Seed {
 
     // ADMIN ACTIONS
 
-    function init() public onlyAdmin {
+    function initialize() public onlyAdmin {
         // require(seedAmount >= cap, "Seed: amount is higher than cap");
         require(seedToken.transferFrom(admin, address(this), cap), "Seed: should transfer seed tokens");
         closed = false;
@@ -190,6 +192,8 @@ contract Seed {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(msg.sender));
     }
 
+    // TODO: ADD GETTER FUNCTIONS
+
     // INTERNAL FUNCTIONS
 
     function _currentTime() internal view returns(uint256) {
@@ -217,7 +221,7 @@ contract Seed {
             recipient: _recipient
         });
         tokenLocks[_recipient] = lock;
-        // emit GrantAdded(_recipient, totalVestingCount);
+        emit LockAdded(_recipient, _amount);
         totalLockCount++;
     }
 

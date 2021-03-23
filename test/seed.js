@@ -64,15 +64,15 @@ contract('Seed', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it deploys a new seed contract', async () => {
-                // deploy new seed contract
-                setup.data.seed = await Seed.new(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
+               // deploy new seed contract
+               setup.data.seed = await Seed.new(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
             });
             it('it initializes a seed contract', async () => {
-                // top up admins token balance
-                await seedToken.transfer(admin, cap, {from:setup.root});
-                await seedToken.approve(setup.data.seed.address, cap, {from:admin});
+               // top up admins token balance
+               await seedToken.transfer(admin, cap, {from:setup.root});
+               await seedToken.approve(setup.data.seed.address, cap, {from:admin});
 
-                await setup.data.seed.initialize({from:admin});
+               await setup.data.seed.initialize({from:admin});
 
                expect(await setup.data.seed.closed()).to.equal(false);
                expect(await setup.data.seed.paused()).to.equal(false);
@@ -82,12 +82,12 @@ contract('Seed', (accounts) => {
                await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});               
                await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer1});
 
-               await setup.data.seed.buy(buyAmount, {from:buyer1});
+               tx = await setup.data.seed.buy(buyAmount, {from:buyer1});
+               setup.data.tx = tx;
 
+               await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'LockAdded');
                expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(buyAmount);
-               // expect(await setup.data.seed.paused()).to.equal(false);
             });
         });
     });
 });
-
