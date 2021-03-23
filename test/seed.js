@@ -33,10 +33,12 @@ const deploy = async (accounts) => {
 contract('Seed', (accounts) => {
     let setup;
     let admin;
+    let buyer1;
     let seedToken;
     let fundingToken;
     let cap;
     let price;
+    let buyAmount;
     let startTime;
     let endTime;
     let vestingDuration;
@@ -47,15 +49,17 @@ contract('Seed', (accounts) => {
         before('!! deploy setup', async () => {
             setup = await deploy(accounts);
             admin = accounts[1];
+            buyer1 = accounts[2];            
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             cap = toWei('100');
             price = toWei('0.01');
+            buyAmount = toWei('50');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
             vestingCliff = 90; // 3 months
-            isWhitelisted = true;
+            isWhitelisted = false;
         });
 
         context('» parameters are valid', () => {
@@ -65,13 +69,23 @@ contract('Seed', (accounts) => {
             });
             it('it initializes a seed contract', async () => {
                 // top up admins token balance
-                await setup.tokens.primeToken.transfer(admin, cap, {from:setup.root});
-                await setup.tokens.primeToken.approve(setup.data.seed.address, cap, {from:admin});
+                await seedToken.transfer(admin, cap, {from:setup.root});
+                await seedToken.approve(setup.data.seed.address, cap, {from:admin});
 
                 await setup.data.seed.initialize({from:admin});
 
                expect(await setup.data.seed.closed()).to.equal(false);
                expect(await setup.data.seed.paused()).to.equal(false);
+            });
+            it('it buys tokens ', async () => {
+               // top up buyer1 token balance
+               await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});               
+               await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer1});
+
+               await setup.data.seed.buy(buyAmount, {from:buyer1});
+
+               expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(buyAmount);
+               // expect(await setup.data.seed.paused()).to.equal(false);
             });
         });
     });

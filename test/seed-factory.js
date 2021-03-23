@@ -55,7 +55,7 @@ contract('SeedFactory', (accounts) => {
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
             vestingCliff = 90; // 3 months
-            isWhitelisted = true;
+            isWhitelisted = false;
         });
 
         context('» parameters are valid', () => {

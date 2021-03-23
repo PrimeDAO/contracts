@@ -200,10 +200,10 @@ contract Seed {
         address _recipient,
         uint256 _startTime,
         uint256 _amount
-    ) 
-        internal    
+    )
+        internal
     {
-        
+  
         uint256 amountVestedPerDay = _amount.div(vestingDuration);
         require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
 
@@ -220,5 +220,4 @@ contract Seed {
         // emit GrantAdded(_recipient, totalVestingCount);
         totalLockCount++;
     }
-
 }
