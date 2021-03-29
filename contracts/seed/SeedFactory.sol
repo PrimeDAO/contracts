@@ -14,6 +14,8 @@
 pragma solidity 0.5.13;
 
 import "./Seed.sol";
+// TODO: migrate to ERC1167 as it is implemented in the FarmFactory main branch
+
 
 /**
  * @title primeDAO Seed Factory
@@ -33,7 +35,7 @@ contract SeedFactory {
 		address _admin,
 		address _seedToken,
 		address _fundingToken,
-		uint 	_cap,
+		uint 	_cap, // note: maybe change cap to saleSize // successFloor
 		uint 	_price,
 		uint 	_startTime,
 		uint 	_endTime,
@@ -44,7 +46,9 @@ contract SeedFactory {
 	public
 	returns(address)
 	{
-
+		// TODO:
+		// deploy
+		// initialize
 		Seed _newSeed = new Seed(
 				_admin,
 				_seedToken,

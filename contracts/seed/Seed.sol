@@ -108,6 +108,9 @@ contract Seed {
         require(amountVested > 0, "Seed: amountVested is 0");
 
         // TODO: add fee
+        // success fee should be transfered to the DAO after the sale ends
+        // success fee percentage should be added on construction
+        // success fee should be taken in both tokens 
         Lock storage tokenLock = tokenLocks[_locker];
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
@@ -168,6 +171,7 @@ contract Seed {
     }
 
     // ADD GETTER FUNCTIONS
+    // add more getter functions to get info from the contract & locks
     function calculateClaim(address _locker) public view returns(uint16, uint256) {
         return _calculateClaim(_locker);
     }
