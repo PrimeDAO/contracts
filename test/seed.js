@@ -95,7 +95,10 @@ contract('Seed', (accounts) => {
                 // increase time
                 await time.increase(time.duration.days(91));
                 // claim lock
-                await setup.data.seed.claimLock(buyer1, {from:buyer1});
+                tx = await setup.data.seed.claimLock(buyer1, {from:buyer1});
+                setup.data.tx = tx;
+
+                await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
             });
         });
     });

@@ -47,6 +47,7 @@ contract Seed {
     mapping (address => Lock) public tokenLocks; // locker to lock
 
     event LockAdded(address indexed recipient, uint256 locked);
+    event TokensClaimed(address indexed recipient, uint256 amountVested);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Seed: caller should be admin");
@@ -106,12 +107,13 @@ contract Seed {
         (daysVested, amountVested) = _calculateClaim(_locker);
         require(amountVested > 0, "Seed: amountVested is 0");
 
+        // TODO: add fee
         Lock storage tokenLock = tokenLocks[_locker];
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
         require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
-        // emit LockedTokensClaimed(tokenLock.recipient, amountVested);
+        emit TokensClaimed(tokenLock.recipient, amountVested);
     }
 
     function buy(uint256 _amount) public protected checked {
@@ -165,9 +167,41 @@ contract Seed {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(msg.sender));
     }
 
-    // TODO: ADD GETTER FUNCTIONS
+    // ADD GETTER FUNCTIONS
+    function calculateClaim(address _locker) public view returns(uint16, uint256) {
+        return _calculateClaim(_locker);
+    }
 
     // INTERNAL FUNCTIONS
+
+    // TODO: make private and add getter func
+    function _calculateClaim(address _locker) private view returns (uint16, uint256) {
+        Lock storage tokenLock = tokenLocks[_locker];
+
+        // For grants created with a future start date, that hasn't been reached, return 0, 0
+        if (_currentTime() < tokenLock.startTime) {
+            return (0, 0);
+        }
+
+        // Check cliff was reached
+        uint elapsedTime = _currentTime().sub(tokenLock.startTime);
+        uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
+        
+        if (elapsedDays < tokenLock.vestingCliff) {
+            return (uint16(elapsedDays), 0);
+        }
+
+        // If over vesting duration, all tokens vested
+        if (elapsedDays >= tokenLock.vestingDuration) {
+            uint256 remainingGrant = tokenLock.amount.sub(tokenLock.totalClaimed);
+            return (tokenLock.vestingDuration, remainingGrant);
+        } else {
+            uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
+            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(tokenLock.vestingDuration));
+            uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
+            return (daysVested, amountVested);
+        }
+    }
 
     function _currentTime() internal view returns(uint256) {
         return block.timestamp;
@@ -197,34 +231,4 @@ contract Seed {
         emit LockAdded(_recipient, _amount);
         totalLockCount++;
     }
-
-    // TODO: make private and add getter func
-    function _calculateClaim(address _locker) public view returns (uint16, uint256) {
-        Lock storage tokenLock = tokenLocks[_locker];
-
-        // For grants created with a future start date, that hasn't been reached, return 0, 0
-        if (_currentTime() < tokenLock.startTime) {
-            return (0, 0);
-        }
-
-        // Check cliff was reached
-        uint elapsedTime = _currentTime().sub(tokenLock.startTime);
-        uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
-        
-        if (elapsedDays < tokenLock.vestingCliff) {
-            return (uint16(elapsedDays), 0);
-        }
-
-        // If over vesting duration, all tokens vested
-        if (elapsedDays >= tokenLock.vestingDuration) {
-            uint256 remainingGrant = tokenLock.amount.sub(tokenLock.totalClaimed);
-            return (tokenLock.vestingDuration, remainingGrant);
-        } else {
-            uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
-            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(tokenLock.vestingDuration));
-            uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
-            return (daysVested, amountVested);
-        }
-    }
-
 }
