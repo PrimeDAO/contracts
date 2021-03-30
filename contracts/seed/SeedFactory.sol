@@ -56,6 +56,15 @@ contract SeedFactory is CloneFactory {
         parent = _parent;
     }
 
+    /**
+    * @dev             Update Seed contract which works as a base for clones.
+    * @param newParent The address of the new Seed basis.
+    */
+    function changeParent(Seed newParent) public protected {
+        parent = newParent;
+        parent.transferOwnership(address(avatar));
+    }
+
     // TODO: add change avatar
     function deploySeed(
     address _admin,
@@ -88,7 +97,8 @@ contract SeedFactory is CloneFactory {
             _fee
         );
 
-        // _newSeed.transferOwnership(address(avatar));
+        // _newSeed.transferOwnership(_admin); // check re design with this 
+
         if (msg.sender == address(avatar)) {
             whitelist.push(address(_newSeed));
         }
