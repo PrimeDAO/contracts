@@ -10,11 +10,12 @@
 */
 
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+/* solhint-disable space-after-comma */
 pragma solidity 0.5.13;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+
 
 /**
  * @title primeDAO Seed contract
@@ -43,6 +44,7 @@ contract Seed {
     bool      public closed;
     bool      public paused;
     uint256   public totalLockCount;
+    bool      public initialized;
 
     mapping (address => bool) public whitelisted;
     mapping (address => Lock) public tokenLocks; // locker to lock
@@ -50,6 +52,12 @@ contract Seed {
 
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
+
+    modifier initializer() {
+        require(!initialized, "Seed: contract already initialized");
+        initialized = true;
+        _;
+    }
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Seed: caller should be admin");
@@ -67,7 +75,7 @@ contract Seed {
         _;
     }
 
-    constructor(
+    function initialize(
         address _admin,
         address _seedToken,
         address _fundingToken,
@@ -79,9 +87,7 @@ contract Seed {
         uint16  _vestingCliff,
         bool    _isWhitelisted,
         uint8   _fee
-    )
-    public
-    {
+    ) public {
         admin           = _admin;
         successMinimum  = _successMinimum;
         price           = _price;
@@ -211,7 +217,7 @@ contract Seed {
     }
 
     function getFee(address _locker) public view returns(uint256) {
-        return fees[_locker]; 
+        return fees[_locker];
     }
 
     // INTERNAL FUNCTIONS

@@ -61,13 +61,14 @@ contract('Seed', (accounts) => {
             vestingDuration = 365; // 1 year
             vestingCliff = 90; // 3 months
             isWhitelisted = false;
-            fee = 2; 
+            fee = 2;
         });
 
         context('» parameters are valid', () => {
             it('it deploys a new seed contract', async () => {
                 // deploy new seed contract
-                setup.data.seed = await Seed.new(
+                setup.data.seed = await Seed.new();
+                setup.data.seed.initialize(
                     admin,
                     seedToken.address,
                     fundingToken.address,
@@ -79,7 +80,7 @@ contract('Seed', (accounts) => {
                     vestingCliff,
                     isWhitelisted,
                     fee
-                );
+                ); 
             });
             it('it initializes a seed contract', async () => {
                 // top up admins token balance
