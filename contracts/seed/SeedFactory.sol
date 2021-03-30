@@ -63,10 +63,10 @@ contract SeedFactory is CloneFactory {
     */
     function changeParent(Seed newParent) public protected {
         parent = newParent;
-        // parent.transferOwnership(address(avatar));
     }
 
-    // TODO: add change avatar
+    // TODO: add changeAvatar()
+
     function deploySeed(
     address _admin,
     address _seedToken,
@@ -80,8 +80,8 @@ contract SeedFactory is CloneFactory {
     bool 	_isWhitelisted,
     uint8 _fee
     ) public returns(address) {
-        // deploy
-        Seed _newSeed = new Seed();
+        // deploy clone 
+        address _newSeed = createClone(address(parent));
 
         // fund
         require(
@@ -90,7 +90,7 @@ contract SeedFactory is CloneFactory {
         );
 
         // initialize
-        _newSeed.initialize(
+        Seed(_newSeed).initialize(
             _admin,
             _seedToken,
             _fundingToken,
@@ -103,8 +103,6 @@ contract SeedFactory is CloneFactory {
             _isWhitelisted,
             _fee
         );
-
-        // _newSeed.transferOwnership(_admin); // check re design with this
 
         if (msg.sender == address(avatar)) {
             whitelist.push(address(_newSeed));
