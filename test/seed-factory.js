@@ -43,6 +43,7 @@ contract('SeedFactory', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
+    let successMinimum;
 
     context('» creator is not avatar', () => {
         before('!! deploy setup', async () => {
@@ -52,6 +53,7 @@ contract('SeedFactory', (accounts) => {
             fundingToken = setup.tokens.erc20s[0];
             cap = toWei('100');
             price = toWei('0.01');
+            successMinimum = toWei('100');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -62,6 +64,10 @@ contract('SeedFactory', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
+                // top up admins token balance
+                await seedToken.transfer(admin, successMinimum, {from:setup.root});
+                await seedToken.approve(setup.seedFactory.address, successMinimum, {from:admin});
+
                 let tx = await setup.seedFactory.deploySeed(
                     admin,
                     seedToken.address,

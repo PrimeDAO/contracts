@@ -15,6 +15,7 @@ pragma solidity 0.5.13;
 
 import "@daostack/arc/contracts/controller/Avatar.sol";
 import "@daostack/arc/contracts/controller/Controller.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "./Seed.sol";
 import "../utils/CloneFactory.sol";
 
@@ -81,6 +82,12 @@ contract SeedFactory is CloneFactory {
     ) public returns(address) {
         // deploy
         Seed _newSeed = new Seed();
+
+        // fund
+        require(
+            ERC20(_seedToken).transferFrom(_admin, address(_newSeed), _successMinimum),
+            "SeedFactory: should transfer seed tokens"
+        );
 
         // initialize
         _newSeed.initialize(
