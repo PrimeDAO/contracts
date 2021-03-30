@@ -36,7 +36,7 @@ contract('Seed', (accounts) => {
     let buyer1;
     let seedToken;
     let fundingToken;
-    let cap;
+    let successMinimum;
     let price;
     let buyAmount;
     let startTime;
@@ -44,15 +44,16 @@ contract('Seed', (accounts) => {
     let vestingDuration;
     let vestingCliff;
     let isWhitelisted;
+    let fee;
 
     context('» creator is not avatar', () => {
         before('!! deploy setup', async () => {
             setup = await deploy(accounts);
             admin = accounts[1];
-            buyer1 = accounts[2];            
+            buyer1 = accounts[2];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            cap = toWei('100');
+            successMinimum = toWei('100');
             price = toWei('0.01');
             buyAmount = toWei('50');
             startTime  = await time.latest();
@@ -60,17 +61,30 @@ contract('Seed', (accounts) => {
             vestingDuration = 365; // 1 year
             vestingCliff = 90; // 3 months
             isWhitelisted = false;
+            fee = 2; 
         });
 
         context('» parameters are valid', () => {
             it('it deploys a new seed contract', async () => {
                 // deploy new seed contract
-                setup.data.seed = await Seed.new(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
+                setup.data.seed = await Seed.new(
+                    admin,
+                    seedToken.address,
+                    fundingToken.address,
+                    successMinimum,
+                    price,
+                    startTime,
+                    endTime,
+                    vestingDuration,
+                    vestingCliff,
+                    isWhitelisted,
+                    fee
+                );
             });
             it('it initializes a seed contract', async () => {
                 // top up admins token balance
-                await seedToken.transfer(admin, cap, {from:setup.root});
-                await seedToken.approve(setup.data.seed.address, cap, {from:admin});
+                await seedToken.transfer(admin, successMinimum, {from:setup.root});
+                await seedToken.approve(setup.data.seed.address, successMinimum, {from:admin});
 
                 await setup.data.seed.initialize({from:admin});
 
@@ -79,7 +93,7 @@ contract('Seed', (accounts) => {
             });
             it('it buys tokens ', async () => {
                 // top up buyer1 token balance
-                await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});               
+                await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});
                 await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer1});
 
                 tx = await setup.data.seed.buy(buyAmount, {from:buyer1});
@@ -99,6 +113,7 @@ contract('Seed', (accounts) => {
                 setup.data.tx = tx;
 
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
+                // console.log((await setup.tokens.primeToken.balanceOf(buyer1)).toString());
             });
         });
     });

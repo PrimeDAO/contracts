@@ -25,7 +25,7 @@ contract Seed {
 
     // Locked parameters
     address public admin;
-    uint    public cap;
+    uint    public successMinimum;
     uint    public price;
     uint    public startTime;
     uint    public endTime;
@@ -34,6 +34,7 @@ contract Seed {
     uint16  public vestingCliff;
     ERC20   public seedToken;
     ERC20   public fundingToken;
+    uint8   public fee;
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
     uint256 constant internal SECONDS_PER_DAY = 86400;
@@ -45,6 +46,7 @@ contract Seed {
 
     mapping (address => bool) public whitelisted;
     mapping (address => Lock) public tokenLocks; // locker to lock
+    mapping (address => uint256) public fees;
 
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
@@ -69,18 +71,19 @@ contract Seed {
         address _admin,
         address _seedToken,
         address _fundingToken,
-        uint    _cap,
+        uint    _successMinimum,
         uint    _price,
         uint    _startTime,
         uint    _endTime,
         uint16  _vestingDuration,
         uint16  _vestingCliff,
-        bool    _isWhitelisted
+        bool    _isWhitelisted,
+        uint8   _fee
     )
     public
     {
         admin           = _admin;
-        cap             = _cap;
+        successMinimum  = _successMinimum;
         price           = _price;
         startTime       = _startTime;
         endTime         = _endTime;
@@ -89,6 +92,7 @@ contract Seed {
         isWhitelisted   = _isWhitelisted;
         seedToken       = ERC20(_seedToken);
         fundingToken    = ERC20(_fundingToken);
+        fee             = _fee;
     }
 
     struct Lock {
@@ -107,14 +111,11 @@ contract Seed {
         (daysVested, amountVested) = _calculateClaim(_locker);
         require(amountVested > 0, "Seed: amountVested is 0");
 
-        // TODO: add fee
-        // success fee should be transfered to the DAO after the sale ends
-        // success fee percentage should be added on construction
-        // success fee should be taken in both tokens 
         Lock storage tokenLock = tokenLocks[_locker];
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
+        require(seedToken.transfer(admin, fees[_locker]), "Seed: cannot transfer fee to dao");
         require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
         emit TokensClaimed(tokenLock.recipient, amountVested);
     }
@@ -122,16 +123,15 @@ contract Seed {
     function buy(uint256 _amount) public protected checked {
         require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
 
-        // TODO: ADD fees
+        uint feeAmount = _amount.mul(fee).div(100);
+        fees[msg.sender] = feeAmount;
         uint _lockTokens = tokenLocks[msg.sender].amount;
         _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE));
     }
 
     // ADMIN ACTIONS
-
     function initialize() public onlyAdmin {
-        // require(seedAmount >= cap, "Seed: amount is higher than cap");
-        require(seedToken.transferFrom(admin, address(this), cap), "Seed: should transfer seed tokens");
+        require(seedToken.transferFrom(admin, address(this), successMinimum), "Seed: should transfer seed tokens");
         closed = false;
     }
 
@@ -148,7 +148,10 @@ contract Seed {
 
     function close() public onlyAdmin protected {
         // transfer all the tokens back to admin
-        require(fundingToken.transfer(admin, fundingToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");
+        require(
+            fundingToken.transfer(admin, fundingToken.balanceOf(address(this))),
+            "Seed: should transfer tokens to admin"
+        );
         require(seedToken.transfer(admin, seedToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");
 
         closed = true;
@@ -170,43 +173,48 @@ contract Seed {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(msg.sender));
     }
 
-    // ADD GETTER FUNCTIONS
-    // add more getter functions to get info from the contract & locks
+    // GETTER FUNCTIONS
     function calculateClaim(address _locker) public view returns(uint16, uint256) {
         return _calculateClaim(_locker);
     }
 
-    // INTERNAL FUNCTIONS
-
-    // TODO: make private and add getter func
-    function _calculateClaim(address _locker) private view returns (uint16, uint256) {
-        Lock storage tokenLock = tokenLocks[_locker];
-
-        // For grants created with a future start date, that hasn't been reached, return 0, 0
-        if (_currentTime() < tokenLock.startTime) {
-            return (0, 0);
-        }
-
-        // Check cliff was reached
-        uint elapsedTime = _currentTime().sub(tokenLock.startTime);
-        uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
-        
-        if (elapsedDays < tokenLock.vestingCliff) {
-            return (uint16(elapsedDays), 0);
-        }
-
-        // If over vesting duration, all tokens vested
-        if (elapsedDays >= tokenLock.vestingDuration) {
-            uint256 remainingGrant = tokenLock.amount.sub(tokenLock.totalClaimed);
-            return (tokenLock.vestingDuration, remainingGrant);
-        } else {
-            uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
-            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(tokenLock.vestingDuration));
-            uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
-            return (daysVested, amountVested);
-        }
+    function checkWhitelisted(address _buyer) public view returns(bool) {
+        return whitelisted[_buyer];
     }
 
+    function getStartTime(address _locker) public view returns(uint256) {
+        return tokenLocks[_locker].startTime;
+    }
+
+    function getAmount(address _locker) public view returns(uint256) {
+        return tokenLocks[_locker].amount;
+    }
+
+    function getVestingDuration(address _locker) public view returns(uint16) {
+        return tokenLocks[_locker].vestingDuration;
+    }
+
+    function getVestingCliff(address _locker) public view returns(uint16) {
+        return tokenLocks[_locker].vestingCliff;
+    }
+
+    function getDaysClaimed(address _locker) public view returns(uint16) {
+        return tokenLocks[_locker].daysClaimed;
+    }
+
+    function getTotalClaimed(address _locker) public view returns(uint256) {
+        return tokenLocks[_locker].totalClaimed;
+    }
+
+    function getRecipient(address _locker) public view returns(address) {
+        return tokenLocks[_locker].recipient;
+    }
+
+    function getFee(address _locker) public view returns(uint256) {
+        return fees[_locker]; 
+    }
+
+    // INTERNAL FUNCTIONS
     function _currentTime() internal view returns(uint256) {
         return block.timestamp;
     }
@@ -215,10 +223,10 @@ contract Seed {
         address _recipient,
         uint256 _startTime,
         uint256 _amount
-    ) 
-        internal    
+    )
+        internal
     {
-        
+
         uint256 amountVestedPerDay = _amount.div(vestingDuration);
         require(amountVestedPerDay > 0, "Seed: amountVestedPerDay > 0");
 
@@ -234,5 +242,33 @@ contract Seed {
         tokenLocks[_recipient] = lock;
         emit LockAdded(_recipient, _amount);
         totalLockCount++;
+    }
+
+    function _calculateClaim(address _locker) private view returns (uint16, uint256) {
+        Lock storage tokenLock = tokenLocks[_locker];
+
+        // For grants created with a future start date, that hasn't been reached, return 0, 0
+        if (_currentTime() < tokenLock.startTime) {
+            return (0, 0);
+        }
+
+        // Check cliff was reached
+        uint elapsedTime = _currentTime().sub(tokenLock.startTime);
+        uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
+
+        if (elapsedDays < tokenLock.vestingCliff) {
+            return (uint16(elapsedDays), 0);
+        }
+
+        // If over vesting duration, all tokens vested
+        if (elapsedDays >= tokenLock.vestingDuration) {
+            uint256 remainingGrant = tokenLock.amount.sub(tokenLock.totalClaimed);
+            return (tokenLock.vestingDuration, remainingGrant);
+        } else {
+            uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
+            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(tokenLock.vestingDuration));
+            uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
+            return (daysVested, amountVested);
+        }
     }
 }
