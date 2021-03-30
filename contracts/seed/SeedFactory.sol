@@ -65,7 +65,13 @@ contract SeedFactory is CloneFactory {
         parent = newParent;
     }
 
-    // TODO: add changeAvatar()
+    /**
+    * @dev             Update Avatar.
+    * @param _newAvatar The address of the new Avatar.
+    */
+    function changeAvatar(Avatar _newAvatar) public protected {
+        avatar = _newAvatar;
+    }
 
     function deploySeed(
     address _admin,
@@ -80,7 +86,7 @@ contract SeedFactory is CloneFactory {
     bool 	_isWhitelisted,
     uint8 _fee
     ) public returns(address) {
-        // deploy clone 
+        // deploy clone
         address _newSeed = createClone(address(parent));
 
         // fund
