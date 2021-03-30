@@ -62,7 +62,7 @@ contract SeedFactory is CloneFactory {
     */
     function changeParent(Seed newParent) public protected {
         parent = newParent;
-        parent.transferOwnership(address(avatar));
+        // parent.transferOwnership(address(avatar));
     }
 
     // TODO: add change avatar
@@ -97,7 +97,7 @@ contract SeedFactory is CloneFactory {
             _fee
         );
 
-        // _newSeed.transferOwnership(_admin); // check re design with this 
+        // _newSeed.transferOwnership(_admin); // check re design with this
 
         if (msg.sender == address(avatar)) {
             whitelist.push(address(_newSeed));
