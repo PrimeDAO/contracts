@@ -71,19 +71,7 @@ contract SeedFactory is CloneFactory {
     uint8 _fee
     ) public returns(address) {
         // deploy
-        Seed _newSeed = new Seed(
-        // _admin,
-        // _seedToken,
-        // _fundingToken,
-        // _successMinimum,
-        // _price,
-        // _startTime,
-        // _endTime,
-        // _vestingDuration,
-        // _vestingCliff,
-        // _isWhitelisted,
-        // _fee
-        );
+        Seed _newSeed = new Seed();
 
         // initialize
         _newSeed.initialize(

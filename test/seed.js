@@ -80,7 +80,7 @@ contract('Seed', (accounts) => {
                     vestingCliff,
                     isWhitelisted,
                     fee
-                ); 
+                );
             });
             it('it initializes a seed contract', async () => {
                 // top up admins token balance
@@ -114,7 +114,6 @@ contract('Seed', (accounts) => {
                 setup.data.tx = tx;
 
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
-                // console.log((await setup.tokens.primeToken.balanceOf(buyer1)).toString());
             });
         });
     });
