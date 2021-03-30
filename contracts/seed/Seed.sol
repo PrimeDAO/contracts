@@ -134,7 +134,6 @@ contract Seed {
         seedToken       = ERC20(_seedToken);
         fundingToken    = ERC20(_fundingToken);
         fee             = _fee;
-        // require(seedToken.transferFrom(admin, address(this), successMinimum), "Seed: should transfer seed tokens"); // moved to seedfactory
         closed = false;
     }
 
