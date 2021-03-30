@@ -45,6 +45,7 @@ contract('Seed', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
+    let seed;
 
     context('» creator is not avatar', () => {
         before('!! deploy setup', async () => {
@@ -62,13 +63,21 @@ contract('Seed', (accounts) => {
             vestingCliff = 90; // 3 months
             isWhitelisted = false;
             fee = 2;
+
         });
 
         context('» parameters are valid', () => {
             it('it deploys a new seed contract', async () => {
                 // deploy new seed contract
-                setup.data.seed = await Seed.new();
-                setup.data.seed.initialize(
+                seed = await Seed.new();
+            });
+            it('it initializes a seed contract', async () => {
+                // top up admins token balance
+                await seedToken.transfer(admin, successMinimum, {from:setup.root});
+                await seedToken.approve(seed.address, successMinimum, {from:admin});
+
+                // await seed.initialize({from:admin});
+                seed.initialize(
                     admin,
                     seedToken.address,
                     fundingToken.address,
@@ -79,41 +88,35 @@ contract('Seed', (accounts) => {
                     vestingDuration,
                     vestingCliff,
                     isWhitelisted,
-                    fee
+                    fee,
+                    {from:admin}
                 );
-            });
-            it('it initializes a seed contract', async () => {
-                // top up admins token balance
-                await seedToken.transfer(admin, successMinimum, {from:setup.root});
-                await seedToken.approve(setup.data.seed.address, successMinimum, {from:admin});
 
-                await setup.data.seed.initialize({from:admin});
-
-                expect(await setup.data.seed.closed()).to.equal(false);
-                expect(await setup.data.seed.paused()).to.equal(false);
+                expect(await seed.closed()).to.equal(false);
+                expect(await seed.paused()).to.equal(false);
             });
             it('it buys tokens ', async () => {
                 // top up buyer1 token balance
                 await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});
-                await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer1});
+                await fundingToken.approve(seed.address, buyAmount, {from:buyer1});
 
-                tx = await setup.data.seed.buy(buyAmount, {from:buyer1});
+                tx = await seed.buy(buyAmount, {from:buyer1});
                 setup.data.tx = tx;
 
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'LockAdded');
-                expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(buyAmount);
+                await expectEvent.inTransaction(setup.data.tx.tx, seed, 'LockAdded');
+                expect((await fundingToken.balanceOf(seed.address)).toString()).to.equal(buyAmount);
             });
             it('it fails on withdrawing seed tokens ', async () => {
-                await expectRevert(setup.data.seed.claimLock(buyer1), 'Seed: amountVested is 0');
+                await expectRevert(seed.claimLock(buyer1), 'Seed: amountVested is 0');
             });
             it('it withdraws tokens after time passes', async () => {
                 // increase time
                 await time.increase(time.duration.days(91));
                 // claim lock
-                tx = await setup.data.seed.claimLock(buyer1, {from:buyer1});
+                tx = await seed.claimLock(buyer1, {from:buyer1});
                 setup.data.tx = tx;
 
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
+                await expectEvent.inTransaction(setup.data.tx.tx, seed, 'TokensClaimed');
             });
         });
     });

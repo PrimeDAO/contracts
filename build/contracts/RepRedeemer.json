@@ -22,15 +22,15 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.13+commit.5b0b510c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"contract Locking4Reputation\",\"name\":\"lt4Reputation\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"lt4rRedeems\",\"type\":\"address[]\"}],\"name\":\"redeemLocking4Reputation\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/tengree/Projects/primedao/contracts/contracts/RepRedeemer.sol\":\"RepRedeemer\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/tengree/Projects/primedao/contracts/contracts/RepRedeemer.sol\":{\"keccak256\":\"0x02fd8118c92dca3ebc0d75e2ea73c60a4baa2cea4bd392ff58f111857cf59a34\",\"urls\":[\"bzz-raw://af608f3a9f3b2eabb0425fc7305683e04cda1b72c8b170ba6127cf55352baf00\",\"dweb:/ipfs/QmYo3zm8XuLB2S3GFNyaXPCZ6Y28AbEYsut3fuQQ9B9CFa\"]},\"@daostack/arc/contracts/controller/Avatar.sol\":{\"keccak256\":\"0xdc75e96aca5c6aeaa3bbf97d2a3a1d305c1c168b74f1d5a6b151648e1b71086f\",\"urls\":[\"bzz-raw://425e5a7e0d27fe14af052e826a1757135afc30cf6941986dcd2c336e34c5d24c\",\"dweb:/ipfs/QmR9Jn4ZNx8LNyzSRWhdNh7rG8pccSHLX3iqdSk26VYw3R\"]},\"@daostack/arc/contracts/controller/Controller.sol\":{\"keccak256\":\"0x88fe5ca7618e1ed502a9665e53bfab5260282a9a7b561361ee8067af59a58f5a\",\"urls\":[\"bzz-raw://911676f75c5f83d54a7c892bb8dd39daa7b199c358536e7347ca150e815759bc\",\"dweb:/ipfs/QmT8TtonKcEgjrok8b3zUkGZQL6FEZCXFdkYMc5jV61bD6\"]},\"@daostack/arc/contracts/controller/DAOToken.sol\":{\"keccak256\":\"0x567235b3ec3884704725a775559a2c60b46c56d144072929035dbadeeb65e884\",\"urls\":[\"bzz-raw://8944f3ffa3f1fbc1aa6bfddf5f055a15bec79f51dcca655d5a8698aa9dfd38d4\",\"dweb:/ipfs/QmUZWJVgaXkMVMGiXAHkiETCHGptt6wCRLUiaGrzxk7Lv4\"]},\"@daostack/arc/contracts/globalConstraints/GlobalConstraintInterface.sol\":{\"keccak256\":\"0x83fb7666df1270aa8d857a631172b555dcf4f24fabba9a2a241d2b1ca2e574ef\",\"urls\":[\"bzz-raw://2499d07b8ba63936601c61884415a5f6848f1883e452efb608ccb181d98125e8\",\"dweb:/ipfs/QmeZCTMZ6KwJX1HLRZMMTZugskPDR6dvaNGEknEyyBePxt\"]},\"@daostack/arc/contracts/libs/SafeERC20.sol\":{\"keccak256\":\"0x1e91e541a9e835c05372a53eb7879e05bc47f6355602d6d3bf4bbdd8f660fc95\",\"urls\":[\"bzz-raw://ba9d1c3e68e38adc57e3097d191e7328816839ca918aff208338fb447b0792d8\",\"dweb:/ipfs/QmWisfDaqBSoYjg2U93VsZL43Lba4Ko7mbe6YS2wZpgvDR\"]},\"@daostack/arc/contracts/schemes/Agreement.sol\":{\"keccak256\":\"0xd2e8e2b9fb421c823706a18c929b353115427a9ad5f2b6b355f9e89fb60473d0\",\"urls\":[\"bzz-raw://8c6f10c918a96a58a2dde4137127d9891b48d5d637f567fb374e6dee6a2a9b38\",\"dweb:/ipfs/QmTKPKkHEXU2sNbU5hH4prP8GwqZ1GhJk1H9zkayRcowvq\"]},\"@daostack/arc/contracts/schemes/Locking4Reputation.sol\":{\"keccak256\":\"0x0180348aed9e3a89f810920e1876b37991a50f6166fb3d16a624db7a8d7785e9\",\"urls\":[\"bzz-raw://8ae7d576bab9e4ba527a731461821c1427fbdf899c9253a50aeb2134f996029b\",\"dweb:/ipfs/QmWVkTjrmvm6U7mrKLskDWcKUxBhkswNeN9VvgXgY7qK2H\"]},\"@daostack/infra/contracts/Reputation.sol\":{\"keccak256\":\"0x8218b8a68b491a6e5ee3a445f5a7d21579c8a2e88f41bc10124f3b5c4c1cfff1\",\"urls\":[\"bzz-raw://db4d6c8135aa64c91db4843871b571c977d78ad3928a648c2153702c0c645363\",\"dweb:/ipfs/Qmdpev6RKbG3iM1bwt27X8zQAGNLjWC7LWx5txzTH22fQz\"]},\"openzeppelin-solidity/contracts/GSN/Context.sol\":{\"keccak256\":\"0x90a3995645af7562d84b9d69363ffa5ae7217714ab61e951bf7bc450f40e4061\",\"urls\":[\"bzz-raw://216ef9d6b614db4eb46970b4e84903f2534a45572dd30a79f0041f1a5830f436\",\"dweb:/ipfs/QmNPrJ4MWKUAWzKXpUqeyKRUfosaoANZAqXgvepdrCwZAG\"]},\"openzeppelin-solidity/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x640b6dee7a4b830bdfd52b5031a07fc2b12209f5b2e29e5d364a7d37f69d8076\",\"urls\":[\"bzz-raw://31113152e1ddb78fe7a4197f247591ca894e93f916867beb708d8e747b6cc74f\",\"dweb:/ipfs/QmbZaJyXdpsYGykVhHH9qpVGQg9DGCxE2QufbCUy3daTgq\"]},\"openzeppelin-solidity/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x6fb9d7889769d7cc161225f9ef7a90e468ba9788b253816f8d8b6894d3472c24\",\"urls\":[\"bzz-raw://cf4c00fc3c37cc5acf0c82ec6fd97bab67d72c2567fdc0ebf023d9c09b30a08e\",\"dweb:/ipfs/Qmb7TChG6DsEDX7LooJ4vmxot19f7VXX8S1zUGPeJTWbwZ\"]},\"openzeppelin-solidity/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0xb15af804e2bc97db51e4e103f13de9fe13f87e6b835d7a88c897966c0e58506e\",\"urls\":[\"bzz-raw://1e8cff8437557fc915a3bed968fcd8f2df9809599e665ef69c2c9ce628548055\",\"dweb:/ipfs/QmP5spYP8vs2jvLF8zNrXUbqB79hMsoEvMHiLcBxerWKcm\"]},\"openzeppelin-solidity/contracts/token/ERC20/ERC20Burnable.sol\":{\"keccak256\":\"0x9b94356691f3cbf90a5d83ae3fdf6a5a662bb004d2bd8b034160d60221807e64\",\"urls\":[\"bzz-raw://14a9d33db455302b8bb9fdb28998efefbe5a1cb41b29e31391609f646b2ab351\",\"dweb:/ipfs/Qmd4wFr6GEMZnnxgXeq3gmp7cs8tqDuHp3TVNhCbjnux2V\"]},\"openzeppelin-solidity/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xe5bb0f57cff3e299f360052ba50f1ea0fff046df2be070b6943e0e3c3fdad8a9\",\"urls\":[\"bzz-raw://59fd025151435da35faa8093a5c7a17de02de9d08ad27275c5cdf05050820d91\",\"dweb:/ipfs/QmQMvwEcPhoRXzbXyrdoeRtvLoifUW9Qh7Luho7bmUPRkc\"]},\"openzeppelin-solidity/contracts/utils/Address.sol\":{\"keccak256\":\"0x1a8e5072509c5ea7365eb1d48030b9be865140c8fb779968da0a459a0e174a11\",\"urls\":[\"bzz-raw://03335b7b07c7c8c8d613cfdd8ec39a0b5ec133ee510bf2fe6cc5a496767bef4b\",\"dweb:/ipfs/Qmebp4nzPja645c9yXSdJkGq96oU3am3LUnG2K3R7XxyKf\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50610304806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063379712e314610030575b600080fd5b61004361003e366004610196565b610045565b005b60005b81518110156100eb57826001600160a01b03166395a2251f83838151811061006c57fe5b60200260200101516040518263ffffffff1660e01b8152600401610090919061021d565b602060405180830381600087803b1580156100aa57600080fd5b505af11580156100be573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052506100e291908101906101e8565b50600101610048565b505050565b80356100fb81610298565b92915050565b600082601f83011261011257600080fd5b813561012561012082610252565b61022b565b9150818183526020840193506020810190508385602084028201111561014a57600080fd5b60005b83811015610176578161016088826100f0565b845250602092830192919091019060010161014d565b5050505092915050565b80356100fb816102af565b80516100fb816102b8565b600080604083850312156101a957600080fd5b60006101b58585610180565b925050602083013567ffffffffffffffff8111156101d257600080fd5b6101de85828601610101565b9150509250929050565b6000602082840312156101fa57600080fd5b6000610206848461018b565b949350505050565b61021781610273565b82525050565b602081016100fb828461020e565b60405181810167ffffffffffffffff8111828210171561024a57600080fd5b604052919050565b600067ffffffffffffffff82111561026957600080fd5b5060209081020190565b60006100fb82610289565b60006100fb82610273565b6001600160a01b031690565b90565b6102a181610273565b81146102ac57600080fd5b50565b6102a18161027e565b6102a18161029556fea365627a7a72315820f3a237652e2b9d3cf34e7c3fea5d906485097b01d136ea9da7b610ce6e5406776c6578706572696d656e74616cf564736f6c634300050d0040",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063379712e314610030575b600080fd5b61004361003e366004610196565b610045565b005b60005b81518110156100eb57826001600160a01b03166395a2251f83838151811061006c57fe5b60200260200101516040518263ffffffff1660e01b8152600401610090919061021d565b602060405180830381600087803b1580156100aa57600080fd5b505af11580156100be573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052506100e291908101906101e8565b50600101610048565b505050565b80356100fb81610298565b92915050565b600082601f83011261011257600080fd5b813561012561012082610252565b61022b565b9150818183526020840193506020810190508385602084028201111561014a57600080fd5b60005b83811015610176578161016088826100f0565b845250602092830192919091019060010161014d565b5050505092915050565b80356100fb816102af565b80516100fb816102b8565b600080604083850312156101a957600080fd5b60006101b58585610180565b925050602083013567ffffffffffffffff8111156101d257600080fd5b6101de85828601610101565b9150509250929050565b6000602082840312156101fa57600080fd5b6000610206848461018b565b949350505050565b61021781610273565b82525050565b602081016100fb828461020e565b60405181810167ffffffffffffffff8111828210171561024a57600080fd5b604052919050565b600067ffffffffffffffff82111561026957600080fd5b5060209081020190565b60006100fb82610289565b60006100fb82610273565b6001600160a01b031690565b90565b6102a181610273565b81146102ac57600080fd5b50565b6102a18161027e565b6102a18161029556fea365627a7a72315820f3a237652e2b9d3cf34e7c3fea5d906485097b01d136ea9da7b610ce6e5406776c6578706572696d656e74616cf564736f6c634300050d0040",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.13+commit.5b0b510c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"internalType\":\"contract Locking4Reputation\",\"name\":\"lt4Reputation\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"lt4rRedeems\",\"type\":\"address[]\"}],\"name\":\"redeemLocking4Reputation\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/mx/Dev/curve/prime_dao/prime_contracts/contracts/contracts/RepRedeemer.sol\":\"RepRedeemer\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/mx/Dev/curve/prime_dao/prime_contracts/contracts/contracts/RepRedeemer.sol\":{\"keccak256\":\"0x02fd8118c92dca3ebc0d75e2ea73c60a4baa2cea4bd392ff58f111857cf59a34\",\"urls\":[\"bzz-raw://af608f3a9f3b2eabb0425fc7305683e04cda1b72c8b170ba6127cf55352baf00\",\"dweb:/ipfs/QmYo3zm8XuLB2S3GFNyaXPCZ6Y28AbEYsut3fuQQ9B9CFa\"]},\"@daostack/arc/contracts/controller/Avatar.sol\":{\"keccak256\":\"0xdc75e96aca5c6aeaa3bbf97d2a3a1d305c1c168b74f1d5a6b151648e1b71086f\",\"urls\":[\"bzz-raw://425e5a7e0d27fe14af052e826a1757135afc30cf6941986dcd2c336e34c5d24c\",\"dweb:/ipfs/QmR9Jn4ZNx8LNyzSRWhdNh7rG8pccSHLX3iqdSk26VYw3R\"]},\"@daostack/arc/contracts/controller/Controller.sol\":{\"keccak256\":\"0x88fe5ca7618e1ed502a9665e53bfab5260282a9a7b561361ee8067af59a58f5a\",\"urls\":[\"bzz-raw://911676f75c5f83d54a7c892bb8dd39daa7b199c358536e7347ca150e815759bc\",\"dweb:/ipfs/QmT8TtonKcEgjrok8b3zUkGZQL6FEZCXFdkYMc5jV61bD6\"]},\"@daostack/arc/contracts/controller/DAOToken.sol\":{\"keccak256\":\"0x567235b3ec3884704725a775559a2c60b46c56d144072929035dbadeeb65e884\",\"urls\":[\"bzz-raw://8944f3ffa3f1fbc1aa6bfddf5f055a15bec79f51dcca655d5a8698aa9dfd38d4\",\"dweb:/ipfs/QmUZWJVgaXkMVMGiXAHkiETCHGptt6wCRLUiaGrzxk7Lv4\"]},\"@daostack/arc/contracts/globalConstraints/GlobalConstraintInterface.sol\":{\"keccak256\":\"0x83fb7666df1270aa8d857a631172b555dcf4f24fabba9a2a241d2b1ca2e574ef\",\"urls\":[\"bzz-raw://2499d07b8ba63936601c61884415a5f6848f1883e452efb608ccb181d98125e8\",\"dweb:/ipfs/QmeZCTMZ6KwJX1HLRZMMTZugskPDR6dvaNGEknEyyBePxt\"]},\"@daostack/arc/contracts/libs/SafeERC20.sol\":{\"keccak256\":\"0x1e91e541a9e835c05372a53eb7879e05bc47f6355602d6d3bf4bbdd8f660fc95\",\"urls\":[\"bzz-raw://ba9d1c3e68e38adc57e3097d191e7328816839ca918aff208338fb447b0792d8\",\"dweb:/ipfs/QmWisfDaqBSoYjg2U93VsZL43Lba4Ko7mbe6YS2wZpgvDR\"]},\"@daostack/arc/contracts/schemes/Agreement.sol\":{\"keccak256\":\"0xd2e8e2b9fb421c823706a18c929b353115427a9ad5f2b6b355f9e89fb60473d0\",\"urls\":[\"bzz-raw://8c6f10c918a96a58a2dde4137127d9891b48d5d637f567fb374e6dee6a2a9b38\",\"dweb:/ipfs/QmTKPKkHEXU2sNbU5hH4prP8GwqZ1GhJk1H9zkayRcowvq\"]},\"@daostack/arc/contracts/schemes/Locking4Reputation.sol\":{\"keccak256\":\"0x0180348aed9e3a89f810920e1876b37991a50f6166fb3d16a624db7a8d7785e9\",\"urls\":[\"bzz-raw://8ae7d576bab9e4ba527a731461821c1427fbdf899c9253a50aeb2134f996029b\",\"dweb:/ipfs/QmWVkTjrmvm6U7mrKLskDWcKUxBhkswNeN9VvgXgY7qK2H\"]},\"@daostack/infra/contracts/Reputation.sol\":{\"keccak256\":\"0x8218b8a68b491a6e5ee3a445f5a7d21579c8a2e88f41bc10124f3b5c4c1cfff1\",\"urls\":[\"bzz-raw://db4d6c8135aa64c91db4843871b571c977d78ad3928a648c2153702c0c645363\",\"dweb:/ipfs/Qmdpev6RKbG3iM1bwt27X8zQAGNLjWC7LWx5txzTH22fQz\"]},\"openzeppelin-solidity/contracts/GSN/Context.sol\":{\"keccak256\":\"0x90a3995645af7562d84b9d69363ffa5ae7217714ab61e951bf7bc450f40e4061\",\"urls\":[\"bzz-raw://216ef9d6b614db4eb46970b4e84903f2534a45572dd30a79f0041f1a5830f436\",\"dweb:/ipfs/QmNPrJ4MWKUAWzKXpUqeyKRUfosaoANZAqXgvepdrCwZAG\"]},\"openzeppelin-solidity/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x640b6dee7a4b830bdfd52b5031a07fc2b12209f5b2e29e5d364a7d37f69d8076\",\"urls\":[\"bzz-raw://31113152e1ddb78fe7a4197f247591ca894e93f916867beb708d8e747b6cc74f\",\"dweb:/ipfs/QmbZaJyXdpsYGykVhHH9qpVGQg9DGCxE2QufbCUy3daTgq\"]},\"openzeppelin-solidity/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0x6fb9d7889769d7cc161225f9ef7a90e468ba9788b253816f8d8b6894d3472c24\",\"urls\":[\"bzz-raw://cf4c00fc3c37cc5acf0c82ec6fd97bab67d72c2567fdc0ebf023d9c09b30a08e\",\"dweb:/ipfs/Qmb7TChG6DsEDX7LooJ4vmxot19f7VXX8S1zUGPeJTWbwZ\"]},\"openzeppelin-solidity/contracts/token/ERC20/ERC20.sol\":{\"keccak256\":\"0xb15af804e2bc97db51e4e103f13de9fe13f87e6b835d7a88c897966c0e58506e\",\"urls\":[\"bzz-raw://1e8cff8437557fc915a3bed968fcd8f2df9809599e665ef69c2c9ce628548055\",\"dweb:/ipfs/QmP5spYP8vs2jvLF8zNrXUbqB79hMsoEvMHiLcBxerWKcm\"]},\"openzeppelin-solidity/contracts/token/ERC20/ERC20Burnable.sol\":{\"keccak256\":\"0x9b94356691f3cbf90a5d83ae3fdf6a5a662bb004d2bd8b034160d60221807e64\",\"urls\":[\"bzz-raw://14a9d33db455302b8bb9fdb28998efefbe5a1cb41b29e31391609f646b2ab351\",\"dweb:/ipfs/Qmd4wFr6GEMZnnxgXeq3gmp7cs8tqDuHp3TVNhCbjnux2V\"]},\"openzeppelin-solidity/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xe5bb0f57cff3e299f360052ba50f1ea0fff046df2be070b6943e0e3c3fdad8a9\",\"urls\":[\"bzz-raw://59fd025151435da35faa8093a5c7a17de02de9d08ad27275c5cdf05050820d91\",\"dweb:/ipfs/QmQMvwEcPhoRXzbXyrdoeRtvLoifUW9Qh7Luho7bmUPRkc\"]},\"openzeppelin-solidity/contracts/utils/Address.sol\":{\"keccak256\":\"0x1a8e5072509c5ea7365eb1d48030b9be865140c8fb779968da0a459a0e174a11\",\"urls\":[\"bzz-raw://03335b7b07c7c8c8d613cfdd8ec39a0b5ec133ee510bf2fe6cc5a496767bef4b\",\"dweb:/ipfs/Qmebp4nzPja645c9yXSdJkGq96oU3am3LUnG2K3R7XxyKf\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610304806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063379712e314610030575b600080fd5b61004361003e366004610196565b610045565b005b60005b81518110156100eb57826001600160a01b03166395a2251f83838151811061006c57fe5b60200260200101516040518263ffffffff1660e01b8152600401610090919061021d565b602060405180830381600087803b1580156100aa57600080fd5b505af11580156100be573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052506100e291908101906101e8565b50600101610048565b505050565b80356100fb81610298565b92915050565b600082601f83011261011257600080fd5b813561012561012082610252565b61022b565b9150818183526020840193506020810190508385602084028201111561014a57600080fd5b60005b83811015610176578161016088826100f0565b845250602092830192919091019060010161014d565b5050505092915050565b80356100fb816102af565b80516100fb816102b8565b600080604083850312156101a957600080fd5b60006101b58585610180565b925050602083013567ffffffffffffffff8111156101d257600080fd5b6101de85828601610101565b9150509250929050565b6000602082840312156101fa57600080fd5b6000610206848461018b565b949350505050565b61021781610273565b82525050565b602081016100fb828461020e565b60405181810167ffffffffffffffff8111828210171561024a57600080fd5b604052919050565b600067ffffffffffffffff82111561026957600080fd5b5060209081020190565b60006100fb82610289565b60006100fb82610273565b6001600160a01b031690565b90565b6102a181610273565b81146102ac57600080fd5b50565b6102a18161027e565b6102a18161029556fea365627a7a723158206e028978137fcc293da9cefb77ede182ecc9c59872ff6ae6aa958e2d6e0b450b6c6578706572696d656e74616cf564736f6c634300050d0040",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063379712e314610030575b600080fd5b61004361003e366004610196565b610045565b005b60005b81518110156100eb57826001600160a01b03166395a2251f83838151811061006c57fe5b60200260200101516040518263ffffffff1660e01b8152600401610090919061021d565b602060405180830381600087803b1580156100aa57600080fd5b505af11580156100be573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052506100e291908101906101e8565b50600101610048565b505050565b80356100fb81610298565b92915050565b600082601f83011261011257600080fd5b813561012561012082610252565b61022b565b9150818183526020840193506020810190508385602084028201111561014a57600080fd5b60005b83811015610176578161016088826100f0565b845250602092830192919091019060010161014d565b5050505092915050565b80356100fb816102af565b80516100fb816102b8565b600080604083850312156101a957600080fd5b60006101b58585610180565b925050602083013567ffffffffffffffff8111156101d257600080fd5b6101de85828601610101565b9150509250929050565b6000602082840312156101fa57600080fd5b6000610206848461018b565b949350505050565b61021781610273565b82525050565b602081016100fb828461020e565b60405181810167ffffffffffffffff8111828210171561024a57600080fd5b604052919050565b600067ffffffffffffffff82111561026957600080fd5b5060209081020190565b60006100fb82610289565b60006100fb82610273565b6001600160a01b031690565b90565b6102a181610273565b81146102ac57600080fd5b50565b6102a18161027e565b6102a18161029556fea365627a7a723158206e028978137fcc293da9cefb77ede182ecc9c59872ff6ae6aa958e2d6e0b450b6c6578706572696d656e74616cf564736f6c634300050d0040",
   "sourceMap": "1304:275:2:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1304:275:2;;;;;;;",
   "deployedSourceMap": "1304:275:2:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1304:275:2;;;;;;;;;;;;;;;;;;;1332:245;;;;;;;;;:::i;:::-;;;1469:6;1464:107;1485:11;:18;1481:1;:22;1464:107;;;1524:13;-1:-1:-1;;;;;1524:20:2;;1545:11;1557:1;1545:14;;;;;;;;;;;;;;1524:36;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1524:36:2;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1524:36:2;;;;;;;101:4:-1;97:9;90:4;84;80:15;76:31;69:5;65:43;126:6;120:4;113:20;0:138;1524:36:2;;;;;;;;;-1:-1:-1;1505:3:2;;1464:107;;;;1332:245;;:::o;5:130:-1:-;72:20;;97:33;72:20;97:33;;;57:78;;;;;160:707;;277:3;270:4;262:6;258:17;254:27;244:2;;295:1;292;285:12;244:2;332:6;319:20;354:80;369:64;426:6;369:64;;;354:80;;;345:89;;451:5;476:6;469:5;462:21;506:4;498:6;494:17;484:27;;528:4;523:3;519:14;512:21;;581:6;628:3;620:4;612:6;608:17;603:3;599:27;596:36;593:2;;;645:1;642;635:12;593:2;670:1;655:206;680:6;677:1;674:13;655:206;;;738:3;760:37;793:3;781:10;760:37;;;748:50;;-1:-1;821:4;812:14;;;;840;;;;;702:1;695:9;655:206;;;659:14;237:630;;;;;;;;875:184;969:20;;994:60;969:20;994:60;;1066:134;1144:13;;1162:33;1144:13;1162:33;;1207:556;;;1380:2;1368:9;1359:7;1355:23;1351:32;1348:2;;;1396:1;1393;1386:12;1348:2;1431:1;1448:80;1520:7;1500:9;1448:80;;;1438:90;;1410:124;1593:2;1582:9;1578:18;1565:32;1617:18;1609:6;1606:30;1603:2;;;1649:1;1646;1639:12;1603:2;1669:78;1739:7;1730:6;1719:9;1715:22;1669:78;;;1659:88;;1544:209;1342:421;;;;;;1770:263;;1885:2;1873:9;1864:7;1860:23;1856:32;1853:2;;;1901:1;1898;1891:12;1853:2;1936:1;1953:64;2009:7;1989:9;1953:64;;;1943:74;1847:186;-1:-1;;;;1847:186;2040:113;2123:24;2141:5;2123:24;;;2118:3;2111:37;2105:48;;;2160:213;2278:2;2263:18;;2292:71;2267:9;2336:6;2292:71;;2380:256;2442:2;2436:9;2468:17;;;2543:18;2528:34;;2564:22;;;2525:62;2522:2;;;2600:1;2597;2590:12;2522:2;2616;2609:22;2420:216;;-1:-1;2420:216;2643:304;;2802:18;2794:6;2791:30;2788:2;;;2834:1;2831;2824:12;2788:2;-1:-1;2869:4;2857:17;;;2922:15;;2725:222;2954:91;;3016:24;3034:5;3016:24;;3052:118;;3141:24;3159:5;3141:24;;3177:121;-1:-1;;;;;3239:54;;3222:76;3305:72;3367:5;3350:27;3384:117;3453:24;3471:5;3453:24;;;3446:5;3443:35;3433:2;;3492:1;3489;3482:12;3433:2;3427:74;;3508:171;3604:51;3649:5;3604:51;;3686:117;3755:24;3773:5;3755:24;",
   "source": "/*\n\n██████╗░██████╗░██╗███╗░░░███╗███████╗██████╗░░█████╗░░█████╗░\n██╔══██╗██╔══██╗██║████╗░████║██╔════╝██╔══██╗██╔══██╗██╔══██╗\n██████╔╝██████╔╝██║██╔████╔██║█████╗░░██║░░██║███████║██║░░██║\n██╔═══╝░██╔══██╗██║██║╚██╔╝██║██╔══╝░░██║░░██║██╔══██║██║░░██║\n██║░░░░░██║░░██║██║██║░╚═╝░██║███████╗██████╔╝██║░░██║╚█████╔╝\n╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═╝░░╚═╝░╚════╝░\n\n*/\n\n// SPDX-License-Identifier: GPL-3.0-or-later\n\n\npragma solidity ^0.5.13;\npragma experimental ABIEncoderV2;\n\nimport \"@daostack/arc/contracts/schemes/Locking4Reputation.sol\";\n\ncontract RepRedeemer {\n\n    function redeemLocking4Reputation(\n        Locking4Reputation lt4Reputation,\n        address[] memory lt4rRedeems) public {\n        for (uint i = 0; i < lt4rRedeems.length; i++) {\n            lt4Reputation.redeem(lt4rRedeems[i]);\n        }\n    }\n}\n",
-  "sourcePath": "/home/tengree/Projects/primedao/contracts/contracts/RepRedeemer.sol",
+  "sourcePath": "/home/mx/Dev/curve/prime_dao/prime_contracts/contracts/contracts/RepRedeemer.sol",
   "ast": {
-    "absolutePath": "/home/tengree/Projects/primedao/contracts/contracts/RepRedeemer.sol",
+    "absolutePath": "/home/mx/Dev/curve/prime_dao/prime_contracts/contracts/contracts/RepRedeemer.sol",
     "exportedSymbols": {
       "RepRedeemer": [
         106
@@ -65,7 +65,7 @@
         "id": 75,
         "nodeType": "ImportDirective",
         "scope": 107,
-        "sourceUnit": 5867,
+        "sourceUnit": 7645,
         "src": "1238:64:2",
         "symbolAliases": [],
         "unitAlias": ""
@@ -156,7 +156,7 @@
                               "referencedDeclaration": 77,
                               "src": "1524:13:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_Locking4Reputation_$5866",
+                                "typeIdentifier": "t_contract$_Locking4Reputation_$7644",
                                 "typeString": "contract Locking4Reputation"
                               }
                             },
@@ -167,7 +167,7 @@
                             "lValueRequested": false,
                             "memberName": "redeem",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 5550,
+                            "referencedDeclaration": 7328,
                             "src": "1524:20:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$_t_uint256_$",
@@ -370,7 +370,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_Locking4Reputation_$5866",
+                    "typeIdentifier": "t_contract$_Locking4Reputation_$7644",
                     "typeString": "contract Locking4Reputation"
                   },
                   "typeName": {
@@ -378,10 +378,10 @@
                     "id": 76,
                     "name": "Locking4Reputation",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 5866,
+                    "referencedDeclaration": 7644,
                     "src": "1375:18:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_Locking4Reputation_$5866",
+                      "typeIdentifier": "t_contract$_Locking4Reputation_$7644",
                       "typeString": "contract Locking4Reputation"
                     }
                   },
@@ -448,470 +448,421 @@
     "src": "1178:402:2"
   },
   "legacyAST": {
-    "attributes": {
-      "absolutePath": "/home/tengree/Projects/primedao/contracts/contracts/RepRedeemer.sol",
-      "exportedSymbols": {
-        "RepRedeemer": [
-          106
-        ]
-      }
+    "absolutePath": "/home/mx/Dev/curve/prime_dao/prime_contracts/contracts/contracts/RepRedeemer.sol",
+    "exportedSymbols": {
+      "RepRedeemer": [
+        106
+      ]
     },
-    "children": [
+    "id": 107,
+    "nodeType": "SourceUnit",
+    "nodes": [
       {
-        "attributes": {
-          "literals": [
-            "solidity",
-            "^",
-            "0.5",
-            ".13"
-          ]
-        },
         "id": 73,
-        "name": "PragmaDirective",
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".13"
+        ],
+        "nodeType": "PragmaDirective",
         "src": "1178:24:2"
       },
       {
-        "attributes": {
-          "literals": [
-            "experimental",
-            "ABIEncoderV2"
-          ]
-        },
         "id": 74,
-        "name": "PragmaDirective",
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
         "src": "1203:33:2"
       },
       {
-        "attributes": {
-          "SourceUnit": 5867,
-          "absolutePath": "@daostack/arc/contracts/schemes/Locking4Reputation.sol",
-          "file": "@daostack/arc/contracts/schemes/Locking4Reputation.sol",
-          "scope": 107,
-          "symbolAliases": [
-            null
-          ],
-          "unitAlias": ""
-        },
+        "absolutePath": "@daostack/arc/contracts/schemes/Locking4Reputation.sol",
+        "file": "@daostack/arc/contracts/schemes/Locking4Reputation.sol",
         "id": 75,
-        "name": "ImportDirective",
-        "src": "1238:64:2"
+        "nodeType": "ImportDirective",
+        "scope": 107,
+        "sourceUnit": 7645,
+        "src": "1238:64:2",
+        "symbolAliases": [],
+        "unitAlias": ""
       },
       {
-        "attributes": {
-          "baseContracts": [
-            null
-          ],
-          "contractDependencies": [
-            null
-          ],
-          "contractKind": "contract",
-          "documentation": null,
-          "fullyImplemented": true,
-          "linearizedBaseContracts": [
-            106
-          ],
-          "name": "RepRedeemer",
-          "scope": 107
-        },
-        "children": [
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 106,
+        "linearizedBaseContracts": [
+          106
+        ],
+        "name": "RepRedeemer",
+        "nodeType": "ContractDefinition",
+        "nodes": [
           {
-            "attributes": {
-              "documentation": null,
-              "implemented": true,
-              "isConstructor": false,
-              "kind": "function",
-              "modifiers": [
-                null
-              ],
-              "name": "redeemLocking4Reputation",
-              "scope": 106,
-              "stateMutability": "nonpayable",
-              "superFunction": null,
-              "visibility": "public"
-            },
-            "children": [
-              {
-                "children": [
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "lt4Reputation",
-                      "scope": 105,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "contract Locking4Reputation",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
+            "body": {
+              "id": 104,
+              "nodeType": "Block",
+              "src": "1454:123:2",
+              "statements": [
+                {
+                  "body": {
+                    "id": 102,
+                    "nodeType": "Block",
+                    "src": "1510:61:2",
+                    "statements": [
                       {
-                        "attributes": {
-                          "contractScope": null,
-                          "name": "Locking4Reputation",
-                          "referencedDeclaration": 5866,
-                          "type": "contract Locking4Reputation"
-                        },
-                        "id": 76,
-                        "name": "UserDefinedTypeName",
-                        "src": "1375:18:2"
-                      }
-                    ],
-                    "id": 77,
-                    "name": "VariableDeclaration",
-                    "src": "1375:32:2"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "lt4rRedeems",
-                      "scope": 105,
-                      "stateVariable": false,
-                      "storageLocation": "memory",
-                      "type": "address[]",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "length": null,
-                          "type": "address[]"
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "name": "address",
-                              "stateMutability": "nonpayable",
-                              "type": "address"
-                            },
-                            "id": 78,
-                            "name": "ElementaryTypeName",
-                            "src": "1417:7:2"
-                          }
-                        ],
-                        "id": 79,
-                        "name": "ArrayTypeName",
-                        "src": "1417:9:2"
-                      }
-                    ],
-                    "id": 80,
-                    "name": "VariableDeclaration",
-                    "src": "1417:28:2"
-                  }
-                ],
-                "id": 81,
-                "name": "ParameterList",
-                "src": "1365:81:2"
-              },
-              {
-                "attributes": {
-                  "parameters": [
-                    null
-                  ]
-                },
-                "children": [],
-                "id": 82,
-                "name": "ParameterList",
-                "src": "1454:0:2"
-              },
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "attributes": {
-                          "assignments": [
-                            84
-                          ]
-                        },
-                        "children": [
-                          {
-                            "attributes": {
-                              "constant": false,
-                              "name": "i",
-                              "scope": 103,
-                              "stateVariable": false,
-                              "storageLocation": "default",
-                              "type": "uint256",
-                              "value": null,
-                              "visibility": "internal"
-                            },
-                            "children": [
+                        "expression": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "baseExpression": {
+                                "argumentTypes": null,
+                                "id": 97,
+                                "name": "lt4rRedeems",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 80,
+                                "src": "1545:11:2",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                                  "typeString": "address[] memory"
+                                }
+                              },
+                              "id": 99,
+                              "indexExpression": {
+                                "argumentTypes": null,
+                                "id": 98,
+                                "name": "i",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 84,
+                                "src": "1557:1:2",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_uint256",
+                                  "typeString": "uint256"
+                                }
+                              },
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "nodeType": "IndexAccess",
+                              "src": "1545:14:2",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_address",
+                                "typeString": "address"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
                               {
-                                "attributes": {
-                                  "name": "uint",
-                                  "type": "uint256"
-                                },
-                                "id": 83,
-                                "name": "ElementaryTypeName",
-                                "src": "1469:4:2"
+                                "typeIdentifier": "t_address",
+                                "typeString": "address"
                               }
                             ],
-                            "id": 84,
-                            "name": "VariableDeclaration",
-                            "src": "1469:6:2"
-                          },
-                          {
-                            "attributes": {
+                            "expression": {
                               "argumentTypes": null,
-                              "hexvalue": "30",
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": true,
-                              "lValueRequested": false,
-                              "subdenomination": null,
-                              "token": "number",
-                              "type": "int_const 0",
-                              "value": "0"
+                              "id": 94,
+                              "name": "lt4Reputation",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 77,
+                              "src": "1524:13:2",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_contract$_Locking4Reputation_$7644",
+                                "typeString": "contract Locking4Reputation"
+                              }
                             },
-                            "id": 85,
-                            "name": "Literal",
-                            "src": "1478:1:2"
-                          }
-                        ],
-                        "id": 86,
-                        "name": "VariableDeclarationStatement",
-                        "src": "1469:10:2"
-                      },
-                      {
-                        "attributes": {
-                          "argumentTypes": null,
-                          "commonType": {
-                            "typeIdentifier": "t_uint256",
-                            "typeString": "uint256"
+                            "id": 96,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "lValueRequested": false,
+                            "memberName": "redeem",
+                            "nodeType": "MemberAccess",
+                            "referencedDeclaration": 7328,
+                            "src": "1524:20:2",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$_t_uint256_$",
+                              "typeString": "function (address) external returns (uint256)"
+                            }
                           },
+                          "id": 100,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
+                          "kind": "functionCall",
                           "lValueRequested": false,
-                          "operator": "<",
-                          "type": "bool"
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1524:36:2",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
                         },
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "overloadedDeclarations": [
-                                null
-                              ],
-                              "referencedDeclaration": 84,
-                              "type": "uint256",
-                              "value": "i"
-                            },
-                            "id": 87,
-                            "name": "Identifier",
-                            "src": "1481:1:2"
-                          },
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "member_name": "length",
-                              "referencedDeclaration": null,
-                              "type": "uint256"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 80,
-                                  "type": "address[] memory",
-                                  "value": "lt4rRedeems"
-                                },
-                                "id": 88,
-                                "name": "Identifier",
-                                "src": "1485:11:2"
-                              }
-                            ],
-                            "id": 89,
-                            "name": "MemberAccess",
-                            "src": "1485:18:2"
-                          }
-                        ],
-                        "id": 90,
-                        "name": "BinaryOperation",
-                        "src": "1481:22:2"
+                        "id": 101,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1524:36:2"
+                      }
+                    ]
+                  },
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 90,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "id": 87,
+                      "name": "i",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 84,
+                      "src": "1481:1:2",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "<",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 88,
+                        "name": "lt4rRedeems",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 80,
+                        "src": "1485:11:2",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                          "typeString": "address[] memory"
+                        }
                       },
+                      "id": 89,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "length",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1485:18:2",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "1481:22:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 103,
+                  "initializationExpression": {
+                    "assignments": [
+                      84
+                    ],
+                    "declarations": [
                       {
-                        "children": [
-                          {
-                            "attributes": {
-                              "argumentTypes": null,
-                              "isConstant": false,
-                              "isLValue": false,
-                              "isPure": false,
-                              "lValueRequested": false,
-                              "operator": "++",
-                              "prefix": false,
-                              "type": "uint256"
-                            },
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "overloadedDeclarations": [
-                                    null
-                                  ],
-                                  "referencedDeclaration": 84,
-                                  "type": "uint256",
-                                  "value": "i"
-                                },
-                                "id": 91,
-                                "name": "Identifier",
-                                "src": "1505:1:2"
-                              }
-                            ],
-                            "id": 92,
-                            "name": "UnaryOperation",
-                            "src": "1505:3:2"
+                        "constant": false,
+                        "id": 84,
+                        "name": "i",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 103,
+                        "src": "1469:6:2",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "typeName": {
+                          "id": 83,
+                          "name": "uint",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "1469:4:2",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
                           }
-                        ],
-                        "id": 93,
-                        "name": "ExpressionStatement",
-                        "src": "1505:3:2"
-                      },
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "attributes": {
-                                  "argumentTypes": null,
-                                  "isConstant": false,
-                                  "isLValue": false,
-                                  "isPure": false,
-                                  "isStructConstructorCall": false,
-                                  "lValueRequested": false,
-                                  "names": [
-                                    null
-                                  ],
-                                  "type": "uint256",
-                                  "type_conversion": false
-                                },
-                                "children": [
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": [
-                                        {
-                                          "typeIdentifier": "t_address",
-                                          "typeString": "address"
-                                        }
-                                      ],
-                                      "isConstant": false,
-                                      "isLValue": false,
-                                      "isPure": false,
-                                      "lValueRequested": false,
-                                      "member_name": "redeem",
-                                      "referencedDeclaration": 5550,
-                                      "type": "function (address) external returns (uint256)"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "argumentTypes": null,
-                                          "overloadedDeclarations": [
-                                            null
-                                          ],
-                                          "referencedDeclaration": 77,
-                                          "type": "contract Locking4Reputation",
-                                          "value": "lt4Reputation"
-                                        },
-                                        "id": 94,
-                                        "name": "Identifier",
-                                        "src": "1524:13:2"
-                                      }
-                                    ],
-                                    "id": 96,
-                                    "name": "MemberAccess",
-                                    "src": "1524:20:2"
-                                  },
-                                  {
-                                    "attributes": {
-                                      "argumentTypes": null,
-                                      "isConstant": false,
-                                      "isLValue": true,
-                                      "isPure": false,
-                                      "lValueRequested": false,
-                                      "type": "address"
-                                    },
-                                    "children": [
-                                      {
-                                        "attributes": {
-                                          "argumentTypes": null,
-                                          "overloadedDeclarations": [
-                                            null
-                                          ],
-                                          "referencedDeclaration": 80,
-                                          "type": "address[] memory",
-                                          "value": "lt4rRedeems"
-                                        },
-                                        "id": 97,
-                                        "name": "Identifier",
-                                        "src": "1545:11:2"
-                                      },
-                                      {
-                                        "attributes": {
-                                          "argumentTypes": null,
-                                          "overloadedDeclarations": [
-                                            null
-                                          ],
-                                          "referencedDeclaration": 84,
-                                          "type": "uint256",
-                                          "value": "i"
-                                        },
-                                        "id": 98,
-                                        "name": "Identifier",
-                                        "src": "1557:1:2"
-                                      }
-                                    ],
-                                    "id": 99,
-                                    "name": "IndexAccess",
-                                    "src": "1545:14:2"
-                                  }
-                                ],
-                                "id": 100,
-                                "name": "FunctionCall",
-                                "src": "1524:36:2"
-                              }
-                            ],
-                            "id": 101,
-                            "name": "ExpressionStatement",
-                            "src": "1524:36:2"
-                          }
-                        ],
-                        "id": 102,
-                        "name": "Block",
-                        "src": "1510:61:2"
+                        },
+                        "value": null,
+                        "visibility": "internal"
                       }
                     ],
-                    "id": 103,
-                    "name": "ForStatement",
-                    "src": "1464:107:2"
-                  }
-                ],
-                "id": 104,
-                "name": "Block",
-                "src": "1454:123:2"
-              }
-            ],
+                    "id": 86,
+                    "initialValue": {
+                      "argumentTypes": null,
+                      "hexValue": "30",
+                      "id": 85,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "1478:1:2",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "nodeType": "VariableDeclarationStatement",
+                    "src": "1469:10:2"
+                  },
+                  "loopExpression": {
+                    "expression": {
+                      "argumentTypes": null,
+                      "id": 92,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "UnaryOperation",
+                      "operator": "++",
+                      "prefix": false,
+                      "src": "1505:3:2",
+                      "subExpression": {
+                        "argumentTypes": null,
+                        "id": 91,
+                        "name": "i",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 84,
+                        "src": "1505:1:2",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 93,
+                    "nodeType": "ExpressionStatement",
+                    "src": "1505:3:2"
+                  },
+                  "nodeType": "ForStatement",
+                  "src": "1464:107:2"
+                }
+              ]
+            },
+            "documentation": null,
             "id": 105,
-            "name": "FunctionDefinition",
-            "src": "1332:245:2"
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "redeemLocking4Reputation",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 81,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 77,
+                  "name": "lt4Reputation",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 105,
+                  "src": "1375:32:2",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_Locking4Reputation_$7644",
+                    "typeString": "contract Locking4Reputation"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 76,
+                    "name": "Locking4Reputation",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 7644,
+                    "src": "1375:18:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Locking4Reputation_$7644",
+                      "typeString": "contract Locking4Reputation"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 80,
+                  "name": "lt4rRedeems",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 105,
+                  "src": "1417:28:2",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 78,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "1417:7:2",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 79,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1417:9:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1365:81:2"
+            },
+            "returnParameters": {
+              "id": 82,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1454:0:2"
+            },
+            "scope": 106,
+            "src": "1332:245:2",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
           }
         ],
-        "id": 106,
-        "name": "ContractDefinition",
+        "scope": 107,
         "src": "1304:275:2"
       }
     ],
-    "id": 107,
-    "name": "SourceUnit",
     "src": "1178:402:2"
   },
   "compiler": {
@@ -926,9 +877,8 @@
       "transactionHash": "0x33b8fa46da7c848118389ba13919029c4e45547ab9271ccb5b86321c3d5a9947"
     }
   },
-  "schemaVersion": "3.2.4",
-  "updatedAt": "2021-01-25T18:58:23.697Z",
-  "networkType": "ethereum",
+  "schemaVersion": "3.2.5",
+  "updatedAt": "2021-03-30T10:05:06.809Z",
   "devdoc": {
     "methods": {}
   },

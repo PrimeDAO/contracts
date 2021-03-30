@@ -75,32 +75,6 @@ contract Seed {
         _;
     }
 
-    function initialize(
-        address _admin,
-        address _seedToken,
-        address _fundingToken,
-        uint    _successMinimum,
-        uint    _price,
-        uint    _startTime,
-        uint    _endTime,
-        uint16  _vestingDuration,
-        uint16  _vestingCliff,
-        bool    _isWhitelisted,
-        uint8   _fee
-    ) public {
-        admin           = _admin;
-        successMinimum  = _successMinimum;
-        price           = _price;
-        startTime       = _startTime;
-        endTime         = _endTime;
-        vestingDuration = _vestingDuration;
-        vestingCliff    = _vestingCliff;
-        isWhitelisted   = _isWhitelisted;
-        seedToken       = ERC20(_seedToken);
-        fundingToken    = ERC20(_fundingToken);
-        fee             = _fee;
-    }
-
     struct Lock {
         uint256 startTime;
         uint256 amount;
@@ -136,7 +110,30 @@ contract Seed {
     }
 
     // ADMIN ACTIONS
-    function initialize() public onlyAdmin {
+    function initialize(
+            address _admin,
+            address _seedToken,
+            address _fundingToken,
+            uint    _successMinimum,
+            uint    _price,
+            uint    _startTime,
+            uint    _endTime,
+            uint16  _vestingDuration,
+            uint16  _vestingCliff,
+            bool    _isWhitelisted,
+            uint8   _fee
+    ) public initializer {
+        admin           = _admin;
+        successMinimum  = _successMinimum;
+        price           = _price;
+        startTime       = _startTime;
+        endTime         = _endTime;
+        vestingDuration = _vestingDuration;
+        vestingCliff    = _vestingCliff;
+        isWhitelisted   = _isWhitelisted;
+        seedToken       = ERC20(_seedToken);
+        fundingToken    = ERC20(_fundingToken);
+        fee             = _fee;
         require(seedToken.transferFrom(admin, address(this), successMinimum), "Seed: should transfer seed tokens");
         closed = false;
     }

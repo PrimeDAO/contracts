@@ -42,6 +42,7 @@ contract('SeedFactory', (accounts) => {
     let vestingDuration;
     let vestingCliff;
     let isWhitelisted;
+    let fee;
 
     context('» creator is not avatar', () => {
         before('!! deploy setup', async () => {
@@ -56,16 +57,28 @@ contract('SeedFactory', (accounts) => {
             vestingDuration = 365; // 1 year
             vestingCliff = 90; // 3 months
             isWhitelisted = false;
+            fee = 2;
         });
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
-                let tx = await setup.seedFactory.deploySeed(admin, seedToken.address, fundingToken.address, cap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted);
-                
+                let tx = await setup.seedFactory.deploySeed(
+                    admin,
+                    seedToken.address,
+                    fundingToken.address,
+                    cap,
+                    price,
+                    startTime,
+                    endTime,
+                    vestingDuration,
+                    vestingCliff,
+                    isWhitelisted,
+                    fee
+                );
+
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.seedFactory, 'SeedCreated');
             });
         });
     });
 });
-
