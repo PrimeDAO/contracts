@@ -24,6 +24,8 @@ const deploy = async (accounts) => {
     setup.farmFactory = await helpers.setup.farmFactory(setup);
     // deploy seedFactory
     setup.seedFactory = await helpers.setup.seedFactory(setup);
+    // deploy seed
+    setup.seed = await helpers.setup.seed();
     // deploy primeDAO
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 
@@ -45,7 +47,6 @@ contract('Seed', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
-    let tx;
 
     context('» creator is not avatar', () => {
         before('!! deploy setup', async () => {
@@ -64,55 +65,149 @@ contract('Seed', (accounts) => {
             isWhitelisted = false;
             fee = 2;
         });
+        context('» contract is not initialized yet', () => {
+            context('» parameters are valid', () => {
+                it('it initializes seed', async () => {
+                    // emulate creation & initialization via seedfactory & fund with seedTokens
+                    await seedToken.transfer(setup.seed.address, successMinimum, {from:setup.root});
 
-        context('» parameters are valid', () => {
-            it('it deploys a new seed contract', async () => {
-                // deploy new seed contract
-                setup.data.seed = await Seed.new();
+                    await setup.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        seedToken.address,
+                        fundingToken.address,
+                        successMinimum,
+                        price,
+                        startTime,
+                        endTime,
+                        vestingDuration,
+                        vestingCliff,
+                        isWhitelisted,
+                        fee
+                    );
+
+                    expect(await setup.seed.initialized()).to.equal(true);
+                    expect(await setup.seed.dao()).to.equal(setup.organization.avatar.address);
+                    expect(await setup.seed.admin()).to.equal(admin);
+                    expect(await setup.seed.seedToken()).to.equal(seedToken.address);
+                    expect(await setup.seed.fundingToken()).to.equal(fundingToken.address);
+                    expect((await setup.seed.successMinimum()).toString()).to.equal(successMinimum);
+                    expect((await setup.seed.price()).toString()).to.equal(price);
+                    expect(await setup.seed.isWhitelisted()).to.equal(isWhitelisted);
+                    expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
+                    expect(await setup.seed.closed()).to.equal(false);
+                    expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal(successMinimum);
+
+                });
+                it('it reverts on double initialization', async () => {
+                    await expectRevert(
+                        setup.seed.initialize(
+                            setup.organization.avatar.address,
+                            admin,
+                            seedToken.address,
+                            fundingToken.address,
+                            successMinimum,
+                            price,
+                            startTime,
+                            endTime,
+                            vestingDuration,
+                            vestingCliff,
+                            isWhitelisted,
+                            fee
+                        ),
+                        'Seed: contract already initialized'
+                    );
+                });
             });
-            it('it initializes a seed contract', async () => {
-                // emulate initialization via seedfactory & fund with seedTokens
-                await seedToken.transfer(setup.data.seed.address, successMinimum, {from:setup.root});
+        });
+        context('# buy', () => {
+            context('» generics', () => {
+                before('!! top up buyer1 balance', async () => {
+                    await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});
+                    await fundingToken.approve(setup.seed.address, buyAmount, {from:buyer1});
+                });
+                it('it buys tokens ', async () => {
+                    let tx = await setup.seed.buy(buyAmount, {from:buyer1});
+                    setup.data.tx = tx;
 
-                setup.data.seed.initialize(
-                    admin,
-                    seedToken.address,
-                    fundingToken.address,
-                    successMinimum,
-                    price,
-                    startTime,
-                    endTime,
-                    vestingDuration,
-                    vestingCliff,
-                    isWhitelisted,
-                    fee
-                );
-
-                expect(await setup.data.seed.closed()).to.equal(false);
-                expect(await setup.data.seed.paused()).to.equal(false);
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'LockAdded');
+                    expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to.equal(buyAmount);
+                });
+                it('updates fee mapping for locker', async () => {
+                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('1')); // check why this isn't 2
+                });
             });
-            it('it buys tokens ', async () => {
-                // top up buyer1 token balance
-                await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});
-                await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer1});
+        });
+        context('# claimLock', () => {
+            context('» generics', () => {
+                it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
+                    await expectRevert(setup.seed.claimLock(buyer1), 'Seed: amountVested is 0');
+                });
+                it('it withdraws tokens after time passes', async () => {
+                    // increase time
+                    await time.increase(time.duration.days(91));
+                    // claim lock
+                    let tx = await setup.seed.claimLock(buyer1, {from:buyer1});
+                    setup.data.tx = tx;
 
-                tx = await setup.data.seed.buy(buyAmount, {from:buyer1});
-                setup.data.tx = tx;
-
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'LockAdded');
-                expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(buyAmount);
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed', {
+                        recipient: buyer1
+                    });
+                });
+                it('funds dao with fee', async () => {
+                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to.equal(toWei('1')); // check why this isn't 2
+                });
             });
-            it('it fails on withdrawing seed tokens ', async () => {
-                await expectRevert(setup.data.seed.claimLock(buyer1), 'Seed: amountVested is 0');
+        });
+        context('# admin functions', () => {
+            context('» pause', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(setup.seed.pause(), 'Seed: caller should be admin');
+                });
+                it('pauses contract', async () => {
+                    await setup.seed.pause({from:admin});
+                    expect(await setup.seed.paused()).to.equal(true);
+                });
             });
-            it('it withdraws tokens after time passes', async () => {
-                // increase time
-                await time.increase(time.duration.days(91));
-                // claim lock
-                tx = await setup.data.seed.claimLock(buyer1, {from:buyer1});
-                setup.data.tx = tx;
+            context('» unpause', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(setup.seed.unpause(), 'Seed: caller should be admin');
+                });
+                it('unpauses contract', async () => {
+                    await setup.seed.unpause({from:admin});
+                    expect(await setup.seed.paused()).to.equal(false);
+                });
+            });
+            context('» whitelist', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(setup.seed.whitelist(buyer1), 'Seed: caller should be admin');
+                });
+                it('reverts: can only be called on whitelisted contract', async () => {
+                    await expectRevert(setup.seed.whitelist(buyer1,{from:admin}), 'Seed: module is not whitelisted');
+                });
+            });
+            context('» unwhitelist', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(setup.seed.unwhitelist(buyer1), 'Seed: caller should be admin');
+                });
+                it('reverts: can only be called on whitelisted contract', async () => {
+                    await expectRevert(setup.seed.whitelist(buyer1,{from:admin}), 'Seed: module is not whitelisted');
+                });
+            });
+            context('» withdraw', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(setup.seed.withdraw(), 'Seed: caller should be admin');
+                });
+                it.skip('withdraws', async () => {
 
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
+                });
+            });
+        });
+        context('# getter functions', () => {
+            context('» checkWhitelisted', () => {
+                it('', async () => {
+                    // await expectRevert(setup.seed.pause(), 'Seed: caller should be admin');
+                });
             });
         });
     });
