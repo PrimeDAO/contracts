@@ -48,7 +48,7 @@ contract SeedFactory is CloneFactory {
     /**
       * @dev           Initialize proxy.
       * @param _avatar The address of the Avatar controlling this contract.
-      * @param _parent The address of the Seed contract which will be a parent for all of the cloness.
+      * @param _parent The address of the Seed contract which will be a parent for all of the clones.
       */
     function initialize(Avatar _avatar, Seed _parent) external initializer {
         require(_avatar != Avatar(0), "SeedFactory: avatar cannot be null");
