@@ -25,6 +25,7 @@ contract Seed {
     using SafeMath for uint16;
 
     // Locked parameters
+    address public dao;
     address public admin;
     uint    public successMinimum;
     uint    public price;
@@ -95,7 +96,7 @@ contract Seed {
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
-        require(seedToken.transfer(admin, fees[_locker]), "Seed: cannot transfer fee to dao");
+        require(seedToken.transfer(dao, fees[_locker]), "Seed: cannot transfer fee to dao");
         require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
         emit TokensClaimed(tokenLock.recipient, amountVested);
     }
@@ -111,6 +112,7 @@ contract Seed {
 
     // ADMIN ACTIONS
     function initialize(
+            address _dao,
             address _admin,
             address _seedToken,
             address _fundingToken,
@@ -123,6 +125,7 @@ contract Seed {
             bool    _isWhitelisted,
             uint8   _fee
     ) public initializer {
+        dao             = _dao;
         admin           = _admin;
         successMinimum  = _successMinimum;
         price           = _price;
@@ -152,9 +155,12 @@ contract Seed {
         // transfer all the tokens back to admin
         require(
             fundingToken.transfer(admin, fundingToken.balanceOf(address(this))),
-            "Seed: should transfer tokens to admin"
+            "Seed: should transfer funding tokens to admin"
         );
-        require(seedToken.transfer(admin, seedToken.balanceOf(address(this))), "Seed: should transfer tokens to admin");
+        require(
+            seedToken.transfer(admin, seedToken.balanceOf(address(this))),
+            "Seed: should transfer seed tokens to admin"
+        );
 
         closed = true;
     }

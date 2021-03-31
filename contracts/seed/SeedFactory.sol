@@ -74,6 +74,7 @@ contract SeedFactory is CloneFactory {
     }
 
     function deploySeed(
+    address _dao,
     address _admin,
     address _seedToken,
     address _fundingToken,
@@ -97,6 +98,7 @@ contract SeedFactory is CloneFactory {
 
         // initialize
         Seed(_newSeed).initialize(
+            _dao,
             _admin,
             _seedToken,
             _fundingToken,
