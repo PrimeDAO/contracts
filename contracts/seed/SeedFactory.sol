@@ -92,7 +92,7 @@ contract SeedFactory is CloneFactory {
         // fund
         require(
             ERC20(_seedToken).transferFrom(_admin, address(_newSeed), _successMinimum),
-            "SeedFactory: should transfer seed tokens"
+            "SeedFactory: cannot transfer seed tokens"
         );
 
         // initialize
