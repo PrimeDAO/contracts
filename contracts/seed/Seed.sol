@@ -84,6 +84,7 @@ contract Seed {
 
     modifier beforeMinimumReached() {
         require(minimumReached == false, "Seed: minimum already met");
+        _;
     }
 
     struct Lock {
