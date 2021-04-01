@@ -35,7 +35,7 @@ contract('SeedFactory', (accounts) => {
     let admin;
     let seedToken;
     let fundingToken;
-    let cap;
+    // let cap;
     let price;
     let startTime;
     let endTime;
@@ -45,13 +45,13 @@ contract('SeedFactory', (accounts) => {
     let fee;
     let successMinimum;
 
-    context('» creator is not avatar', () => {
+    context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
             setup = await deploy(accounts);
             admin = accounts[1];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            cap = toWei('100');
+            // cap = toWei('100');
             price = toWei('0.01');
             successMinimum = toWei('100');
             startTime  = await time.latest();
@@ -68,22 +68,28 @@ contract('SeedFactory', (accounts) => {
                 await seedToken.transfer(admin, successMinimum, {from:setup.root});
                 await seedToken.approve(setup.seedFactory.address, successMinimum, {from:admin});
 
-                let tx = await setup.seedFactory.deploySeed(
+                const calldata = helpers.encodeDeploySeed(
                     admin,
                     seedToken.address,
                     fundingToken.address,
-                    cap,
+                    successMinimum,
                     price,
-                    startTime,
-                    endTime,
+                    startTime.toNumber(),
+                    endTime.toNumber(),
                     vestingDuration,
                     vestingCliff,
                     isWhitelisted,
                     fee
                 );
-
+                
+                const _tx = await setup.primeDAO.seedManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
+                const proposalId = helpers.getNewProposalId(_tx);
+                await  setup.primeDAO.seedManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                const tx = await setup.primeDAO.seedManager.execute(proposalId);
+                // // store data
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.seedFactory, 'SeedCreated');
+
             });
         });
     });

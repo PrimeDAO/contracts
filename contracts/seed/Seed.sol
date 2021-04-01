@@ -46,6 +46,7 @@ contract Seed {
     bool      public paused;
     uint256   public totalLockCount;
     bool      public initialized;
+    bool      public minimumReached;
 
     mapping (address => bool) public whitelisted;
     mapping (address => Lock) public tokenLocks; // locker to lock
@@ -76,6 +77,15 @@ contract Seed {
         _;
     }
 
+    modifier checkMinimumReached() {
+        require(minimumReached == true, "Seed: minimum funding amount not met");
+        _;
+    }
+
+    modifier beforeMinimumReached() {
+        require(minimumReached == false, "Seed: minimum already met");
+    }
+
     struct Lock {
         uint256 startTime;
         uint256 amount;
@@ -86,31 +96,6 @@ contract Seed {
         address recipient;
     }
 
-    function claimLock(address _locker) public {
-        uint16 daysVested;
-        uint256 amountVested;
-        (daysVested, amountVested) = _calculateClaim(_locker);
-        require(amountVested > 0, "Seed: amountVested is 0");
-
-        Lock storage tokenLock = tokenLocks[_locker];
-        tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
-        tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
-
-        require(seedToken.transfer(dao, fees[_locker]), "Seed: cannot transfer fee to dao");
-        require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
-        emit TokensClaimed(tokenLock.recipient, amountVested);
-    }
-
-    function buy(uint256 _amount) public protected checked {
-        require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
-
-        uint feeAmount = _amount.mul(fee).div(100);
-        fees[msg.sender] = feeAmount;
-        uint _lockTokens = tokenLocks[msg.sender].amount;
-        _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE));
-    }
-
-    // ADMIN ACTIONS
     function initialize(
             address _dao,
             address _admin,
@@ -138,8 +123,43 @@ contract Seed {
         fundingToken    = ERC20(_fundingToken);
         fee             = _fee;
         closed = false;
+        minimumReached = false;
     }
 
+    function claimLock(address _locker) public checkMinimumReached {
+        uint16 daysVested;
+        uint256 amountVested;
+        (daysVested, amountVested) = _calculateClaim(_locker);
+        require(amountVested > 0, "Seed: amountVested is 0");
+
+        Lock storage tokenLock = tokenLocks[_locker];
+        tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
+        tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
+
+        require(seedToken.transfer(dao, fees[_locker]), "Seed: cannot transfer fee to dao");
+        require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
+        emit TokensClaimed(tokenLock.recipient, amountVested);
+    }
+
+    function buy(uint256 _amount) public protected checked {
+        require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
+        // map buyins
+
+        if (fundingToken.balanceOf(address(this)) >= successMinimum) {
+            minimumReached = true;
+        }
+
+        uint feeAmount = _amount.mul(fee).div(100);
+        fees[msg.sender] = feeAmount;
+        uint _lockTokens = tokenLocks[msg.sender].amount;
+        _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE));
+    }
+
+    function buyBack() public protected checked beforeMinimumReached {
+        //
+    }
+
+    // ADMIN ACTIONS
     function pause() public onlyAdmin protected {
         paused = true;
     }
@@ -178,7 +198,7 @@ contract Seed {
     }
 
     function withdraw() public onlyAdmin protected {
-        fundingToken.transfer(msg.sender, fundingToken.balanceOf(msg.sender));
+        fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 
     // GETTER FUNCTIONS

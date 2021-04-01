@@ -2,6 +2,7 @@ const { BN } = require('@openzeppelin/test-helpers');
 const setup = require('./setup');
 const BalancerProxy = artifacts.require('BalancerProxy');
 const FarmFactory = artifacts.require('FarmFactory');
+const SeedFactory = artifacts.require('SeedFactory');
 
 const AMOUNT = new BN('1000');
 const EXPECTED = new BN('500');
@@ -43,6 +44,9 @@ const encodeRescueTokens = (stakingRewards, amount, token, to) => {
 };
 const encodeIncreaseReward = (farm, amount) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.increaseReward(farm, amount).encodeABI();
+};
+const encodeDeploySeed = (admin, seedToken, fundingToken, successMinimum, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.deploySeed(admin, seedToken, fundingToken, successMinimum, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee).encodeABI();
 };
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
   /**
@@ -105,6 +109,7 @@ module.exports = {
   encodeIncreaseReward,
   encodeJoinPool,
   encodeExitPool,
+  encodeDeploySeed,
   getNewProposalId,
   values: {
     AMOUNT,

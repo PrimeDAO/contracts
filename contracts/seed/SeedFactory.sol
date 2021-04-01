@@ -76,14 +76,14 @@ contract SeedFactory is CloneFactory {
     address _admin,
     address _seedToken,
     address _fundingToken,
-    uint 	_successMinimum,
-    uint 	_price,
-    uint 	_startTime,
-    uint 	_endTime,
+    uint 	  _successMinimum,
+    uint  	_price,
+    uint 	  _startTime,
+    uint 	  _endTime,
     uint16 	_vestingDuration,
     uint16 	_vestingCliff,
-    bool 	_isWhitelisted,
-    uint8 _fee
+    bool 	  _isWhitelisted,
+    uint8   _fee
     ) public protected returns(address) {
         // deploy clone
         address _newSeed = createClone(address(parent));
