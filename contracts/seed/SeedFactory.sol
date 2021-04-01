@@ -29,7 +29,6 @@ contract SeedFactory is CloneFactory {
     Avatar    public avatar;
     Seed      public parent;
     bool      public initialized;
-    address[] public whitelist;
 
     event SeedCreated(address indexed newSeed);
 
@@ -74,7 +73,6 @@ contract SeedFactory is CloneFactory {
     }
 
     function deploySeed(
-    address _dao,
     address _admin,
     address _seedToken,
     address _fundingToken,
@@ -86,7 +84,7 @@ contract SeedFactory is CloneFactory {
     uint16 	_vestingCliff,
     bool 	_isWhitelisted,
     uint8 _fee
-    ) public returns(address) {
+    ) public protected returns(address) {
         // deploy clone
         address _newSeed = createClone(address(parent));
 
@@ -98,7 +96,7 @@ contract SeedFactory is CloneFactory {
 
         // initialize
         Seed(_newSeed).initialize(
-            _dao,
+            msg.sender,
             _admin,
             _seedToken,
             _fundingToken,
@@ -111,10 +109,6 @@ contract SeedFactory is CloneFactory {
             _isWhitelisted,
             _fee
         );
-
-        if (msg.sender == address(avatar)) {
-            whitelist.push(address(_newSeed));
-        }
 
         emit SeedCreated(address(_newSeed));
 
