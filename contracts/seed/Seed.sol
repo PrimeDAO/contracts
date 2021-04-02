@@ -18,14 +18,15 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
- * @title primeDAO Seed contract
+ * @title primebeneSeed contract
+ * @dev   Smart contract for seed phases of liquid launch.
  */
 contract Seed {
     using SafeMath for uint256;
     using SafeMath for uint16;
 
     // Locked parameters
-    address public dao;
+    address public beneficiary;
     address public admin;
     uint    public successMinimum;
     uint    public price;
@@ -97,8 +98,23 @@ contract Seed {
         address recipient;
     }
 
+    /**
+      * @dev                     Initialize Seed.
+      * @param _beneficiary      The address of the beneficiary revieving the fee.
+      * @param _admin            The address of the admin of this contract.
+      * @param _seedToken        The address of the token being distributed.
+      * @param _fundingToken     The address of the token being exchanged for seed token.
+      * @param _successMinimum   A minimum distribution threshold.
+      * @param _price            Seed to funding token exchange rate.
+      * @param _startTime        Distribution start time in unix timecode.
+      * @param _endTime          Distribution end time in unix timecode.
+      * @param _vestingDuration  Vesting period duration.
+      * @param _vestingCliff     Cliff duration.
+      * @param _isWhitelisted    Set to true if only whitelisted adresses are allowed to participate.
+      * @param _fee              Success fee.
+    */
     function initialize(
-            address _dao,
+            address _beneficiary,
             address _admin,
             address _seedToken,
             address _fundingToken,
@@ -111,7 +127,7 @@ contract Seed {
             bool    _isWhitelisted,
             uint8   _fee
     ) public initializer {
-        dao             = _dao;
+        beneficiary     = _beneficiary;
         admin           = _admin;
         successMinimum  = _successMinimum;
         price           = _price;
@@ -123,25 +139,14 @@ contract Seed {
         seedToken       = ERC20(_seedToken);
         fundingToken    = ERC20(_fundingToken);
         fee             = _fee;
-        closed = false;
-        minimumReached = false;
+        closed          = false;
+        minimumReached  = false;
     }
 
-    function claimLock(address _locker) public checkMinimumReached {
-        uint16 daysVested;
-        uint256 amountVested;
-        (daysVested, amountVested) = _calculateClaim(_locker);
-        require(amountVested > 0, "Seed: amountVested is 0");
-
-        Lock storage tokenLock = tokenLocks[_locker];
-        tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
-        tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
-
-        require(seedToken.transfer(dao, fees[_locker]), "Seed: cannot transfer fee to dao");
-        require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
-        emit TokensClaimed(tokenLock.recipient, amountVested);
-    }
-
+    /**
+      * @dev                     Buy seed tokens.
+      * @param _amount           The amount of tokens to buy.
+    */
     function buy(uint256 _amount) public protected checked {
         require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
         // map buyins
@@ -156,15 +161,41 @@ contract Seed {
         _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE));
     }
 
+    /**
+      * @dev                     Claim locked tokens.
+      * @param _locker           The address of the locker.
+    */
+    function claimLock(address _locker) public checkMinimumReached {
+        uint16 daysVested;
+        uint256 amountVested;
+        (daysVested, amountVested) = _calculateClaim(_locker);
+        require(amountVested > 0, "Seed: amountVested is 0");
+
+        Lock storage tokenLock = tokenLocks[_locker];
+        tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
+        tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
+
+        require(seedToken.transfer(beneficiary, fees[_locker]), "Seed: cannot transferbeneficiary");
+        require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
+        emit TokensClaimed(tokenLock.recipient, amountVested);
+    }
+
     function buyBack() public protected checked beforeMinimumReached {
         //
     }
 
     // ADMIN ACTIONS
+
+    /**
+      * @dev                     Pause distribution.
+    */
     function pause() public onlyAdmin protected {
         paused = true;
     }
 
+    /**
+      * @dev                     Unpause distribution.
+    */
     function unpause() public onlyAdmin {
         require(closed != true, "Seed: should not be closed");
         require(paused == true, "Seed: should be paused");
@@ -172,6 +203,9 @@ contract Seed {
         paused = false;
     }
 
+    /**
+      * @dev                     Close distribution.
+    */
     function close() public onlyAdmin protected {
         // transfer all the tokens back to admin
         require(
@@ -186,19 +220,28 @@ contract Seed {
         closed = true;
     }
 
-    function whitelist(address buyer) public onlyAdmin protected {
+    /**
+      * @dev                     Add address to whitelist.
+    */
+    function whitelist(address _buyer) public onlyAdmin protected {
         require(isWhitelisted == true, "Seed: module is not whitelisted");
 
-        whitelisted[buyer] = true;
+        whitelisted[_buyer] = true;
     }
 
+    /**
+      * @dev                     Remove address from whitelist.
+    */
     function unwhitelist(address buyer) public onlyAdmin protected {
         require(isWhitelisted == true, "Seed: module is not whitelisted");
 
         whitelisted[buyer] = false;
     }
 
-    function withdraw() public onlyAdmin protected {
+    /**
+      * @dev                     Withdraw funds from the contract
+    */
+    function withdraw() public onlyAdmin checkMinimumReached protected {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 

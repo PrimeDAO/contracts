@@ -57,7 +57,7 @@ contract('Seed', (accounts) => {
             buyerNotWhitelisted = accounts[3];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            successMinimum = toWei('100');
+            successMinimum = toWei('10');
             price = toWei('0.01');
             buyAmount = toWei('50');
             startTime  = await time.latest();
@@ -89,7 +89,7 @@ contract('Seed', (accounts) => {
                     );
 
                     expect(await setup.seed.initialized()).to.equal(true);
-                    expect(await setup.seed.dao()).to.equal(setup.organization.avatar.address);
+                    expect(await setup.seed.beneficiary()).to.equal(setup.organization.avatar.address);
                     expect(await setup.seed.admin()).to.equal(admin);
                     expect(await setup.seed.seedToken()).to.equal(seedToken.address);
                     expect(await setup.seed.fundingToken()).to.equal(fundingToken.address);
