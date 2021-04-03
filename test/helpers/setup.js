@@ -298,8 +298,8 @@ module.exports = {
     DAOStack,
     organization,
     farmFactory,
-    seedFactory,
     seed,
+    seedFactory,
     token4rep,
     primeDAO,
 };

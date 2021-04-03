@@ -30,7 +30,7 @@ contract SeedFactory is CloneFactory {
     Seed      public parent;
     bool      public initialized;
 
-    event SeedCreated(address indexed newSeed);
+    event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
     modifier initializer() {
         require(!initialized, "SeedFactory: contract already initialized");
@@ -114,7 +114,7 @@ contract SeedFactory is CloneFactory {
             _fee
         );
 
-        emit SeedCreated(address(_newSeed));
+        emit SeedCreated(address(_newSeed), msg.sender);
 
         return address(_newSeed);
     }
