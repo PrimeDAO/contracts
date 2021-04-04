@@ -51,6 +51,8 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
       * @param _stakingToken Staking token contract address
       * @param _initreward   Initial reward
       * @param _starttime    Start time
+      * @param _duration     Duration of the staking in days
+      * @param _avatar       Address of reward distribution recepient
       */
     function initialize(
         string calldata _name,
