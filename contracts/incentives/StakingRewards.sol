@@ -156,6 +156,10 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         return Math.min(block.timestamp, periodFinish);
     }
 
+    function isActive() public view returns (bool) {
+        return (periodFinish.sub(block.timestamp)>0);
+    }
+
     function rewardPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
             return rewardPerTokenStored;
