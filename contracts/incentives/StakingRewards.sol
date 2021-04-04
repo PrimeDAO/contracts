@@ -72,12 +72,12 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         stakingToken = _stakingToken;
         initreward = _initreward;
         starttime = _starttime;
-        DURATION = (_duration * 24 hours);
+        duration = (_duration * 24 hours);
 
         rewardDistribution = _avatar;
     }
 
-    uint256 public DURATION;
+    uint256 public duration;
 
     uint256 public initreward;
     uint256 public starttime;
@@ -109,11 +109,11 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
 
     function notifyRewardAmount(uint256 reward) external protected onlyRewardDistribution updateReward(address(0)) {
         if (block.timestamp >= periodFinish) {
-            rewardRate = reward.div(DURATION);
+            rewardRate = reward.div(duration);
         } else {
             uint256 remaining = periodFinish.sub(block.timestamp);
             uint256 leftover = remaining.mul(rewardRate);
-            rewardRate = reward.add(leftover).div(DURATION);
+            rewardRate = reward.add(leftover).div(duration);
         }
 
         // Ensure the provided reward amount is not more than the balance in the contract.
@@ -121,10 +121,10 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint balance = IERC20(rewardToken).balanceOf(address(this));
-        require(rewardRate <= balance.div(DURATION), "StakingRewards: Provided reward too high");
+        require(rewardRate <= balance.div(duration), "StakingRewards: Provided reward too high");
 
         lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(DURATION);
+        periodFinish = block.timestamp.add(duration);
         emit RewardAdded(reward);
     }
 
