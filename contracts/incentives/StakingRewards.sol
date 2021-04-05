@@ -51,6 +51,8 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
       * @param _stakingToken Staking token contract address
       * @param _initreward   Initial reward
       * @param _starttime    Start time
+      * @param _duration     Duration of the staking in days
+      * @param _avatar       Address of reward distribution recepient
       */
     function initialize(
         string calldata _name,
@@ -154,6 +156,10 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
 
     function lastTimeRewardApplicable() public view returns (uint256) {
         return Math.min(block.timestamp, periodFinish);
+    }
+
+    function isActive() public view returns (bool) {
+        return (periodFinish.sub(block.timestamp)>0);
     }
 
     function rewardPerToken() public view returns (uint256) {
