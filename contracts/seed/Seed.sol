@@ -13,7 +13,7 @@
 /* solhint-disable space-after-comma */
 pragma solidity 0.5.13;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
@@ -35,8 +35,8 @@ contract Seed {
     bool    public isWhitelisted;
     uint16  public vestingDuration;
     uint16  public vestingCliff;
-    ERC20   public seedToken;
-    ERC20   public fundingToken;
+    IERC20   public seedToken;
+    IERC20   public fundingToken;
     uint8   public fee;
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
@@ -136,8 +136,8 @@ contract Seed {
         vestingDuration = _vestingDuration;
         vestingCliff    = _vestingCliff;
         isWhitelisted   = _isWhitelisted;
-        seedToken       = ERC20(_seedToken);
-        fundingToken    = ERC20(_fundingToken);
+        seedToken       = IERC20(_seedToken);
+        fundingToken    = IERC20(_fundingToken);
         fee             = _fee;
         closed          = false;
         minimumReached  = false;
