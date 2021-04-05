@@ -11,6 +11,7 @@
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* solhint-disable space-after-comma */
+/* solhint-disable max-states-count */
 pragma solidity 0.5.13;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
