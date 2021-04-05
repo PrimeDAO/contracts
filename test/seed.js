@@ -84,8 +84,7 @@ contract('Seed', (accounts) => {
                         admin,
                         seedToken.address,
                         fundingToken.address,
-                        successMinimum,
-                        cap,
+                        [successMinimum,cap],
                         price,
                         startTime,
                         endTime,
@@ -105,7 +104,7 @@ contract('Seed', (accounts) => {
                     expect(await setup.seed.isWhitelisted()).to.equal(isWhitelisted);
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect(await setup.seed.closed()).to.equal(false);
-                    expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal(successMinimum);
+                    expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal(cap);
                 });
                 it('it reverts on double initialization', async () => {
                     await expectRevert(
@@ -114,8 +113,7 @@ contract('Seed', (accounts) => {
                             admin,
                             seedToken.address,
                             fundingToken.address,
-                            successMinimum,
-                            cap,
+                            [successMinimum,cap],
                             price,
                             startTime,
                             endTime,
@@ -178,8 +176,7 @@ contract('Seed', (accounts) => {
                         admin,
                         seedToken.address,
                         fundingToken.address,
-                        successMinimum,
-                        cap,
+                        [successMinimum,cap],
                         price,
                         startTime,
                         endTime,
@@ -227,8 +224,7 @@ contract('Seed', (accounts) => {
                         admin,
                         seedToken.address,
                         fundingToken.address,
-                        successMinimum,
-                        cap,
+                        [successMinimum,cap],
                         price,
                         startTime,
                         endTime,
@@ -352,8 +348,7 @@ contract('Seed', (accounts) => {
                         admin,
                         seedToken.address,
                         fundingToken.address,
-                        successMinimum,
-                        cap,
+                        [successMinimum,cap],
                         price,
                         startTime,
                         endTime,
@@ -390,7 +385,7 @@ contract('Seed', (accounts) => {
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             successMinimum = toWei('10');
-            cap = toWei('100'); 
+            cap = toWei('100');
             price = toWei('0.01');
             buyAmount = toWei('50');
             startTime  = await time.latest();
@@ -415,8 +410,7 @@ contract('Seed', (accounts) => {
                         admin,
                         seedToken.address,
                         fundingToken.address,
-                        successMinimum,
-                        cap,
+                        [successMinimum,cap],
                         price,
                         startTime,
                         endTime,
@@ -436,7 +430,7 @@ contract('Seed', (accounts) => {
                     expect(await seed.isWhitelisted()).to.equal(isWhitelisted);
                     expect((await seed.fee()).toString()).to.equal(fee.toString());
                     expect(await seed.closed()).to.equal(false);
-                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal(successMinimum);
+                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal(cap);
 
                 });
                 it('it reverts on double initialization', async () => {
@@ -446,8 +440,7 @@ contract('Seed', (accounts) => {
                             admin,
                             seedToken.address,
                             fundingToken.address,
-                            successMinimum,
-                            cap,
+                            [successMinimum,cap],
                             price,
                             startTime,
                             endTime,

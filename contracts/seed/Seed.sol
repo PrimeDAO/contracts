@@ -103,31 +103,28 @@ contract Seed {
         address recipient;
     }
 
-    // * @param _cap              The amount to be raised.
-    // * @param _price            Seed to funding token exchange rate.
-
     /**
-      * @dev                     Initialize Seed.
-      * @param _beneficiary      The address of the beneficiary revieving the fee.
-      * @param _admin            The address of the admin of this contract.
-      * @param _seedToken        The address of the token being distributed.
-      * @param _fundingToken     The address of the token being exchanged for seed token.
-      * @param _successMinimum   A minimum distribution threshold.
-      * @param _startTime        Distribution start time in unix timecode.
-      * @param _endTime          Distribution end time in unix timecode.
-      * @param _vestingDuration  Vesting period duration.
-      * @param _vestingCliff     Cliff duration.
-      * @param _isWhitelisted    Set to true if only whitelisted adresses are allowed to participate.
-      * @param _fee              Success fee.
+      * @dev                          Initialize Seed.
+      * @param _beneficiary           The address of the beneficiary revieving the fee.
+      * @param _admin                 The address of the admin of this contract.
+      * @param _seedToken             The address of the token being distributed.
+      * @param _fundingToken          The address of the token being exchanged for seed token.
+      * @param _successMinimumAndCap  Array of the minimum distribution threshold and
+                                      the highest possible amount to be raised.
+      * @param _startTime             Distribution start time in unix timecode.
+      * @param _endTime               Distribution end time in unix timecode.
+      * @param _vestingDuration       Vesting period duration.
+      * @param _vestingCliff          Cliff duration.
+      * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
+      * @param _fee                   Success fee.
     */
     function initialize(
             address _beneficiary,
             address _admin,
             address _seedToken,
             address _fundingToken,
-            uint    _successMinimum,
-            uint[] memory    _capAndPrice,
-            // uint    _price,
+            uint[] memory    _successMinimumAndCap,
+            uint    _price,
             uint    _startTime,
             uint    _endTime,
             uint16  _vestingDuration,
@@ -137,9 +134,9 @@ contract Seed {
     ) public initializer {
         beneficiary     = _beneficiary;
         admin           = _admin;
-        successMinimum  = _successMinimum;
-        cap             = _capAndPrice[0];
-        price           = _capAndPrice[1];
+        successMinimum  = _successMinimumAndCap[0];
+        cap             = _successMinimumAndCap[1];
+        price           = _price;
         startTime       = _startTime;
         endTime         = _endTime;
         vestingDuration = _vestingDuration;
