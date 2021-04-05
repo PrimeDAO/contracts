@@ -51,15 +51,17 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
       * @param _stakingToken Staking token contract address
       * @param _initreward   Initial reward
       * @param _starttime    Start time
+      * @param _duration     Duration of the staking in days
+      * @param _avatar       Address of reward distribution recepient
       */
     function initialize(
-      string calldata _name,
-      address         _rewardToken,
-      address         _stakingToken,
-      uint256         _initreward,
-      uint256         _starttime,
-      uint256         _duration,
-      address         _avatar
+        string calldata _name,
+        address         _rewardToken,
+        address         _stakingToken,
+        uint256         _initreward,
+        uint256         _starttime,
+        uint256         _duration,
+        address         _avatar
     ) external initializer {
         require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be null");
         require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be null");
@@ -72,12 +74,12 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         stakingToken = _stakingToken;
         initreward = _initreward;
         starttime = _starttime;
-        DURATION = (_duration * 24 hours);
+        duration = (_duration * 24 hours);
 
         rewardDistribution = _avatar;
     }
 
-    uint256 public DURATION;
+    uint256 public duration;
 
     uint256 public initreward;
     uint256 public starttime;
@@ -108,25 +110,25 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     }
 
     function notifyRewardAmount(uint256 reward) external protected onlyRewardDistribution updateReward(address(0)) {
-         if (block.timestamp >= periodFinish) {
-             rewardRate = reward.div(DURATION);
-         } else {
-             uint256 remaining = periodFinish.sub(block.timestamp);
-             uint256 leftover = remaining.mul(rewardRate);
-             rewardRate = reward.add(leftover).div(DURATION);
-         }
+        if (block.timestamp >= periodFinish) {
+            rewardRate = reward.div(duration);
+        } else {
+            uint256 remaining = periodFinish.sub(block.timestamp);
+            uint256 leftover = remaining.mul(rewardRate);
+            rewardRate = reward.add(leftover).div(duration);
+        }
 
-         // Ensure the provided reward amount is not more than the balance in the contract.
-         // This keeps the reward rate in the right range, preventing overflows due to
-         // very high values of rewardRate in the earned and rewardsPerToken functions;
-         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-         uint balance = IERC20(rewardToken).balanceOf(address(this));
-         require(rewardRate <= balance.div(DURATION), "StakingRewards: Provided reward too high");
+        // Ensure the provided reward amount is not more than the balance in the contract.
+        // This keeps the reward rate in the right range, preventing overflows due to
+        // very high values of rewardRate in the earned and rewardsPerToken functions;
+        // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
+        uint balance = IERC20(rewardToken).balanceOf(address(this));
+        require(rewardRate <= balance.div(duration), "StakingRewards: Provided reward too high");
 
-         lastUpdateTime = block.timestamp;
-         periodFinish = block.timestamp.add(DURATION);
-         emit RewardAdded(reward);
-     }
+        lastUpdateTime = block.timestamp;
+        periodFinish = block.timestamp.add(duration);
+        emit RewardAdded(reward);
+    }
 
     // This function allows governance to take unsupported tokens out of the
     // contract, since this one exists longer than the other pools.
@@ -134,11 +136,10 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     // mess up. There is no guarantee governance will vote to return these.
     // It also allows for removal of airdropped tokens.
     function rescueTokens(address _token, uint256 amount, address to)
-        external
-        protected
+    external
+    protected
+    onlyRewardDistribution
     {
-        // only gov
-        require(msg.sender == owner(), "StakingRewards: !governance");
         // cant take staked asset
         require(_token != stakingToken, "StakingRewards: stakingToken");
         // cant take reward asset
@@ -157,29 +158,33 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         return Math.min(block.timestamp, periodFinish);
     }
 
+    function isActive() public view returns (bool) {
+        return (periodFinish.sub(block.timestamp)>0);
+    }
+
     function rewardPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
             return rewardPerTokenStored;
         }
         return
-            rewardPerTokenStored.add(
-                lastTimeRewardApplicable()
-                    .sub(lastUpdateTime)
-                    .mul(rewardRate)
-                    .mul(1e18)
-                    .div(_totalSupply)
-            );
+        rewardPerTokenStored.add(
+            lastTimeRewardApplicable()
+            .sub(lastUpdateTime)
+            .mul(rewardRate)
+            .mul(1e18)
+            .div(_totalSupply)
+        );
     }
 
     function earned(address account) public view returns (uint256) {
         return
-            _balances[account]
-                .mul(rewardPerToken().sub(userRewardPerTokenPaid[account]))
-                .div(1e18)
-                .add(rewards[account]);
+        _balances[account]
+        .mul(rewardPerToken().sub(userRewardPerTokenPaid[account]))
+        .div(1e18)
+        .add(rewards[account]);
     }
 
-     function stake(uint256 amount) public nonReentrant updateReward(msg.sender) protected checkStart {
+    function stake(uint256 amount) public nonReentrant updateReward(msg.sender) protected checkStart {
         require(amount > 0, "StakingRewards: cannot stake 0");
         _stake(amount);
         emit Staked(msg.sender, amount);

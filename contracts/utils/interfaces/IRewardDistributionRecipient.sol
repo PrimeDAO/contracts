@@ -16,9 +16,10 @@ contract IRewardDistributionRecipient is Ownable {
     }
 
     function setRewardDistribution(address _rewardDistribution)
-        external
-        onlyOwner
+    external
+    onlyOwner
     {
         rewardDistribution = _rewardDistribution;
     }
+
 }

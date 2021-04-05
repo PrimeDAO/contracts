@@ -20,8 +20,7 @@
 		"EnsPublicResolver":"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
 		"RepRedeemer":"0xe0aaf927Ae03EFD91309cF97dd0cDa217177F80D"
 		},
-"mainnet":
-		{
+"mainnet":{
 		"RightsManager":"0xFd069b1d2daC3d1C277BeFa8E51Aad77D9f9167B",
 		"SmartPoolManager":"0x8DBB8C9bFEb7689f16772c85136993cDA0c05eA4",
 		"BFactory":"0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd",
@@ -39,6 +38,7 @@
 		"VestingFactory":"",
 		"PrimeToken":"0xE59064a8185Ed1Fca1D17999621eFedfab4425c9",
 		"EnsRegistry":"0x314159265dd8dbb310642f98f50c066173c1259b",
-		"EnsPublicResolver":"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41"
+		"EnsPublicResolver":"0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
+		"RepRedeemer":"0xfaeC26bfe4D09824096a1756689448D0eFF39F3F"
 		}
 }
