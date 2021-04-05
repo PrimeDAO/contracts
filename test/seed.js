@@ -50,6 +50,7 @@ contract('Seed', (accounts) => {
     let isWhitelisted;
     let fee;
     let buyer1TimeLock;
+    let seed;
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -213,10 +214,46 @@ contract('Seed', (accounts) => {
                 });
             });
         });
+        context('# close', () => {
+            context('» generics', () => {
+                before('!! deploy new contract + top up buyer balance', async () => {
+                    setup.data.seed = await Seed.new();
+                    setup.data.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        seedToken.address,
+                        fundingToken.address,
+                        successMinimum,
+                        price,
+                        startTime,
+                        endTime,
+                        vestingDuration,
+                        vestingCliff,
+                        isWhitelisted,
+                        fee
+                    );
+                    await fundingToken.transfer(buyer2, smallBuyAmount, {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, smallBuyAmount, {from:buyer2});
+                });
+                it('can only be called by admin', async () => {
+                    await expectRevert(
+                        setup.data.seed.close(),
+                        "Seed: caller should be admin"
+                    );
+                });
+                it('transfers all tokens to the admin', async () => {
+                    let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
+                    let stBalance = await seedToken.balanceOf(setup.data.seed.address);
+                    await setup.data.seed.close({from:admin});
+                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal(ftBalance.toString());
+                    expect((await seedToken.balanceOf(admin)).toString()).to.equal(stBalance.toString());
+                });
+            });
+        });
         context('# getter functions', () => {
             context('» checkWhitelisted', () => {
                 it('returns correct bool', async () => {
-                    // default false
+                    // default false - contract not whitelist contract
                     expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(false);
                 });
             });
@@ -289,12 +326,6 @@ contract('Seed', (accounts) => {
                 it('can only be called by admin', async () => {
                     await expectRevert(setup.seed.unwhitelist(buyer1), 'Seed: caller should be admin');
                 });
-                // it('removes a user from the whitelist', async () => {
-                //     expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(true);
-                //     await setup.seed.unwhitelist(buyer1);
-                //     expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(false);
-                // });
-                // move to non-whitelisted context
                 it('reverts: can only be called on whitelisted contract', async () => {
                     await expectRevert(setup.seed.whitelist(buyer1,{from:admin}), 'Seed: module is not whitelisted');
                 });
@@ -303,34 +334,43 @@ contract('Seed', (accounts) => {
                 it('can only be called by admin', async () => {
                     await expectRevert(setup.seed.whitelist(buyer1), 'Seed: caller should be admin');
                 });
-                // it.skip('adds a user to the whitelist', async () => {
-                //     expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(false);
-                //     await setup.seed.whitelist(buyer1);
-                //     expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(true);
-                // });
-                // move to non-whitelisted context
                 it('reverts: can only be called on whitelisted contract', async () => {
                     await expectRevert(setup.seed.whitelist(buyer1,{from:admin}), 'Seed: module is not whitelisted');
                 });
             });
             context('» withdraw', () => {
                 before('!! deploy new contract', async () => {
-                    // deploy temp contract & init
+                    setup.data.seed = await Seed.new();
+                    setup.data.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        seedToken.address,
+                        fundingToken.address,
+                        successMinimum,
+                        price,
+                        startTime,
+                        endTime,
+                        vestingDuration,
+                        vestingCliff,
+                        isWhitelisted,
+                        fee
+                    );
+                    await fundingToken.transfer(buyer2, buyAmount, {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer2});
                 });
-                it.skip('can only be called after minumum funding amount is met', async () => {
-                    // buyin 9
-                    // expectRevert
-                    // buyin 1
-                    // check event
+                it('can only be called after minumum funding amount is met', async () => {
+                    await expectRevert(
+                        setup.data.seed.withdraw({from:admin}),
+                        "Seed: minimum funding amount not met"
+                    );
+                    await setup.data.seed.buy(buyAmount, {from:buyer2});
+                    let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
+                    await setup.data.seed.withdraw({from:admin});
+                    expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal('0');
+                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal(ftBalance.toString());
                 });
                 it('can only be called by admin', async () => {
                     await expectRevert(setup.seed.withdraw(), 'Seed: caller should be admin');
-                });
-                it('withdraws funding tokens from contract', async () => {
-                    let ftBalance = await fundingToken.balanceOf(setup.seed.address);
-                    await setup.seed.withdraw({from:admin});
-                    expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to.equal('0');
-                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal(ftBalance.toString());
                 });
             });
         });
@@ -355,11 +395,14 @@ contract('Seed', (accounts) => {
         context('» contract is not initialized yet', () => {
             context('» parameters are valid', () => {
                 before('!! deploy new contract', async () => {
-                    //
+                    seed = await Seed.new();
                 });
-                it.skip('initializes', async () => {
+                it('initializes', async () => {
 
-                    setup.seed.initialize(
+                    // emulate creation & initialization via seedfactory & fund with seedTokens
+                    await seedToken.transfer(seed.address, successMinimum, {from:setup.root});
+
+                    await seed.initialize(
                         setup.organization.avatar.address,
                         admin,
                         seedToken.address,
@@ -374,22 +417,22 @@ contract('Seed', (accounts) => {
                         fee
                     );
 
-                    expect(await setup.seed.initialized()).to.equal(true);
-                    expect(await setup.seed.dao()).to.equal(setup.organization.avatar.address);
-                    expect(await setup.seed.admin()).to.equal(admin);
-                    expect(await setup.seed.seedToken()).to.equal(seedToken.address);
-                    expect(await setup.seed.fundingToken()).to.equal(fundingToken.address);
-                    expect((await setup.seed.successMinimum()).toString()).to.equal(successMinimum);
-                    expect((await setup.seed.price()).toString()).to.equal(price);
-                    expect(await setup.seed.isWhitelisted()).to.equal(isWhitelisted);
-                    expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
-                    expect(await setup.seed.closed()).to.equal(false);
-                    expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal(successMinimum);
+                    expect(await seed.initialized()).to.equal(true);
+                    expect(await seed.beneficiary()).to.equal(setup.organization.avatar.address);
+                    expect(await seed.admin()).to.equal(admin);
+                    expect(await seed.seedToken()).to.equal(seedToken.address);
+                    expect(await seed.fundingToken()).to.equal(fundingToken.address);
+                    expect((await seed.successMinimum()).toString()).to.equal(successMinimum);
+                    expect((await seed.price()).toString()).to.equal(price);
+                    expect(await seed.isWhitelisted()).to.equal(isWhitelisted);
+                    expect((await seed.fee()).toString()).to.equal(fee.toString());
+                    expect(await seed.closed()).to.equal(false);
+                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal(successMinimum);
 
                 });
-                it.skip('it reverts on double initialization', async () => {
+                it('it reverts on double initialization', async () => {
                     await expectRevert(
-                        setup.seed.initialize(
+                        seed.initialize(
                             setup.organization.avatar.address,
                             admin,
                             seedToken.address,
@@ -405,6 +448,29 @@ contract('Seed', (accounts) => {
                         ),
                         'Seed: contract already initialized'
                     );
+                });
+            });
+        });
+        context('# admin whitelist functions', () => {
+            context('» whitelist', () => {
+                it('adds a user to the whitelist', async () => {
+                    expect(await seed.checkWhitelisted(buyer1)).to.equal(false);
+                    await seed.whitelist(buyer1,{from:admin});
+                    expect(await seed.checkWhitelisted(buyer1)).to.equal(true);
+                });
+            });
+            context('» unwhitelist', () => {
+                it('removes a user from the whitelist', async () => {
+                    expect(await seed.checkWhitelisted(buyer1)).to.equal(true);
+                    await seed.unwhitelist(buyer1,{from:admin});
+                    expect(await seed.checkWhitelisted(buyer1)).to.equal(false);
+                });
+            });
+            context.skip('» whitelistBatch', () => {
+                it('adds users to the whitelist', async () => {
+                    // expect(await seed.checkWhitelisted(buyer1)).to.equal(false);
+                    // await seed.whitelist(buyer1);
+                    // expect(await seed.checkWhitelisted(buyer1)).to.equal(true);
                 });
             });
         });
