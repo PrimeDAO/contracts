@@ -487,5 +487,19 @@ contract('Seed', (accounts) => {
                 });
             });
         });
+        context('# cap', () => {
+            context('» check cap', () => {
+                it('cannot buy more than cap', async () => {
+                    await fundingToken.transfer(buyer2, toWei('100'), {from:setup.root});
+                    await fundingToken.approve(seed.address, toWei('100'), {from:buyer2});
+                    await seed.whitelist(buyer2,{from:admin});
+                    await seed.buy(toWei('99'),{from:buyer2});
+                    await expectRevert(
+                        seed.buy(toWei('2'),{from:buyer2}),
+                        "Seed: amount exceeds contract sale cap"
+                    );
+                });
+            });
+        });
     });
 });
