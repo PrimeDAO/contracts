@@ -1,10 +1,11 @@
 /*global web3, artifacts, contract, before, it, context*/
 /*eslint no-undef: "error"*/
 
-// const { expect } = require('chai');
-const { /*constants,*/ time, /*expectRevert,*/ expectEvent } = require('@openzeppelin/test-helpers');
+const { expect } = require('chai');
+const { /*constants,*/ time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const SeedFactory = artifacts.require('SeedFactory');
+const Seed = artifacts.require('Seed');
 const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {
@@ -48,6 +49,7 @@ contract('SeedFactory', (accounts) => {
     let fee;
     let successMinimum;
     let seedFactory;
+    let newSeed;
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -92,6 +94,39 @@ contract('SeedFactory', (accounts) => {
                 // store data
                 setup.data.tx = tx;
                 await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
+            });
+            it('reverts: contract already initialized', async () => {
+                await expectRevert(
+                    seedFactory.initialize(accounts[0], setup.seed.address),
+                    "SeedFactory: contract already initialized"
+                );
+            });
+        });
+        context('» changeParent', () => {
+            before('!! deploy new seed', async () => {
+                newSeed = await Seed.new();
+            });
+            it('only Avatar can change parent', async () => {
+                await expectRevert(
+                    seedFactory.changeParent(newSeed.address,{from:accounts[1]}),
+                    "SeedFactory: protected operation"
+                );
+            });
+            it('changes parent', async () => {
+                await seedFactory.changeParent(newSeed.address,{from:accounts[0]});
+                expect(await seedFactory.parent()).to.equal(newSeed.address);
+            });
+        });
+        context('» changeAvatar', () => {
+            it('only Avatar can change avatar', async () => {
+                await expectRevert(
+                    seedFactory.changeAvatar(accounts[2],{from:accounts[1]}),
+                    "SeedFactory: protected operation"
+                );
+            });
+            it('changes avatar', async () => {
+                await seedFactory.changeAvatar(accounts[2],{from:accounts[0]});
+                expect(await seedFactory.avatar()).to.equal(accounts[2]);
             });
         });
     });
