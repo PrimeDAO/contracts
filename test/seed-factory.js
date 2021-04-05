@@ -38,7 +38,7 @@ contract('SeedFactory', (accounts) => {
     let admin;
     let seedToken;
     let fundingToken;
-    // let cap;
+    let cap;
     let price;
     let startTime;
     let endTime;
@@ -55,7 +55,7 @@ contract('SeedFactory', (accounts) => {
             admin = accounts[1];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            // cap = toWei('100');
+            cap = toWei('100');
             price = toWei('0.01');
             successMinimum = toWei('100');
             startTime  = await time.latest();
@@ -80,7 +80,8 @@ contract('SeedFactory', (accounts) => {
                     seedToken.address,
                     fundingToken.address,
                     successMinimum,
-                    price,
+                    [cap,price],
+                    // price,
                     startTime.toNumber(),
                     endTime.toNumber(),
                     vestingDuration,

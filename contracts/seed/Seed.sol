@@ -30,6 +30,7 @@ contract Seed {
     address public beneficiary;
     address public admin;
     uint    public successMinimum;
+    uint    public cap;
     uint    public price;
     uint    public startTime;
     uint    public endTime;
@@ -102,6 +103,9 @@ contract Seed {
         address recipient;
     }
 
+    // * @param _cap              The amount to be raised.
+    // * @param _price            Seed to funding token exchange rate.
+
     /**
       * @dev                     Initialize Seed.
       * @param _beneficiary      The address of the beneficiary revieving the fee.
@@ -109,7 +113,6 @@ contract Seed {
       * @param _seedToken        The address of the token being distributed.
       * @param _fundingToken     The address of the token being exchanged for seed token.
       * @param _successMinimum   A minimum distribution threshold.
-      * @param _price            Seed to funding token exchange rate.
       * @param _startTime        Distribution start time in unix timecode.
       * @param _endTime          Distribution end time in unix timecode.
       * @param _vestingDuration  Vesting period duration.
@@ -123,7 +126,8 @@ contract Seed {
             address _seedToken,
             address _fundingToken,
             uint    _successMinimum,
-            uint    _price,
+            uint[] memory    _capAndPrice,
+            // uint    _price,
             uint    _startTime,
             uint    _endTime,
             uint16  _vestingDuration,
@@ -134,7 +138,8 @@ contract Seed {
         beneficiary     = _beneficiary;
         admin           = _admin;
         successMinimum  = _successMinimum;
-        price           = _price;
+        cap             = _capAndPrice[0];
+        price           = _capAndPrice[1];
         startTime       = _startTime;
         endTime         = _endTime;
         vestingDuration = _vestingDuration;
@@ -160,10 +165,7 @@ contract Seed {
 
         fundingTokensPerAddress[msg.sender] = _amount;
 
-        // more granular fee rewrite
-        // uint feeAmount = _amount.mul(fee).div(100);
-        // uint feeExample = uint32(uint256(PPM).mul(_tokenSupply).div( _exchangeRate.mul(_totalTokenSupply).div(uint256(PPM)) ));
-        uint feeAmount = uint((uint(PPM).mul(_amount)).mul(fee.mul(PPM)).div(uint(PPM).mul(100)));
+        uint feeAmount = _amount.mul(fee).div(100);
         fees[msg.sender] = feeAmount;
 
         uint _lockTokens = tokenLocks[msg.sender].amount;
@@ -192,13 +194,16 @@ contract Seed {
     // returns funding tokens to user
     function buyBack() public protected checked beforeMinimumReached {
         Lock storage tokenLock = tokenLocks[msg.sender];
+        uint amount = fundingTokensPerAddress[msg.sender];
         tokenLock.amount = 0;
         fees[msg.sender] = 0;
+        fundingTokensPerAddress[msg.sender] = 0;
+        // remove amount from cap
         require(
-            fundingToken.transfer(msg.sender, fundingTokensPerAddress[msg.sender]),
+            fundingToken.transfer(msg.sender, amount),
             "Seed: cannot return funding tokens to msg.sender"
         );
-        emit FundingReclaimed(tokenLock.recipient, fundingTokensPerAddress[msg.sender]);
+        emit FundingReclaimed(tokenLock.recipient, amount);
     }
 
     // ADMIN ACTIONS

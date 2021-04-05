@@ -76,13 +76,14 @@ contract SeedFactory is CloneFactory {
         address _admin,
         address _seedToken,
         address _fundingToken,
-        uint 	_successMinimum,
-        uint  	_price,
-        uint 	_startTime,
-        uint 	_endTime,
+        uint 	  _successMinimum,
+        uint[] memory    _capAndPrice,
+        // uint  	_price,
+        uint 	  _startTime,
+        uint 	  _endTime,
         uint16 	_vestingDuration,
         uint16 	_vestingCliff,
-        bool 	_isWhitelisted,
+        bool 	  _isWhitelisted,
         uint8   _fee
     )
     public
@@ -92,12 +93,6 @@ contract SeedFactory is CloneFactory {
         // deploy clone
         address _newSeed = createClone(address(parent));
 
-        // fund
-        require(
-            IERC20(_seedToken).transferFrom(_admin, address(_newSeed), _successMinimum),
-            "SeedFactory: cannot transfer seed tokens"
-        );
-
         // initialize
         Seed(_newSeed).initialize(
             msg.sender,
@@ -105,7 +100,8 @@ contract SeedFactory is CloneFactory {
             _seedToken,
             _fundingToken,
             _successMinimum,
-            _price,
+            _capAndPrice,
+            // _price,
             _startTime,
             _endTime,
             _vestingDuration,
@@ -113,6 +109,13 @@ contract SeedFactory is CloneFactory {
             _isWhitelisted,
             _fee
         );
+
+        // fund
+        require(
+            IERC20(_seedToken).transferFrom(_admin, address(_newSeed), _capAndPrice[0]),
+            "SeedFactory: cannot transfer seed tokens"
+        );
+
 
         emit SeedCreated(address(_newSeed), msg.sender);
 

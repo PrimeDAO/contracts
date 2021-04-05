@@ -40,6 +40,7 @@ contract('Seed', (accounts) => {
     let seedToken;
     let fundingToken;
     let successMinimum;
+    let cap;
     let price;
     let buyAmount;
     let smallBuyAmount;
@@ -61,6 +62,7 @@ contract('Seed', (accounts) => {
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             successMinimum = toWei('10');
+            cap = toWei('100');
             price = toWei('0.01');
             buyAmount = toWei('50');
             smallBuyAmount = toWei('9');
@@ -75,7 +77,7 @@ contract('Seed', (accounts) => {
             context('» parameters are valid', () => {
                 it('it initializes seed', async () => {
                     // emulate creation & initialization via seedfactory & fund with seedTokens
-                    await seedToken.transfer(setup.seed.address, successMinimum, {from:setup.root});
+                    await seedToken.transfer(setup.seed.address, cap, {from:setup.root});
 
                     await setup.seed.initialize(
                         setup.organization.avatar.address,
@@ -83,6 +85,7 @@ contract('Seed', (accounts) => {
                         seedToken.address,
                         fundingToken.address,
                         successMinimum,
+                        cap,
                         price,
                         startTime,
                         endTime,
@@ -103,7 +106,6 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect(await setup.seed.closed()).to.equal(false);
                     expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal(successMinimum);
-
                 });
                 it('it reverts on double initialization', async () => {
                     await expectRevert(
@@ -113,6 +115,7 @@ contract('Seed', (accounts) => {
                             seedToken.address,
                             fundingToken.address,
                             successMinimum,
+                            cap,
                             price,
                             startTime,
                             endTime,
@@ -176,6 +179,7 @@ contract('Seed', (accounts) => {
                         seedToken.address,
                         fundingToken.address,
                         successMinimum,
+                        cap,
                         price,
                         startTime,
                         endTime,
@@ -224,6 +228,7 @@ contract('Seed', (accounts) => {
                         seedToken.address,
                         fundingToken.address,
                         successMinimum,
+                        cap,
                         price,
                         startTime,
                         endTime,
@@ -258,7 +263,7 @@ contract('Seed', (accounts) => {
                 });
             });
             context('» getStartTime', () => {
-                // occasional blocktime mismatch in test env 
+                // occasional blocktime mismatch in test env
                 it('returns correct startTime', async () => {
                     expect((await setup.seed.getStartTime(buyer1)).toString()).to.equal(buyer1TimeLock.toString());
                 });
@@ -348,6 +353,7 @@ contract('Seed', (accounts) => {
                         seedToken.address,
                         fundingToken.address,
                         successMinimum,
+                        cap,
                         price,
                         startTime,
                         endTime,
@@ -383,7 +389,8 @@ contract('Seed', (accounts) => {
             buyer1 = accounts[2];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            successMinimum = toWei('100');
+            successMinimum = toWei('10');
+            cap = toWei('100'); 
             price = toWei('0.01');
             buyAmount = toWei('50');
             startTime  = await time.latest();
@@ -401,7 +408,7 @@ contract('Seed', (accounts) => {
                 it('initializes', async () => {
 
                     // emulate creation & initialization via seedfactory & fund with seedTokens
-                    await seedToken.transfer(seed.address, successMinimum, {from:setup.root});
+                    await seedToken.transfer(seed.address, cap, {from:setup.root});
 
                     await seed.initialize(
                         setup.organization.avatar.address,
@@ -409,6 +416,7 @@ contract('Seed', (accounts) => {
                         seedToken.address,
                         fundingToken.address,
                         successMinimum,
+                        cap,
                         price,
                         startTime,
                         endTime,
@@ -439,6 +447,7 @@ contract('Seed', (accounts) => {
                             seedToken.address,
                             fundingToken.address,
                             successMinimum,
+                            cap,
                             price,
                             startTime,
                             endTime,
