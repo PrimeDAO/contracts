@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 // const { expect } = require('chai');
-const { constants, time, /*expectRevert,*/ expectEvent } = require('@openzeppelin/test-helpers');
+const { /*constants,*/ time, /*expectRevert,*/ expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 const SeedFactory = artifacts.require('SeedFactory');
 const { toWei } = web3.utils;
@@ -33,6 +33,7 @@ const deploy = async (accounts) => {
 };
 
 contract('SeedFactory', (accounts) => {
+    let tx;
     let setup;
     let admin;
     let seedToken;
@@ -72,7 +73,7 @@ contract('SeedFactory', (accounts) => {
             it('it creates new seed contract', async () => {
                 // top up admins token balance
                 await seedToken.transfer(admin, successMinimum, {from:setup.root});
-                await seedToken.approve(setup.seedFactory.address, successMinimum, {from:admin});
+                await seedToken.approve(seedFactory.address, successMinimum, {from:admin});
 
                 tx = await seedFactory.deploySeed(
                     admin,
@@ -88,28 +89,9 @@ contract('SeedFactory', (accounts) => {
                     fee
                 );
 
-                // const calldata = helpers.encodeDeploySeed(
-                //     admin,
-                //     seedToken.address,
-                //     fundingToken.address,
-                //     successMinimum,
-                //     price,
-                //     startTime.toNumber(),
-                //     endTime.toNumber(),
-                //     vestingDuration,
-                //     vestingCliff,
-                //     isWhitelisted,
-                //     fee
-                // );
-                
-                // const _tx = await setup.primeDAO.seedManager.proposeCall(calldata, 0, constants.ZERO_BYTES32);
-                // const proposalId = helpers.getNewProposalId(_tx);
-                // await  setup.primeDAO.seedManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                // const tx = await setup.primeDAO.seedManager.execute(proposalId);
-                // // store data
+                // store data
                 setup.data.tx = tx;
-                await expectEvent.inTransaction(setup.data.tx.tx, setup.seedFactory, 'SeedCreated');
-
+                await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
             });
         });
     });

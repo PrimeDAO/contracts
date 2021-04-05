@@ -22,6 +22,8 @@ const deploy = async (accounts) => {
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy farmFactory
     setup.farmFactory = await helpers.setup.farmFactory(setup);
+    // deploy seedFactory
+    setup.seedFactory = await helpers.setup.seedFactory(setup);
     // deploy primeDAO
     setup.primeDAO = await helpers.setup.primeDAO(setup);
 

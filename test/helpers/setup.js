@@ -271,21 +271,17 @@ const primeDAO = async (setup) => {
 
     await farmManager.initialize(setup.organization.avatar.address, farmManager.voting.absoluteVote.address, farmManager.voting.params, constants.ZERO_ADDRESS);
 
-    //setup seedManager
-    const seedManager = await GenericScheme.new();
-    seedManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, seedManager.address);
-
     // register schemes
     const permissions = '0x00000010';
     await setup.DAOStack.daoCreator.setSchemes(
         setup.organization.avatar.address,
-        [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address, setup.seedFactory.address, seedManager.address],
-        [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
-        [permissions, permissions, permissions, permissions, permissions, permissions, permissions],
+        [setup.balancer.proxy.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address, setup.seedFactory.address],
+        [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
+        [permissions, permissions, permissions, permissions, permissions, permissions],
         'metaData'
     );
 
-    return {poolManager, farmManager, seedManager};
+    return {poolManager, farmManager};
 };
 
 module.exports = {

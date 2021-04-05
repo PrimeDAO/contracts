@@ -1,10 +1,10 @@
-/*global web3, artifacts, contract, before, it, context*/
+/*global web3, contract, before, it, context*/
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { /*constants,*/ time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
-const Seed = artifacts.require('Seed');
+// const Seed = artifacts.require('Seed');
 const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {
@@ -36,7 +36,7 @@ contract('Seed', (accounts) => {
     let setup;
     let admin;
     let buyer1;
-    let buyerNotWhitelisted;
+    // let buyerNotWhitelisted;
     let seedToken;
     let fundingToken;
     let successMinimum;
@@ -54,7 +54,7 @@ contract('Seed', (accounts) => {
             setup = await deploy(accounts);
             admin = accounts[1];
             buyer1 = accounts[2];
-            buyerNotWhitelisted = accounts[3];
+            // buyerNotWhitelisted = accounts[3];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             successMinimum = toWei('10');
