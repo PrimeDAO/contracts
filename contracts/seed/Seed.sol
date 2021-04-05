@@ -49,12 +49,14 @@ contract Seed {
     bool      public initialized;
     bool      public minimumReached;
 
-    mapping (address => bool) public whitelisted;
-    mapping (address => Lock) public tokenLocks; // locker to lock
+    mapping (address => bool)    public whitelisted;
+    mapping (address => Lock)    public tokenLocks; // locker to lock
     mapping (address => uint256) public fees;
+    mapping (address => uint256) public fundingTokensPerAddress;
 
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
+    event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
 
     modifier initializer() {
         require(!initialized, "Seed: contract already initialized");
@@ -149,14 +151,17 @@ contract Seed {
     */
     function buy(uint256 _amount) public protected checked {
         require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
-        // map buyins
 
         if (fundingToken.balanceOf(address(this)) >= successMinimum) {
             minimumReached = true;
         }
 
+        fundingTokensPerAddress[msg.sender] = _amount;
+
+        // more granular fee rewrite
         uint feeAmount = _amount.mul(fee).div(100);
         fees[msg.sender] = feeAmount;
+
         uint _lockTokens = tokenLocks[msg.sender].amount;
         _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE));
     }
@@ -175,13 +180,21 @@ contract Seed {
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
-        require(seedToken.transfer(beneficiary, fees[_locker]), "Seed: cannot transferbeneficiary");
+        require(seedToken.transfer(beneficiary, fees[_locker]), "Seed: cannot transfer to beneficiary");
         require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
         emit TokensClaimed(tokenLock.recipient, amountVested);
     }
 
+    // returns funding tokens to user
     function buyBack() public protected checked beforeMinimumReached {
-        //
+        Lock storage tokenLock = tokenLocks[msg.sender];
+        tokenLock.amount = 0;
+        fees[msg.sender] = 0;
+        require(
+            fundingToken.transfer(msg.sender, fundingTokensPerAddress[msg.sender]),
+            "Seed: cannot return funding tokens to msg.sender"
+        );
+        emit FundingReclaimed(tokenLock.recipient, fundingTokensPerAddress[msg.sender]);
     }
 
     // ADMIN ACTIONS
@@ -227,6 +240,16 @@ contract Seed {
         require(isWhitelisted == true, "Seed: module is not whitelisted");
 
         whitelisted[_buyer] = true;
+    }
+
+    /**
+      * @dev                     Add multiple addresses to whitelist.
+    */
+    function whitelistBatch(address[] memory _buyers) public onlyAdmin protected {
+        require(isWhitelisted == true, "Seed: module is not whitelisted");
+        for (uint i=0; i < _buyers.length; i++) {
+            whitelisted[_buyers[i]] = true;
+        }
     }
 
     /**

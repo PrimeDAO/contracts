@@ -1,10 +1,10 @@
-/*global web3, contract, before, it, context*/
+/*global web3, contract, before, it, context, artifacts*/
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { /*constants,*/ time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { /*constants,*/ time, expectRevert, expectEvent, BN } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
-// const Seed = artifacts.require('Seed');
+const Seed = artifacts.require('Seed');
 const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {
@@ -36,30 +36,33 @@ contract('Seed', (accounts) => {
     let setup;
     let admin;
     let buyer1;
-    // let buyerNotWhitelisted;
+    let buyer2;
     let seedToken;
     let fundingToken;
     let successMinimum;
     let price;
     let buyAmount;
+    let smallBuyAmount;
     let startTime;
     let endTime;
     let vestingDuration;
     let vestingCliff;
     let isWhitelisted;
     let fee;
+    let buyer1TimeLock;
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
             setup = await deploy(accounts);
             admin = accounts[1];
             buyer1 = accounts[2];
-            // buyerNotWhitelisted = accounts[3];
+            buyer2 = accounts[3];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             successMinimum = toWei('10');
             price = toWei('0.01');
             buyAmount = toWei('50');
+            smallBuyAmount = toWei('9');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -124,12 +127,12 @@ contract('Seed', (accounts) => {
         });
         context('# buy', () => {
             context('» generics', () => {
-                before('!! top up buyer1 balance & whitelist buyer', async () => {
+                before('!! top up buyer1 balance', async () => {
                     await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});
                     await fundingToken.approve(setup.seed.address, buyAmount, {from:buyer1});
-                    // await setup.seed.whitelist(buyer1,{from:admin});
                 });
                 it('it buys tokens ', async () => {
+                    buyer1TimeLock = await time.latest();
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
                     setup.data.tx = tx;
 
@@ -162,49 +165,103 @@ contract('Seed', (accounts) => {
                 });
             });
         });
-        context.skip('# getter functions', () => {
+        context('# buyBack', () => {
+            context('» generics', () => {
+                before('!! deploy new contract + top up buyer balance', async () => {
+                    setup.data.seed = await Seed.new();
+                    setup.data.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        seedToken.address,
+                        fundingToken.address,
+                        successMinimum,
+                        price,
+                        startTime,
+                        endTime,
+                        vestingDuration,
+                        vestingCliff,
+                        isWhitelisted,
+                        fee
+                    );
+                    await fundingToken.transfer(buyer2, smallBuyAmount, {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, smallBuyAmount, {from:buyer2});
+                });
+                it('returns funding tokens to buyer', async () => {
+                    await setup.data.seed.buy(smallBuyAmount, {from:buyer2});
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal('0');
+
+                    let tx = await setup.data.seed.buyBack({from:buyer2});
+                    setup.data.tx = tx;
+
+                    expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'FundingReclaimed');
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(smallBuyAmount);
+                });
+                it('clears `fee` mapping', async () => {
+                    expect((await setup.data.seed.getFee(buyer2)).toString()).to.equal('0');
+                });
+                it('clears `tokenLock.amount`', async () => {
+                    expect((await setup.data.seed.getAmount(buyer2)).toString()).to.equal('0');
+                });
+                it('cannot be called once funding minimum is reached', async () => {
+                    await fundingToken.transfer(buyer2, toWei('1'), {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, toWei('10'), {from:buyer2});
+                    await setup.data.seed.buy(toWei('10'), {from:buyer2});
+                    await expectRevert(
+                        setup.data.seed.buyBack({from:buyer2}),
+                        "Seed: minimum already met"
+                    );
+                });
+            });
+        });
+        context('# getter functions', () => {
             context('» checkWhitelisted', () => {
                 it('returns correct bool', async () => {
-                    //
+                    // default false
+                    expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(false);
                 });
             });
             context('» getStartTime', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct startTime', async () => {
+                    expect((await setup.seed.getStartTime(buyer1)).toString()).to.equal(buyer1TimeLock.toString());
                 });
             });
             context('» getAmount', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct amount', async () => {
+                    let pct_base = new BN('1000000000000000000'); // 10**18
+                    let p = new BN(price);
+                    let a = new BN(buyAmount);
+                    let amount = new BN(p.mul(a).div(pct_base));
+                    expect((await setup.seed.getAmount(buyer1)).toString()).to.equal((amount).toString());
                 });
             });
             context('» getVestingDuration', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct duration', async () => {
+                    expect((await setup.seed.getVestingDuration(buyer1)).toString()).to.equal(vestingDuration.toString());
                 });
             });
             context('» getVestingCliff', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct cliff', async () => {
+                    expect((await setup.seed.getVestingCliff(buyer1)).toString()).to.equal(vestingCliff.toString());
                 });
             });
             context('» getDaysClaimed', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct claimed', async () => {
+                    expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('91');
                 });
             });
             context('» getTotalClaimed', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct claimed', async () => {
+                    expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('91');
                 });
             });
             context('» getRecipient', () => {
-                it('returns correct bool', async () => {
-                    //
+                it('returns correct recipient', async () => {
+                    expect((await setup.seed.getRecipient(buyer1)).toString()).to.equal(buyer1);
                 });
             });
-            context('» getFee', () => {
-                it('returns correct bool', async () => {
+            // rework after fee rework
+            context.skip('» getFee', () => {
+                it('returns correct fee', async () => {
                     //
                 });
             });
@@ -257,6 +314,15 @@ contract('Seed', (accounts) => {
                 });
             });
             context('» withdraw', () => {
+                before('!! deploy new contract', async () => {
+                    // deploy temp contract & init
+                });
+                it.skip('can only be called after minumum funding amount is met', async () => {
+                    // buyin 9
+                    // expectRevert
+                    // buyin 1
+                    // check event
+                });
                 it('can only be called by admin', async () => {
                     await expectRevert(setup.seed.withdraw(), 'Seed: caller should be admin');
                 });
@@ -293,7 +359,20 @@ contract('Seed', (accounts) => {
                 });
                 it.skip('initializes', async () => {
 
-                    // init()
+                    setup.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        seedToken.address,
+                        fundingToken.address,
+                        successMinimum,
+                        price,
+                        startTime,
+                        endTime,
+                        vestingDuration,
+                        vestingCliff,
+                        isWhitelisted,
+                        fee
+                    );
 
                     expect(await setup.seed.initialized()).to.equal(true);
                     expect(await setup.seed.dao()).to.equal(setup.organization.avatar.address);
