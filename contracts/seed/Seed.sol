@@ -117,7 +117,7 @@ contract Seed {
       * @param _vestingDuration       Vesting period duration.
       * @param _vestingCliff          Cliff duration.
       * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
-      * @param _fee                   Success fee.
+      * @param _fee                   Success fee as %
     */
     function initialize(
             address _beneficiary,
@@ -155,6 +155,7 @@ contract Seed {
       * @param _amount           The amount of tokens to buy.
     */
     function buy(uint256 _amount) public protected checked {
+        require((fundingToken.balanceOf(address(this)) + _amount) <= cap, "Seed: amount exceeds contract sale cap");
         require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
 
         if (fundingToken.balanceOf(address(this)) >= successMinimum) {
@@ -163,7 +164,7 @@ contract Seed {
 
         fundingTokensPerAddress[msg.sender] = _amount;
 
-        uint feeAmount = _amount.mul(fee).div(100);
+        uint feeAmount = (_amount.mul(uint(PPM))).mul(fee).div(100000000); // 100000000 = PPM * 100
         fees[msg.sender] = feeAmount;
 
         uint _lockTokens = tokenLocks[msg.sender].amount;
@@ -196,7 +197,6 @@ contract Seed {
         tokenLock.amount = 0;
         fees[msg.sender] = 0;
         fundingTokensPerAddress[msg.sender] = 0;
-        // remove amount from cap
         require(
             fundingToken.transfer(msg.sender, amount),
             "Seed: cannot return funding tokens to msg.sender"

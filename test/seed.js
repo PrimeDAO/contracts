@@ -142,7 +142,7 @@ contract('Seed', (accounts) => {
                     expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to.equal(buyAmount);
                 });
                 it('updates fee mapping for locker', async () => {
-                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('1')); // check why this isn't 2
+                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('1'));
                 });
             });
         });
@@ -163,7 +163,7 @@ contract('Seed', (accounts) => {
                     });
                 });
                 it('funds dao with fee', async () => {
-                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to.equal(toWei('1')); // check why this isn't 2
+                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to.equal(toWei('1'));
                 });
             });
         });
@@ -298,10 +298,12 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getRecipient(buyer1)).toString()).to.equal(buyer1);
                 });
             });
-            // rework after fee rework
-            context.skip('» getFee', () => {
+            context('» getFee', () => {
                 it('returns correct fee', async () => {
-                    //
+                    let a = new BN(buyAmount);
+                    let f = new BN(2);
+                    let amountMinusFee = new BN(a.mul(f).div(new BN(100)));
+                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(amountMinusFee.toString());
                 });
             });
         });
