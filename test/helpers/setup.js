@@ -281,15 +281,6 @@ const primeDAO = async (setup) => {
 
 
     // register schemes
-    // const permissions = '0x00000010';
-    // await setup.DAOStack.daoCreator.setSchemes(
-    //     setup.organization.avatar.address,
-    //     [setup.balancer.proxy.address, setup.balancer.pool.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address, multicallPoolManager.address, setup.seedFactory.address],
-    //     [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
-    //     [permissions, permissions, permissions, permissions, permissions, permissions, permissions, permissions],
-    //     'metaData'
-    // );
-
     const permissions = '0x00000010';
     await setup.DAOStack.daoCreator.setSchemes(
         setup.organization.avatar.address,
