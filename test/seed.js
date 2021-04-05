@@ -258,6 +258,7 @@ contract('Seed', (accounts) => {
                 });
             });
             context('» getStartTime', () => {
+                // occasional blocktime mismatch in test env 
                 it('returns correct startTime', async () => {
                     expect((await setup.seed.getStartTime(buyer1)).toString()).to.equal(buyer1TimeLock.toString());
                 });
@@ -466,11 +467,19 @@ contract('Seed', (accounts) => {
                     expect(await seed.checkWhitelisted(buyer1)).to.equal(false);
                 });
             });
-            context.skip('» whitelistBatch', () => {
+            context('» whitelistBatch', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(
+                        seed.whitelistBatch([buyer1, buyer2]),
+                        "Seed: caller should be admin"
+                    );
+                });
                 it('adds users to the whitelist', async () => {
-                    // expect(await seed.checkWhitelisted(buyer1)).to.equal(false);
-                    // await seed.whitelist(buyer1);
-                    // expect(await seed.checkWhitelisted(buyer1)).to.equal(true);
+                    expect(await seed.checkWhitelisted(accounts[4])).to.equal(false);
+                    expect(await seed.checkWhitelisted(accounts[5])).to.equal(false);
+                    await seed.whitelistBatch([accounts[4], accounts[5]],{from:admin});
+                    expect(await seed.checkWhitelisted(accounts[4])).to.equal(true);
+                    expect(await seed.checkWhitelisted(accounts[5])).to.equal(true);
                 });
             });
         });

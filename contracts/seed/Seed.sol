@@ -24,6 +24,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 contract Seed {
     using SafeMath for uint256;
     using SafeMath for uint16;
+    using SafeMath for uint8;
 
     // Locked parameters
     address public beneficiary;
@@ -35,11 +36,12 @@ contract Seed {
     bool    public isWhitelisted;
     uint16  public vestingDuration;
     uint16  public vestingCliff;
-    IERC20   public seedToken;
-    IERC20   public fundingToken;
+    IERC20  public seedToken;
+    IERC20  public fundingToken;
     uint8   public fee;
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
+    uint32  public constant PPM               = 1000000;  // parts per million
     uint256 constant internal SECONDS_PER_DAY = 86400;
 
     // Contract logic
@@ -159,7 +161,9 @@ contract Seed {
         fundingTokensPerAddress[msg.sender] = _amount;
 
         // more granular fee rewrite
-        uint feeAmount = _amount.mul(fee).div(100);
+        // uint feeAmount = _amount.mul(fee).div(100);
+        // uint feeExample = uint32(uint256(PPM).mul(_tokenSupply).div( _exchangeRate.mul(_totalTokenSupply).div(uint256(PPM)) ));
+        uint feeAmount = uint((uint(PPM).mul(_amount)).mul(fee.mul(PPM)).div(uint(PPM).mul(100)));
         fees[msg.sender] = feeAmount;
 
         uint _lockTokens = tokenLocks[msg.sender].amount;
