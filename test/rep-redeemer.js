@@ -21,6 +21,8 @@ const deploy = async (accounts) => {
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy ERC20s
     setup.repRedeemer = await helpers.setup.repRedeemer(setup);
+    // deploy seedFactory
+    setup.seedFactory = await helpers.setup.seedFactory(setup);
     // deploy farmFactory
     setup.farmFactory = await helpers.setup.farmFactory(setup);
     // deploy primeDAO

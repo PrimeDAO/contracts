@@ -11,6 +11,8 @@ const AbsoluteVote = artifacts.require('./AbsoluteVote.sol');
 const LockingToken4Reputation = artifacts.require('./LockingToken4Reputation.sol');
 const PriceOracle = artifacts.require('./PriceOracle.sol');
 const FarmFactory = artifacts.require('./FarmFactory.sol');
+const SeedFactory = artifacts.require('./SeedFactory.sol');
+const Seed = artifacts.require('./Seed.sol');
 // Balancer imports
 const ConfigurableRightsPool = artifacts.require('ConfigurableRightsPool');
 const BPool = artifacts.require('BPool');
@@ -99,6 +101,20 @@ const farmFactory = async (setup) => {
     let tx = await farmFactory.initialize(setup.organization.avatar.address, stakingRewards.address);
 
     return farmFactory;
+};
+
+const seedFactory = async (setup) => {
+    const seed = await Seed.new();
+    const seedFactory = await SeedFactory.new();
+    await seedFactory.initialize(setup.organization.avatar.address, seed.address);
+
+    return seedFactory;
+};
+
+const seed = async () => {
+    const seed = await Seed.new();
+
+    return seed;
 };
 
 const balancer = async (setup) => {
@@ -287,6 +303,8 @@ module.exports = {
     DAOStack,
     organization,
     farmFactory,
+    seed,
+    seedFactory,
     token4rep,
     primeDAO,
 };

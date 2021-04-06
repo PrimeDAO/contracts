@@ -3,7 +3,9 @@ const setup = require('./setup');
 const BalancerProxy = artifacts.require('BalancerProxy');
 const BalancerPool = artifacts.require('IConfigurableRightsPool');
 const FarmFactory = artifacts.require('FarmFactory');
+const SeedFactory = artifacts.require('SeedFactory');
 const IERC20 = artifacts.require('IERC20');
+
 
 const AMOUNT = new BN('1000');
 const EXPECTED = new BN('500');
