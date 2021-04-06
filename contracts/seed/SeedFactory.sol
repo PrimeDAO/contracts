@@ -72,17 +72,31 @@ contract SeedFactory is CloneFactory {
         avatar = _newAvatar;
     }
 
+    /**
+      * @dev                          Initialize Seed.
+      * @param _admin                 The address of the admin of this contract.
+      * @param _seedToken             The address of the token being distributed.
+      * @param _fundingToken          The address of the token being exchanged for seed token.
+      * @param _successMinimumAndCap  Array of the minimum distribution threshold and
+                                      the highest possible amount to be raised in wei.
+      * @param _startTime             Distribution start time in unix timecode.
+      * @param _endTime               Distribution end time in unix timecode.
+      * @param _vestingDuration       Vesting period duration.
+      * @param _vestingCliff          Cliff duration.
+      * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
+      * @param _fee                   Success fee as %
+    */
     function deploySeed(
         address       _admin,
         address       _seedToken,
         address       _fundingToken,
         uint[] memory _successMinimumAndCap,
         uint  	      _price,
-        uint 	        _startTime,
-        uint 	        _endTime,
+        uint 	      _startTime,
+        uint 	      _endTime,
         uint16 	      _vestingDuration,
         uint16 	      _vestingCliff,
-        bool 	        _isWhitelisted,
+        bool 	      _isWhitelisted,
         uint8         _fee
     )
     public
