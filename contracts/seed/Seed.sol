@@ -43,7 +43,8 @@ contract Seed {
     uint8   public fee;
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
-    uint32  public constant PPM               = 1000000;  // parts per million
+    uint32  public constant PPM               = 1000000;   // parts per million
+    uint256 public constant PPM100            = 100000000; // ppm * 100
     uint256 constant internal SECONDS_PER_DAY = 86400;
 
     // Contract logic
@@ -55,8 +56,6 @@ contract Seed {
 
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
-    mapping (address => uint256) public fees;
-    mapping (address => uint256) public fundingTokensPerAddress;
 
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
@@ -102,6 +101,8 @@ contract Seed {
         uint16  daysClaimed;
         uint256 totalClaimed;
         address recipient;
+        uint256 fundingAmount;
+        uint256 fee;
     }
 
     /**
@@ -162,13 +163,10 @@ contract Seed {
             minimumReached = true;
         }
 
-        fundingTokensPerAddress[msg.sender] = _amount;
-
-        uint feeAmount = (_amount.mul(uint(PPM))).mul(fee).div(100000000); // 100000000 = PPM * 100
-        fees[msg.sender] = feeAmount;
+        uint feeAmount = (_amount.mul(uint(PPM))).mul(fee).div(PPM100);
 
         uint _lockTokens = tokenLocks[msg.sender].amount;
-        _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE));
+        _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE), _amount, feeAmount);
     }
 
     /**
@@ -185,18 +183,20 @@ contract Seed {
         tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
-        require(seedToken.transfer(beneficiary, fees[_locker]), "Seed: cannot transfer to beneficiary");
+        require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
         require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
         emit TokensClaimed(tokenLock.recipient, amountVested);
     }
 
-    // returns funding tokens to user
+    /**
+      * @dev         Returns funding tokens to user.
+    */
     function buyBack() public protected checked beforeMinimumReached {
         Lock storage tokenLock = tokenLocks[msg.sender];
-        uint amount = fundingTokensPerAddress[msg.sender];
+        uint amount = tokenLock.fundingAmount;
         tokenLock.amount = 0;
-        fees[msg.sender] = 0;
-        fundingTokensPerAddress[msg.sender] = 0;
+        tokenLock.fee = 0;
+        tokenLock.fundingAmount = 0;
         require(
             fundingToken.transfer(msg.sender, amount),
             "Seed: cannot return funding tokens to msg.sender"
@@ -313,7 +313,7 @@ contract Seed {
     }
 
     function getFee(address _locker) public view returns(uint256) {
-        return fees[_locker];
+        return tokenLocks[_locker].fee;
     }
 
     // INTERNAL FUNCTIONS
@@ -324,7 +324,9 @@ contract Seed {
     function _addLock(
         address _recipient,
         uint256 _startTime,
-        uint256 _amount
+        uint256 _amount,
+        uint256 _fundingAmount,
+        uint256 _fee
     )
         internal
     {
@@ -339,7 +341,9 @@ contract Seed {
             vestingCliff: vestingCliff,
             daysClaimed: 0,
             totalClaimed: 0,
-            recipient: _recipient
+            recipient: _recipient,
+            fundingAmount: _fundingAmount,
+            fee: _fee
         });
         tokenLocks[_recipient] = lock;
         emit LockAdded(_recipient, _amount);
