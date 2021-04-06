@@ -12,6 +12,7 @@
     "create:pool:kovan": "npx truffle exec scripts/kovan/createPool.js --network kovan",
     "transfer:pool:kovan": "npx truffle exec scripts/kovan/transferPool.js --network kovan",
     "innit:staking:kovan": "npx truffle exec scripts/kovan/innitRewards.js --network kovan",
+    "innit:seedfactory:kovan": "npx truffle exec scripts/kovan/initSeedFactory.js --network kovan",
     "deploy:contracts:mainnet": "truffle migrate --network mainnet --reset",
     "deploy:dao:mainnet": "npx run scripts/mainnet/migrateDAO.js --network mainnet",
     "setup:lock4rep:mainnet": "npx truffle exec scripts/mainnet/setupLockToken4Reputation.js --network mainnet",
