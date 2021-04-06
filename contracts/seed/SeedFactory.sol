@@ -73,7 +73,7 @@ contract SeedFactory is CloneFactory {
     }
 
     /**
-      * @dev                          Initialize Seed.
+      * @dev                          Deploys Seed contract.
       * @param _admin                 The address of the admin of this contract.
       * @param _seedToken             The address of the token being distributed.
       * @param _fundingToken          The address of the token being exchanged for seed token.
