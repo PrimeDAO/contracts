@@ -113,6 +113,7 @@ contract Seed {
       * @param _fundingToken          The address of the token being exchanged for seed token.
       * @param _successMinimumAndCap  Array of the minimum distribution threshold and
                                       the highest possible amount to be raised.
+      * @param _price                 Seed to funding token exchange rate.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
       * @param _vestingDuration       Vesting period duration.
