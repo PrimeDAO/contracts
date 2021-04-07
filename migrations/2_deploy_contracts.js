@@ -12,6 +12,7 @@ const StakingRewards = artifacts.require('StakingRewards');
 const RepRedeemer = artifacts.require('RepRedeemer');
 const SeedFactory = artifacts.require('SeedFactory');
 const Seed = artifacts.require('Seed');
+
 const LockingToken4Reputation = artifacts.require('LockingToken4Reputation');
 
 const contracts = require('../contractAddresses.json');
@@ -43,23 +44,23 @@ module.exports = async function (deployer, network) {
 
     } else if (network === 'kovan') {
 
-        // await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks.kovan.from);
-        // await deployer.deploy(StakingRewards);
-        // await deployer.deploy(PriceOracle);
-        // await deployer.deploy(BalancerProxy);
-        // await deployer.deploy(VestingFactory);
-        // await deployer.deploy(RepRedeemer);
-        await deployer.deploy(Seed);
+        await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks.kovan.from);
+        await deployer.deploy(StakingRewards);
+        await deployer.deploy(PriceOracle);
+        await deployer.deploy(BalancerProxy);
+        await deployer.deploy(VestingFactory);
+        await deployer.deploy(RepRedeemer);
         await deployer.deploy(SeedFactory);
+        await deployer.deploy(Seed);
 
-        // contracts.kovan.PrimeToken = PrimeToken.address;
-        // contracts.kovan.StakingRewards = StakingRewards.address;
-        // contracts.kovan.PriceOracle = PriceOracle.address;
-        // contracts.kovan.BalancerProxy = BalancerProxy.address;
-        // contracts.kovan.VestingFactory = VestingFactory.address;
-        // contracts.kovan.RepRedeemer = RepRedeemer.address;
-        contracts.kovan.Seed = Seed.address;
+        contracts.kovan.PrimeToken = PrimeToken.address;
+        contracts.kovan.StakingRewards = StakingRewards.address;
+        contracts.kovan.PriceOracle = PriceOracle.address;
+        contracts.kovan.BalancerProxy = BalancerProxy.address;
+        contracts.kovan.VestingFactory = VestingFactory.address;
+        contracts.kovan.RepRedeemer = RepRedeemer.address;
         contracts.kovan.SeedFactory = SeedFactory.address;
+        contracts.kovan.Seed = Seed.address;
 
         // overwrite contranctAddresses.json
         fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {
