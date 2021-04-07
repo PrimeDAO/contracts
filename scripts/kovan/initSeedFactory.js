@@ -1,3 +1,4 @@
+require('dotenv').config();
 const SeedFactory = artifacts.require("SeedFactory");
 const contracts = require('../../contractAddresses.json');
 const fs = require("fs");
@@ -10,8 +11,8 @@ module.exports = async function(callback) {
 
         let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
         await seedFactory.initialize(
-            contracts.kovan.Avatar,
-            contracts.kovan.Seed
+            process.env.ACCOUNT,
+            contracts.kovan.SeedParent
         );
         await console.log("***   Success");
 

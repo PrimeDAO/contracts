@@ -107,18 +107,20 @@ contract Seed {
 
     /**
       * @dev                          Initialize Seed.
-      * @param _beneficiary           The address of the beneficiary revieving the fee.
-      * @param _admin                 The address of the admin of this contract.
+      * @param _admin                 The address of the admin of this contract. Funds contract
+                                      and has permissions to whitelist users, pause and close contract.
       * @param _seedToken             The address of the token being distributed.
       * @param _fundingToken          The address of the token being exchanged for seed token.
-      * @param _successMinimumAndCap  Array of the minimum distribution threshold and
-                                      the highest possible amount to be raised.
+      * @param _successMinimumAndCap  Array containing two params:
+                                        - the minimum distribution threshold
+                                        - the highest possible amount to be raised in wei.
+      * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
-      * @param _vestingDuration       Vesting period duration.
-      * @param _vestingCliff          Cliff duration.
+      * @param _vestingDuration       Vesting period duration in days.
+      * @param _vestingCliff          Cliff duration in days.
       * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
-      * @param _fee                   Success fee as %
+      * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
     */
     function initialize(
             address _beneficiary,
