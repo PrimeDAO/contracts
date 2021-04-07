@@ -120,7 +120,7 @@ contract Seed {
       * @param _vestingDuration       Vesting period duration in days.
       * @param _vestingCliff          Cliff duration in days.
       * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
-      * @param _fee                   Success fee expressed as a % (e.g. 2 = 2% fee)
+      * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
     */
     function initialize(
             address _beneficiary,
