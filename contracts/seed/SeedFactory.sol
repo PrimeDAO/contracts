@@ -81,7 +81,7 @@ contract SeedFactory is CloneFactory {
       * @param _successMinimumAndCap  Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
-      * @param _price                 Seed to funding token exchange rate.
+      * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
       * @param _vestingDuration       Vesting period duration in days.
