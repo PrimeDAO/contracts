@@ -10,7 +10,8 @@ const PriceOracle = artifacts.require('PriceOracle');
 const VestingFactory = artifacts.require('VestingFactory');
 const StakingRewards = artifacts.require('StakingRewards');
 const RepRedeemer = artifacts.require('RepRedeemer');
-
+const SeedFactory = artifacts.require('SeedFactory');
+const Seed = artifacts.require('Seed');
 const LockingToken4Reputation = artifacts.require('LockingToken4Reputation');
 
 const contracts = require('../contractAddresses.json');
@@ -21,19 +22,19 @@ module.exports = async function (deployer, network) {
 
     if (network === 'mainnet') {
 
-        await deployer.deploy(StakingRewards);
-        await deployer.deploy(PriceOracle);
-        await deployer.deploy(LockingToken4Reputation);
-        await deployer.deploy(BalancerProxy);
-        await deployer.deploy(VestingFactory);
-        await deployer.deploy(RepRedeemer);
-
-        contracts.mainnet.StakingRewards = StakingRewards.address;
-        contracts.mainnet.PriceOracle = PriceOracle.address;
-        contracts.mainnet.LockingToken4Reputation = LockingToken4Reputation.address;
-        contracts.mainnet.BalancerProxy = BalancerProxy.address;
-        contracts.mainnet.VestingFactory = VestingFactory.address;
-        contracts.mainnet.RepRedeemer = RepRedeemer.address;
+        // await deployer.deploy(StakingRewards);
+        // await deployer.deploy(PriceOracle);
+        // await deployer.deploy(LockingToken4Reputation);
+        // await deployer.deploy(BalancerProxy);
+        // await deployer.deploy(VestingFactory);
+        // await deployer.deploy(RepRedeemer);
+        //
+        // contracts.mainnet.StakingRewards = StakingRewards.address;
+        // contracts.mainnet.PriceOracle = PriceOracle.address;
+        // contracts.mainnet.LockingToken4Reputation = LockingToken4Reputation.address;
+        // contracts.mainnet.BalancerProxy = BalancerProxy.address;
+        // contracts.mainnet.VestingFactory = VestingFactory.address;
+        // contracts.mainnet.RepRedeemer = RepRedeemer.address;
 
         // overwrite contranctAddresses.json
         fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {
@@ -42,19 +43,23 @@ module.exports = async function (deployer, network) {
 
     } else if (network === 'kovan') {
 
-        await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks.kovan.from);
-        await deployer.deploy(StakingRewards);
-        await deployer.deploy(PriceOracle);
-        await deployer.deploy(BalancerProxy);
-        await deployer.deploy(VestingFactory);
-        await deployer.deploy(RepRedeemer);
+        // await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks.kovan.from);
+        // await deployer.deploy(StakingRewards);
+        // await deployer.deploy(PriceOracle);
+        // await deployer.deploy(BalancerProxy);
+        // await deployer.deploy(VestingFactory);
+        // await deployer.deploy(RepRedeemer);
+        await deployer.deploy(Seed);
+        await deployer.deploy(SeedFactory);
 
-        contracts.kovan.PrimeToken = PrimeToken.address;
-        contracts.kovan.StakingRewards = StakingRewards.address;
-        contracts.kovan.PriceOracle = PriceOracle.address;
-        contracts.kovan.BalancerProxy = BalancerProxy.address;
-        contracts.kovan.VestingFactory = VestingFactory.address;
-        contracts.kovan.RepRedeemer = RepRedeemer.address;
+        // contracts.kovan.PrimeToken = PrimeToken.address;
+        // contracts.kovan.StakingRewards = StakingRewards.address;
+        // contracts.kovan.PriceOracle = PriceOracle.address;
+        // contracts.kovan.BalancerProxy = BalancerProxy.address;
+        // contracts.kovan.VestingFactory = VestingFactory.address;
+        // contracts.kovan.RepRedeemer = RepRedeemer.address;
+        contracts.kovan.Seed = Seed.address;
+        contracts.kovan.SeedFactory = SeedFactory.address;
 
         // overwrite contranctAddresses.json
         fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {
