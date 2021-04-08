@@ -12,7 +12,7 @@ module.exports = async function(callback) {
         let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
         await seedFactory.initialize(
             process.env.ACCOUNT,
-            contracts.kovan.SeedParent
+            contracts.kovan.Seed
         );
         await console.log("***   Success");
 

@@ -60,7 +60,7 @@ module.exports = async function (deployer, network) {
         contracts.kovan.VestingFactory = VestingFactory.address;
         contracts.kovan.RepRedeemer = RepRedeemer.address;
         contracts.kovan.SeedFactory = SeedFactory.address;
-        contracts.kovan.SeedParent = Seed.address;
+        contracts.kovan.Seed = Seed.address;
 
         // overwrite contranctAddresses.json
         fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {
