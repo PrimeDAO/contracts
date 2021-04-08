@@ -3,15 +3,13 @@ require('dotenv').config();
 const SeedFactory = artifacts.require("SeedFactory");
 const PrimeToken = artifacts.require("PrimeToken");
 const contracts = require('../../contractAddresses.json');
-const fs = require("fs");
 const { toWei } = web3.utils;
-// const { time } = require('@openzeppelin/test-helpers');
 
 module.exports = async function(callback) {
 
     try {
 
-        // make sure you deploy with a load of test funds!!
+        // make sure you deploy with a load of test funds!
         console.log('***   deploying 5 Seeds');
 
         let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
@@ -19,6 +17,7 @@ module.exports = async function(callback) {
 
         let now = 1617796022;
         let twoDays = 172800;
+        let fourDays = 345600;
         let sevenDays = 604800;
         let nineDays = 777600;
 
@@ -27,7 +26,7 @@ module.exports = async function(callback) {
         let cap             = [ toWei('100'), toWei('100'), toWei('150'), toWei('300'), toWei('200') ];
         let price           = [ toWei('0.01'), toWei('0.04'), toWei('0.02'), toWei('0.03'), toWei('0.01') ];
         let successMinimum  = [ toWei('20'), toWei('20'), toWei('70'), toWei('200'), toWei('50') ];
-        let startTime       = now;
+        // let startTime       = now; // add future dates
         let endTime         = [ now + sevenDays, now + sevenDays, now + sevenDays, now + nineDays, now + twoDays ];
         let vestingDuration = [ 365, 400, 365, 185, 365 ]; // 1 year
         let vestingCliff    = [ 90, 95, 80, 60, 120 ]; // 3 months
@@ -113,12 +112,6 @@ module.exports = async function(callback) {
             fee[4]
         );
         console.log("deployed seed at " + seedAddress5.logs[0].args.newSeed);
-
-        contracts.kovan.Seed1 = seedAddress1.logs[0].args.newSeed;
-        contracts.kovan.Seed2 = seedAddress2.logs[0].args.newSeed;
-        contracts.kovan.Seed3 = seedAddress3.logs[0].args.newSeed;
-        contracts.kovan.Seed4 = seedAddress4.logs[0].args.newSeed;
-        contracts.kovan.Seed5 = seedAddress5.logs[0].args.newSeed;
 
         await console.log("***   Success");
 
