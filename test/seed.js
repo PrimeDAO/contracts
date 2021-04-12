@@ -82,8 +82,7 @@ contract('Seed', (accounts) => {
                     await setup.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -111,8 +110,7 @@ contract('Seed', (accounts) => {
                         setup.seed.initialize(
                             setup.organization.avatar.address,
                             admin,
-                            seedToken.address,
-                            fundingToken.address,
+                            [seedToken.address, fundingToken.address],
                             [successMinimum,cap],
                             price,
                             startTime,
@@ -174,8 +172,7 @@ contract('Seed', (accounts) => {
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -222,8 +219,7 @@ contract('Seed', (accounts) => {
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -348,8 +344,7 @@ contract('Seed', (accounts) => {
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -410,8 +405,7 @@ contract('Seed', (accounts) => {
                     await seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -440,8 +434,7 @@ contract('Seed', (accounts) => {
                         seed.initialize(
                             setup.organization.avatar.address,
                             admin,
-                            seedToken.address,
-                            fundingToken.address,
+                            [seedToken.address, fundingToken.address],
                             [successMinimum,cap],
                             price,
                             startTime,

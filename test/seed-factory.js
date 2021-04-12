@@ -50,6 +50,7 @@ contract('SeedFactory', (accounts) => {
     let successMinimum;
     let seedFactory;
     let newSeed;
+    let metadata;
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -66,6 +67,7 @@ contract('SeedFactory', (accounts) => {
             vestingCliff = 90; // 3 months
             isWhitelisted = false;
             fee = 2;
+            metadata = `0x`;
 
             seedFactory = await SeedFactory.new();
             await seedFactory.initialize(accounts[0], setup.seed.address);
@@ -79,8 +81,7 @@ contract('SeedFactory', (accounts) => {
 
                 tx = await seedFactory.deploySeed(
                     admin,
-                    seedToken.address,
-                    fundingToken.address,
+                    [seedToken.address, fundingToken.address],
                     [successMinimum,cap],
                     price,
                     startTime.toNumber(),
@@ -88,7 +89,8 @@ contract('SeedFactory', (accounts) => {
                     vestingDuration,
                     vestingCliff,
                     isWhitelisted,
-                    fee
+                    fee,
+                    metadata
                 );
 
                 // store data
