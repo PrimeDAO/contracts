@@ -1,6 +1,7 @@
 /*global web3, artifacts*/
 require('dotenv').config();
 const SeedFactory = artifacts.require("SeedFactory");
+const Seed = artifacts.require("Seed");
 const PrimeToken = artifacts.require("PrimeToken");
 const contracts = require('../../contractAddresses.json');
 const { toWei } = web3.utils;
@@ -10,12 +11,12 @@ module.exports = async function(callback) {
     try {
 
         // make sure you deploy with a load of test funds!
-        console.log('***   deploying 5 Seeds');
+        // console.log('***   deploying 5 Seeds');
 
         let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
         let seedToken = await PrimeToken.at(contracts.kovan.PrimeToken);
 
-        let now = Date.now();
+        let now = 1618225542; //Mon Apr 12 2021 11:05:42 GMT+0000
         let oneDay = 86400;
         let twoDays = 172800;
         let fourDays = 345600;
@@ -27,7 +28,7 @@ module.exports = async function(callback) {
         let cap             = [ toWei('100'), toWei('100'), toWei('150'), toWei('300'), toWei('200') ];
         let price           = [ toWei('0.01'), toWei('0.04'), toWei('0.02'), toWei('0.03'), toWei('0.01') ];
         let successMinimum  = [ toWei('20'), toWei('20'), toWei('70'), toWei('200'), toWei('50') ];
-        let startTime       = [ now + oneDay, now + twoDays, now + fourDays, now + sevenDays, now + nineDays ];
+        let startTime       = [ now + oneDay, now + twoDays, now + fourDays,  now + sevenDays, now + nineDays ];
         let endTime         = [ startTime[0] + sevenDays,  startTime[1] + sevenDays, startTime[2] + sevenDays, startTime[3] + nineDays, startTime[4] + twoDays ];
         let vestingDuration = [ 365, 400, 365, 185, 365 ]; // 1 year
         let vestingCliff    = [ 90, 95, 80, 60, 120 ]; // 3 months
@@ -49,6 +50,13 @@ module.exports = async function(callback) {
             fee[0]
         );
         console.log("deployed seed at " + seedAddress1.logs[0].args.newSeed);
+        // check dates properly deployed 
+        // let seed = await Seed.at((seedAddress1.logs[0].args.newSeed).toString());
+        // let seedStart = await seed.startTime();
+        // let seedEnd = await seed.endTime();
+        // let start = new Date((seedStart.toNumber())*1000).toLocaleDateString("en-GB"); // *1000 because of how JS deals with unix timestamps
+        // let end = new Date((seedEnd.toNumber())*1000).toLocaleDateString("en-GB");
+        // console.log("seed starttime: " + start + ". seed endTime: " + end);
 
         await seedToken.approve(seedFactory.address, cap[1]);
         let seedAddress2 = await seedFactory.deploySeed(
@@ -65,6 +73,12 @@ module.exports = async function(callback) {
             fee[1]
         );
         console.log("deployed seed at " + seedAddress2.logs[0].args.newSeed);
+        let seed2 = await Seed.at((seedAddress2.logs[0].args.newSeed).toString());
+        let seedStart2 = await seedEnd2.startTime();
+        let seedEnd2 = await seed2.endTime();
+        let start2 = new Date((seedStart2.toNumber())*1000).toLocaleDateString("en-GB");
+        let end2 = new Date((seedEnd2.toNumber())*1000).toLocaleDateString("en-GB");
+        console.log("seed starttime: " + start2 + ". seed endTime: " + end2);
 
         await seedToken.approve(seedFactory.address, cap[2]);
         let seedAddress3 = await seedFactory.deploySeed(
