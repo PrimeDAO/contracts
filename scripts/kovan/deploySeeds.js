@@ -15,24 +15,38 @@ module.exports = async function(callback) {
         let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
         let seedToken = await PrimeToken.at(contracts.kovan.PrimeToken);
 
-        let now = Date.now();
-        let oneDay = 86400;
-        let twoDays = 172800;
-        let fourDays = 345600;
-        let sevenDays = 604800;
-        let nineDays = 777600;
+        let now = 1618225542 * 1000; //Mon Apr 12 2021 11:05:42 GMT+0000
+        let oneDay = (86400*1000);
+        let twoDays = (172800*1000);
+        let fourDays = (345600*1000);
+        let sevenDays = (604800*1000);
+        let nineDays = (777600*1000);
 
         let admin           = process.env.ACCOUNT;
         let fundingToken    = [ contracts.kovan.WETH, contracts.kovan.DAI, contracts.kovan.WETH, contracts.kovan.DAI, contracts.kovan.WETH ];
         let cap             = [ toWei('100'), toWei('100'), toWei('150'), toWei('300'), toWei('200') ];
         let price           = [ toWei('0.01'), toWei('0.04'), toWei('0.02'), toWei('0.03'), toWei('0.01') ];
         let successMinimum  = [ toWei('20'), toWei('20'), toWei('70'), toWei('200'), toWei('50') ];
-        let startTime       = [ now + oneDay, now + twoDays, now + fourDays, now + sevenDays, now + nineDays ];
+        let startTime       = [ now + oneDay, now + twoDays, now + fourDays,  now + sevenDays, now + nineDays ];
         let endTime         = [ startTime[0] + sevenDays,  startTime[1] + sevenDays, startTime[2] + sevenDays, startTime[3] + nineDays, startTime[4] + twoDays ];
         let vestingDuration = [ 365, 400, 365, 185, 365 ]; // 1 year
         let vestingCliff    = [ 90, 95, 80, 60, 120 ]; // 3 months
         let isWhitelisted   = [ false, false, true, true, false ];
         let fee             = [ 2, 2, 1, 5, 2 ];
+
+        // check dates
+        var nw = new Date(now).toLocaleDateString("en-GB");
+        console.log("now: " + nw);
+        let i;
+        for(i=0;i<startTime.length;i++){
+            let s = new Date(startTime[i]).toLocaleDateString("en-GB");
+            console.log("startTime" +i + " : " + s);
+        }
+        let j;
+        for(j=0;j<endTime.length;j++){
+            let t = new Date(endTime[j]).toLocaleDateString("en-GB");
+            console.log("endTime" +j + " : " + t);
+        }
 
         await seedToken.approve(seedFactory.address, cap[0]);
         let seedAddress1 = await seedFactory.deploySeed(
