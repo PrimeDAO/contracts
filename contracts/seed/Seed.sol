@@ -281,9 +281,10 @@ contract Seed {
     }
 
     /**
-      * @dev                     Emits MetadataUpdated event to notify the front-end that metadata was updated.
+      * @dev                     Updates metadata.
     */
-    function updateMetadata(bytes32 _metadata) public onlyAdmin protected {
+    function updateMetadata(bytes32 _metadata) public protected {
+        require(msg.sender == admin || msg.sender == beneficiary, "Seed: caller should be admin or beneficiary");
         metadata = _metadata;
         emit MetadataUpdated(_metadata);
     }
