@@ -60,6 +60,7 @@ contract Seed {
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
+    event UpdateMetadata(bytes32 metadata);
 
     modifier initializer() {
         require(!initialized, "Seed: contract already initialized");
@@ -275,6 +276,13 @@ contract Seed {
     */
     function withdraw() public onlyAdmin checkMinimumReached protected {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
+    }
+
+    /**
+      * @dev                     Emits UpdateMetadata event to notify the front-end that metadata was updated.
+    */
+    function updateMetadata(bytes32 metadata) public onlyAdmin protected {
+        emit UpdateMetadata(metadata);
     }
 
     // GETTER FUNCTIONS
