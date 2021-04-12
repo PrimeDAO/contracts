@@ -42,6 +42,8 @@ contract Seed {
     IERC20  public fundingToken;
     uint8   public fee;
 
+    bytes32 public metadata;
+
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
     uint32  public constant PPM               = 1000000;   // parts per million
     uint256 public constant PPM100            = 100000000; // ppm * 100
@@ -281,8 +283,9 @@ contract Seed {
     /**
       * @dev                     Emits MetadataUpdated event to notify the front-end that metadata was updated.
     */
-    function updateMetadata(bytes32 metadata) public onlyAdmin protected {
-        emit MetadataUpdated(metadata);
+    function updateMetadata(bytes32 _metadata) public onlyAdmin protected {
+        metadata = _metadata;
+        emit MetadataUpdated(_metadata);
     }
 
     // GETTER FUNCTIONS

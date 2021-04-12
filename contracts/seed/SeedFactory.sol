@@ -30,7 +30,7 @@ contract SeedFactory is CloneFactory {
     Seed      public parent;
     bool      public initialized;
 
-    event SeedCreated(address indexed newSeed, address indexed beneficiary, bytes32 metadata);
+    event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
     modifier initializer() {
         require(!initialized, "SeedFactory: contract already initialized");
@@ -125,13 +125,15 @@ contract SeedFactory is CloneFactory {
             _fee
         );
 
+        Seed(_newSeed).updateMetadata(_metadata);
+
         // fund
         require(
             IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
             "SeedFactory: cannot transfer seed tokens"
         );
 
-        emit SeedCreated(address(_newSeed), msg.sender, _metadata);
+        emit SeedCreated(address(_newSeed), msg.sender);
 
         return address(_newSeed);
     }
