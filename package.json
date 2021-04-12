@@ -20,7 +20,8 @@
     "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
     "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
     "innit:staking:mainnet": "npx truffle exec scripts/mainnet/innitRewards.js --network mainnet",
-    "coverage": "truffle run coverage"
+    "coverage": "truffle run coverage",
+    "flatten": "sol-merger \"./contracts/**/*.sol\" ./_flat"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +36,7 @@
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "openzeppelin-solidity": "2.5.0",
+    "sol-merger": "^3.1.0",
     "solhint": "^3.2.2",
     "truffle": "^5.1.43",
     "web3": "^1.3.0"
