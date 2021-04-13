@@ -308,7 +308,7 @@ contract('Seed', (accounts) => {
         context('# admin functions', () => {
             context('» update metadata', () => {
                 it('can only be called by admin', async () => {
-                    await expectRevert(setup.seed.updateMetadata(metadata), 'Seed: caller should be admin');
+                    await expectRevert(setup.seed.updateMetadata(metadata), 'Seed: contract should not be initialized or caller should be admin');
                 });
                 it('updates metadata', async () => {
                     let tx = await setup.seed.updateMetadata(metadata, {from:admin});
