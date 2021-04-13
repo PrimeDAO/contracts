@@ -52,6 +52,7 @@ contract('Seed', (accounts) => {
     let fee;
     let buyer1TimeLock;
     let seed;
+    let metadata;
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -72,6 +73,7 @@ contract('Seed', (accounts) => {
             vestingCliff = 90; // 3 months
             isWhitelisted = false;
             fee = 2;
+            metadata = `0x`;
         });
         context('» contract is not initialized yet', () => {
             context('» parameters are valid', () => {
@@ -82,8 +84,7 @@ contract('Seed', (accounts) => {
                     await setup.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -111,8 +112,7 @@ contract('Seed', (accounts) => {
                         setup.seed.initialize(
                             setup.organization.avatar.address,
                             admin,
-                            seedToken.address,
-                            fundingToken.address,
+                            [seedToken.address, fundingToken.address],
                             [successMinimum,cap],
                             price,
                             startTime,
@@ -174,8 +174,7 @@ contract('Seed', (accounts) => {
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -222,8 +221,7 @@ contract('Seed', (accounts) => {
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -308,6 +306,17 @@ contract('Seed', (accounts) => {
             });
         });
         context('# admin functions', () => {
+            context('» update metadata', () => {
+                it('can only be called by admin', async () => {
+                    await expectRevert(setup.seed.updateMetadata(metadata), 'Seed: contract should not be initialized or caller should be admin');
+                });
+                it('updates metadata', async () => {
+                    let tx = await setup.seed.updateMetadata(metadata, {from:admin});
+                    setup.data.tx = tx;
+
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'MetadataUpdated');
+                });
+            });
             context('» pause', () => {
                 it('can only be called by admin', async () => {
                     await expectRevert(setup.seed.pause(), 'Seed: caller should be admin');
@@ -348,8 +357,7 @@ contract('Seed', (accounts) => {
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -410,8 +418,7 @@ contract('Seed', (accounts) => {
                     await seed.initialize(
                         setup.organization.avatar.address,
                         admin,
-                        seedToken.address,
-                        fundingToken.address,
+                        [seedToken.address, fundingToken.address],
                         [successMinimum,cap],
                         price,
                         startTime,
@@ -440,8 +447,7 @@ contract('Seed', (accounts) => {
                         seed.initialize(
                             setup.organization.avatar.address,
                             admin,
-                            seedToken.address,
-                            fundingToken.address,
+                            [seedToken.address, fundingToken.address],
                             [successMinimum,cap],
                             price,
                             startTime,

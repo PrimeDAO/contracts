@@ -42,6 +42,8 @@ contract Seed {
     IERC20  public fundingToken;
     uint8   public fee;
 
+    bytes32 public metadata;
+
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
     uint32  public constant PPM               = 1000000;   // parts per million
     uint256 public constant PPM100            = 100000000; // ppm * 100
@@ -60,6 +62,7 @@ contract Seed {
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
+    event MetadataUpdated(bytes32 indexed metadata);
 
     modifier initializer() {
         require(!initialized, "Seed: contract already initialized");
@@ -109,8 +112,9 @@ contract Seed {
       * @dev                          Initialize Seed.
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
-      * @param _seedToken             The address of the token being distributed.
-      * @param _fundingToken          The address of the token being exchanged for seed token.
+      * @param _tokens                Array containing two params:
+                                        - The address of the token being distributed.
+      *                                 - The address of the token being exchanged for seed token.
       * @param _successMinimumAndCap  Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
@@ -125,8 +129,7 @@ contract Seed {
     function initialize(
             address _beneficiary,
             address _admin,
-            address _seedToken,
-            address _fundingToken,
+            address[] memory _tokens,
             uint[] memory    _successMinimumAndCap,
             uint    _price,
             uint    _startTime,
@@ -146,8 +149,8 @@ contract Seed {
         vestingDuration = _vestingDuration;
         vestingCliff    = _vestingCliff;
         isWhitelisted   = _isWhitelisted;
-        seedToken       = IERC20(_seedToken);
-        fundingToken    = IERC20(_fundingToken);
+        seedToken       = IERC20(_tokens[0]);
+        fundingToken    = IERC20(_tokens[1]);
         fee             = _fee;
         closed          = false;
         minimumReached  = false;
@@ -275,6 +278,18 @@ contract Seed {
     */
     function withdraw() public onlyAdmin checkMinimumReached protected {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
+    }
+
+    /**
+      * @dev                     Updates metadata.
+    */
+    function updateMetadata(bytes32 _metadata) public {
+        require(
+            initialized != true || msg.sender == admin,
+            "Seed: contract should not be initialized or caller should be admin"
+        );
+        metadata = _metadata;
+        emit MetadataUpdated(_metadata);
     }
 
     // GETTER FUNCTIONS

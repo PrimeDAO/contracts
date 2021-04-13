@@ -76,8 +76,9 @@ contract SeedFactory is CloneFactory {
       * @dev                          Deploys Seed contract.
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
-      * @param _seedToken             The address of the token being distributed.
-      * @param _fundingToken          The address of the token being exchanged for seed token.
+      * @param _tokens                Array containing two params:
+                                        - The address of the token being distributed.
+      *                                 - The address of the token being exchanged for seed token.
       * @param _successMinimumAndCap  Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
@@ -90,17 +91,17 @@ contract SeedFactory is CloneFactory {
       * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
     */
     function deploySeed(
-        address       _admin,
-        address       _seedToken,
-        address       _fundingToken,
-        uint[] memory _successMinimumAndCap,
-        uint  	      _price,
-        uint 	      _startTime,
-        uint 	      _endTime,
-        uint16 	      _vestingDuration,
-        uint16 	      _vestingCliff,
-        bool 	      _isWhitelisted,
-        uint8         _fee
+        address          _admin,
+        address[] memory _tokens,
+        uint[]    memory _successMinimumAndCap,
+        uint  	         _price,
+        uint 	         _startTime,
+        uint 	         _endTime,
+        uint16 	         _vestingDuration,
+        uint16 	         _vestingCliff,
+        bool 	         _isWhitelisted,
+        uint8            _fee,
+        bytes32          _metadata
     )
     public
     protected
@@ -109,12 +110,13 @@ contract SeedFactory is CloneFactory {
         // deploy clone
         address _newSeed = createClone(address(parent));
 
+        Seed(_newSeed).updateMetadata(_metadata);
+
         // initialize
         Seed(_newSeed).initialize(
             msg.sender,
             _admin,
-            _seedToken,
-            _fundingToken,
+            _tokens,
             _successMinimumAndCap,
             _price,
             _startTime,
@@ -127,7 +129,7 @@ contract SeedFactory is CloneFactory {
 
         // fund
         require(
-            IERC20(_seedToken).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
+            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
             "SeedFactory: cannot transfer seed tokens"
         );
 
