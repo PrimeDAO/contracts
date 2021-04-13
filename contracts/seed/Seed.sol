@@ -284,7 +284,10 @@ contract Seed {
       * @dev                     Updates metadata.
     */
     function updateMetadata(bytes32 _metadata) public {
-        require(initialized != true || msg.sender == admin , "Seed: contract should not be initialized or caller should be admin");
+        require(
+            initialized != true || msg.sender == admin,
+            "Seed: contract should not be initialized or caller should be admin"
+        );
         metadata = _metadata;
         emit MetadataUpdated(_metadata);
     }
