@@ -62,7 +62,7 @@ contract Seed {
     event LockAdded(address indexed recipient, uint256 locked);
     event TokensClaimed(address indexed recipient, uint256 amountVested);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
-    event MetadataUpdated(bytes32 metadata);
+    event MetadataUpdated(bytes32 indexed metadata);
 
     modifier initializer() {
         require(!initialized, "Seed: contract already initialized");
@@ -283,8 +283,8 @@ contract Seed {
     /**
       * @dev                     Updates metadata.
     */
-    function updateMetadata(bytes32 _metadata) public protected {
-        require(msg.sender == admin || msg.sender == beneficiary, "Seed: caller should be admin or beneficiary");
+    function updateMetadata(bytes32 _metadata) public {
+        require(initialized != true || msg.sender == admin , "Seed: caller should be admin or beneficiary");
         metadata = _metadata;
         emit MetadataUpdated(_metadata);
     }

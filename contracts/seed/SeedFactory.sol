@@ -9,6 +9,7 @@
 
 */
 
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* solhint-disable space-after-comma */
 pragma solidity 0.5.13;
@@ -110,6 +111,8 @@ contract SeedFactory is CloneFactory {
         // deploy clone
         address _newSeed = createClone(address(parent));
 
+        Seed(_newSeed).updateMetadata(_metadata);
+
         // initialize
         Seed(_newSeed).initialize(
             msg.sender,
@@ -124,8 +127,6 @@ contract SeedFactory is CloneFactory {
             _isWhitelisted,
             _fee
         );
-
-        Seed(_newSeed).updateMetadata(_metadata);
 
         // fund
         require(
