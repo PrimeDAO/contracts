@@ -259,7 +259,6 @@ const vesting = async (setup) => {
 const primeDAO = async (setup) => {
     // deploy balancer generic scheme
     const poolManager = await GenericScheme.new();
-    // const poolManager = await GenericSchemeMultiCall.new();
     // deploy balancer scheme voting machine
     poolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, poolManager.address);
     // initialize balancer scheme
@@ -273,24 +272,24 @@ const primeDAO = async (setup) => {
     await farmManager.initialize(setup.organization.avatar.address, farmManager.voting.absoluteVote.address, farmManager.voting.params, constants.ZERO_ADDRESS);
 
     // setup farmManager
-    const multicallPoolManager = await GenericSchemeMultiCall.new();
+    const multicallScheme = await GenericSchemeMultiCall.new();
     // deploy farmFactory scheme voting machine
-    multicallPoolManager.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);
+    multicallScheme.voting = await setAbsoluteVote(constants.ZERO_ADDRESS, 50, farmManager.address);
 
-    await multicallPoolManager.initialize(setup.organization.avatar.address, multicallPoolManager.voting.absoluteVote.address, multicallPoolManager.voting.params, constants.ZERO_ADDRESS);
+    await multicallScheme.initialize(setup.organization.avatar.address, multicallScheme.voting.absoluteVote.address, multicallScheme.voting.params, constants.ZERO_ADDRESS);
 
 
     // register schemes
     const permissions = '0x00000010';
     await setup.DAOStack.daoCreator.setSchemes(
         setup.organization.avatar.address,
-        [setup.balancer.proxy.address, setup.balancer.pool.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address, multicallPoolManager.address],
+        [setup.balancer.proxy.address, setup.balancer.pool.address, setup.token4rep.contract.address, poolManager.address, setup.farmFactory.address, farmManager.address, multicallScheme.address],
         [constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32, constants.ZERO_BYTES32],
         [permissions, permissions, permissions, permissions, permissions, permissions, permissions],
         'metaData'
     );
 
-    return {poolManager, farmManager, multicallPoolManager};
+    return {poolManager, farmManager, multicallScheme};
 };
 
 module.exports = {

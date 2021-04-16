@@ -59,10 +59,10 @@ contract('BalancerMulticall', (accounts) => {
             context('» pauses the contract by changing setPublicSwap', () => {
                 it('bPool.isPublicSwap() == publicSwap', async () => {
                     const calldata = helpers.encodeSetPublicSwap(publicSwap);
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     //store data
                     setup.data.tx = tx;
 
@@ -83,10 +83,10 @@ contract('BalancerMulticall', (accounts) => {
             context('» change swapFee', () => {
                 it('bPool.getSwapFee() == swapFee', async () => {
                     const calldata = helpers.encodeSetSwapFee(swapFee);
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     //store data
                     setup.data.tx = tx;
 
@@ -108,10 +108,10 @@ contract('BalancerMulticall', (accounts) => {
                     const calldata_commitAddToken = helpers.encodeCommitAddToken(setup.tokens.erc20s[2].address, toWei('1000'), toWei('1'));
                     const calldata_reset = helpers.encodeApprove(setup.balancer.pool.address, 0);
                     const calldata_approve = helpers.encodeApprove(setup.balancer.pool.address, toWei('1000'));
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address,setup.tokens.erc20s[2].address, setup.tokens.erc20s[2].address],[calldata_commitAddToken, calldata_reset, calldata_approve],[0,0,0], constants.ZERO_BYTES32);
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address,setup.tokens.erc20s[2].address, setup.tokens.erc20s[2].address],[calldata_commitAddToken, calldata_reset, calldata_approve],[0,0,0], constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     //store data
                     setup.data.tx = tx;
                 });
@@ -131,10 +131,10 @@ contract('BalancerMulticall', (accounts) => {
                     });
                     it('apply add Token', async () => {
                         const calldata = helpers.encodeApplyAddToken();
-                        const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
+                        const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
                         const proposalId = helpers.getNewProposalId(_tx);
-                        await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                        const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                        await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                        const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
 
 
                         setup.data.tx = tx;
@@ -151,10 +151,10 @@ contract('BalancerMulticall', (accounts) => {
                         context('» remove Token', () => {
                             it('removes Token', async () => {
                                 const calldata = helpers.encodeRemoveToken(setup.tokens.erc20s[2].address);
-                                const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
+                                const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
                                 const proposalId = helpers.getNewProposalId(_tx);
-                                await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                                const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                                const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
 
                                 setup.data.tx = tx;
                             });
@@ -189,14 +189,14 @@ contract('BalancerMulticall', (accounts) => {
                     const calldata_update = helpers.encodeUpdateWeight(token.address, newWeight);
                     const calldata_reset = helpers.encodeApprove(setup.balancer.pool.address, 0);
                     const calldata_approve = helpers.encodeApprove(setup.balancer.pool.address, uint256_max_value);
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls(
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                         [token.address, token.address, setup.balancer.pool.address, token.address],
                         [calldata_reset, calldata_approve, calldata_update, calldata_reset],
                         [0,0,0,0],
                         constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     // store data
                     setup.data.tx = tx;
                 });
@@ -214,10 +214,10 @@ contract('BalancerMulticall', (accounts) => {
             context('» call updateWeightsGradually', () => {
                 it('update weights gradually', async () => {
                     const calldata = helpers.encodeUpdateWeightsGradually(newWeights, startBLock, endBlock);
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     //store data
                     setup.data.tx = tx;
                 });
@@ -252,14 +252,14 @@ contract('BalancerMulticall', (accounts) => {
                             helpers.encodeApprove(setup.balancer.pool.address,maxAmountsIn[i])
                         );
                     }
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls(
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                         token_addresses.concat([setup.balancer.pool.address]),
                         token_calldatas.concat([calldata]),
                         token_vals.concat([0]),
                         constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     // store data
                     setup.data.tx = tx;
                     expect((await setup.balancer.pool.balanceOf(setup.organization.avatar.address)).toString()).to.equal(poolAmountOut);
@@ -300,14 +300,14 @@ contract('BalancerMulticall', (accounts) => {
                             helpers.encodeApprove(setup.balancer.pool.address,maxAmountsIn[i])
                         );
                     }
-                    const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls(
+                    const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                         token_addresses.concat([setup.balancer.pool.address]),
                         token_calldatas.concat([calldata]),
                         token_vals.concat([0]),
                         constants.ZERO_BYTES32);
                     const proposalId = helpers.getNewProposalId(_tx);
-                    await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                    const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                    await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                    const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                     // store data
                     setup.data.tx = tx;
                 });
@@ -317,10 +317,10 @@ contract('BalancerMulticall', (accounts) => {
                 context('» call exitPool', () => {
                     it('exits pool', async () => {
                         const calldata = helpers.encodeExitPool(poolAmountIn, minAmountsOut);
-                        const _tx = await setup.primeDAO.multicallPoolManager.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
+                        const _tx = await setup.primeDAO.multicallScheme.proposeCalls([setup.balancer.pool.address],[calldata], [0], constants.ZERO_BYTES32);
                         const proposalId = helpers.getNewProposalId(_tx);
-                        await  setup.primeDAO.multicallPoolManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
-                        const tx = await setup.primeDAO.multicallPoolManager.execute(proposalId);
+                        await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                        const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
                         // store data
                         setup.data.tx = tx;
                     });
