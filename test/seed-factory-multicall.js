@@ -70,7 +70,8 @@ contract('SeedFactory', (accounts) => {
             metadata = `0x`;
 
             seedFactory = await SeedFactory.new();
-            await seedFactory.initialize(accounts[0], setup.seed.address);
+            // change to avatar as avatar
+            await seedFactory.initialize(setup.organization.avatar.address, setup.seed.address);
         });
 
         context('» parameters are valid', () => {
@@ -78,20 +79,6 @@ contract('SeedFactory', (accounts) => {
                 // top up admins token balance
                 await seedToken.transfer(admin, successMinimum, {from:setup.root});
                 await seedToken.approve(seedFactory.address, successMinimum, {from:admin});
-
-                // tx = await seedFactory.deploySeed(
-                //     admin,
-                //     [seedToken.address, fundingToken.address],
-                //     [successMinimum,cap],
-                //     price,
-                //     startTime.toNumber(),
-                //     endTime.toNumber(),
-                //     vestingDuration,
-                //     vestingCliff,
-                //     isWhitelisted,
-                //     fee,
-                //     metadata
-                // );
 
                 const calldata = helpers.encodeDeploySeed(
                     admin,
@@ -135,7 +122,12 @@ contract('SeedFactory', (accounts) => {
                 );
             });
             it('changes parent', async () => {
-                await seedFactory.changeParent(newSeed.address,{from:accounts[0]});
+                let newSeed = await Seed.new();
+                const calldata = helpers.encodeChangeParent(newSeed.address);
+                const _tx = await setup.primeDAO.multicallScheme.proposeCalls([seedFactory.address],[calldata], [0], metadata);
+                const proposalId = helpers.getNewProposalId(_tx);
+                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await setup.primeDAO.multicallScheme.execute(proposalId);
                 expect(await seedFactory.parent()).to.equal(newSeed.address);
             });
         });
@@ -147,8 +139,12 @@ contract('SeedFactory', (accounts) => {
                 );
             });
             it('changes avatar', async () => {
-                await seedFactory.changeAvatar(accounts[2],{from:accounts[0]});
-                expect(await seedFactory.avatar()).to.equal(accounts[2]);
+                const calldata = helpers.encodeChangeAvatar(accounts[0]);
+                const _tx = await setup.primeDAO.multicallScheme.proposeCalls([seedFactory.address],[calldata], [0], metadata);
+                const proposalId = helpers.getNewProposalId(_tx);
+                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await setup.primeDAO.multicallScheme.execute(proposalId);
+                expect(await seedFactory.avatar()).to.equal(accounts[0]);
             });
         });
     });
