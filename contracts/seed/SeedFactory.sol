@@ -113,25 +113,25 @@ contract SeedFactory is CloneFactory {
         Seed(_newSeed).updateMetadata(_metadata);
 
         // initialize
-        // Seed(_newSeed).initialize(
-        //     msg.sender,
-        //     _admin,
-        //     _tokens,
-        //     _successMinimumAndCap,
-        //     _price,
-        //     _startTime,
-        //     _endTime,
-        //     _vestingDuration,
-        //     _vestingCliff,
-        //     _isWhitelisted,
-        //     _fee
-        // );
+        Seed(_newSeed).initialize(
+            msg.sender,
+            _admin,
+            _tokens,
+            _successMinimumAndCap,
+            _price,
+            _startTime,
+            _endTime,
+            _vestingDuration,
+            _vestingCliff,
+            _isWhitelisted,
+            _fee
+        );
 
         // fund
-        // require(
-        //     IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
-        //     "SeedFactory: cannot transfer seed tokens"
-        // );
+        require(
+            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
+            "SeedFactory: cannot transfer seed tokens"
+        );
 
         emit SeedCreated(address(_newSeed), msg.sender);
 

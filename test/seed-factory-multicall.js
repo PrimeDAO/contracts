@@ -34,7 +34,6 @@ const deploy = async (accounts) => {
 };
 
 contract('SeedFactory', (accounts) => {
-    let tx;
     let setup;
     let admin;
     let seedToken;
