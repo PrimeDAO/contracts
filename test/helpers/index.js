@@ -51,6 +51,15 @@ const encodeIncreaseReward = (farm, amount) => {
 const encodeApprove = (spender, amount) => {
   return new web3.eth.Contract(IERC20.abi).methods.approve(spender, amount).encodeABI();
 };
+const encodeDeploySeed = (admin, tokens, successMinimumAndCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.deploySeed(admin, tokens, successMinimumAndCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata).encodeABI();
+};
+const encodeChangeParent = (newParent) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.changeParent(newParent).encodeABI();
+};
+const encodeChangeAvatar = (newAvatar) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.changeAvatar(newAvatar).encodeABI();
+};
 
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
   /**
@@ -115,6 +124,9 @@ module.exports = {
   encodeExitPool,
   getNewProposalId,
   encodeApprove,
+  encodeDeploySeed,
+  encodeChangeParent,
+  encodeChangeAvatar,
   values: {
     AMOUNT,
     EXPECTED,
