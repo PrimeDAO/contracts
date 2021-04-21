@@ -103,7 +103,6 @@ contract Seed {
         uint16  vestingCliff;
         uint16  daysClaimed;
         uint256 totalClaimed;
-        address recipient;
         uint256 fundingAmount;
         uint256 fee;
     }
@@ -189,8 +188,8 @@ contract Seed {
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
         require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
-        require(seedToken.transfer(tokenLock.recipient, amountVested), "Seed: no tokens");
-        emit TokensClaimed(tokenLock.recipient, amountVested);
+        require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
+        emit TokensClaimed(_locker, amountVested);
     }
 
     /**
@@ -206,7 +205,7 @@ contract Seed {
             fundingToken.transfer(msg.sender, amount),
             "Seed: cannot return funding tokens to msg.sender"
         );
-        emit FundingReclaimed(tokenLock.recipient, amount);
+        emit FundingReclaimed(msg.sender, amount);
     }
 
     // ADMIN ACTIONS
@@ -325,10 +324,6 @@ contract Seed {
         return tokenLocks[_locker].totalClaimed;
     }
 
-    function getRecipient(address _locker) public view returns(address) {
-        return tokenLocks[_locker].recipient;
-    }
-
     function getFee(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].fee;
     }
@@ -358,7 +353,6 @@ contract Seed {
             vestingCliff: vestingCliff,
             daysClaimed: 0,
             totalClaimed: 0,
-            recipient: _recipient,
             fundingAmount: _fundingAmount,
             fee: _fee
         });

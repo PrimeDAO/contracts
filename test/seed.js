@@ -291,11 +291,6 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('91');
                 });
             });
-            context('» getRecipient', () => {
-                it('returns correct recipient', async () => {
-                    expect((await setup.seed.getRecipient(buyer1)).toString()).to.equal(buyer1);
-                });
-            });
             context('» getFee', () => {
                 it('returns correct fee', async () => {
                     let a = new BN(buyAmount);
