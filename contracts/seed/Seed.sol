@@ -170,7 +170,7 @@ contract Seed {
         uint feeAmount = (_amount.mul(uint(PPM))).mul(fee).div(PPM100);
 
         uint _lockTokens = tokenLocks[msg.sender].amount;
-        _addLock(msg.sender, block.timestamp, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE), _amount, feeAmount);
+        _addLock(msg.sender, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE), _amount, feeAmount);
     }
 
     /**
@@ -335,7 +335,6 @@ contract Seed {
 
     function _addLock(
         address _recipient,
-        uint256 _startTime,
         uint256 _amount,
         uint256 _fundingAmount,
         uint256 _fee
@@ -347,7 +346,7 @@ contract Seed {
         require(amountVestedPerDay > 0, "Seed: amountVestedPerDay > 0");
 
         Lock memory lock = Lock({
-            startTime: _startTime == 0 ? _currentTime() : _startTime,
+            startTime: _currentTime(),
             amount: _amount,
             vestingDuration: vestingDuration,
             vestingCliff: vestingCliff,
@@ -363,11 +362,6 @@ contract Seed {
 
     function _calculateClaim(address _locker) private view returns (uint16, uint256) {
         Lock storage tokenLock = tokenLocks[_locker];
-
-        // For grants created with a future start date, that hasn't been reached, return 0, 0
-        if (_currentTime() < tokenLock.startTime) {
-            return (0, 0);
-        }
 
         // Check cliff was reached
         uint elapsedTime = _currentTime().sub(tokenLock.startTime);
