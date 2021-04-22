@@ -173,7 +173,7 @@ contract Seed {
         _addLock(msg.sender, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE), _amount, feeAmount);
     }
 
-    /**denoted
+    /**
       * @dev                     Claim locked tokens.
       * @param _locker           The address of the locker.
     */
