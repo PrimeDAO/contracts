@@ -6,7 +6,7 @@
         {
           "crpPool": "0x0BdAF6D38150B0Aed813634b1a1239E690e506f2",
           "bPool": "0xBd0a53833f6646CF3A5d94EE3711BF8b387F33A5",
-          "farm": "0x"
+          "farm": "0x6d598a2345AB00782010BA07A201e7aba8a9d1E7"
         }
       ],
       "mainnet": [
@@ -24,7 +24,7 @@
         {
           "crpPool": "0xd716d8298fc38Ba19E8F5b7c3d4Ad76448A9cB38",
           "bPool": "0xc9c53Bae33a53098FD76cEa0Ec8e0Fbf17394ef9",
-          "farm": "0x"
+          "farm": "0x04f219CeE7F1F9037ba2d64EeDDf6646749B7f31"
         }
       ],
       "mainnet": [
