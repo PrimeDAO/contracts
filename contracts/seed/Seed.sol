@@ -160,7 +160,7 @@ contract Seed {
       * @param _amount           The amount of tokens to buy.
     */
     function buy(uint256 _amount) public protected checked {
-        require((fundingToken.balanceOf(address(this)) + _amount) <= cap, "Seed: amount exceeds contract sale cap");
+        require((fundingToken.balanceOf(address(this)).add(_amount)) <= cap, "Seed: amount exceeds contract sale cap");
         require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
 
         if (fundingToken.balanceOf(address(this)) >= successMinimum) {
