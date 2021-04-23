@@ -1,13 +1,23 @@
 {
-"crPool":{
+"crPool1":{
 	"lpTokenName":"Prime Liquidity Pool One Token",
 	"lpTokenSymbol":"BPRIME",
 	"lpTokenAmount":"125000",
-	"PRIMEAmount": "161290",
+	"PRIMEAmount": "1000",
 	"WETHAmount": "54",
 	"swapFee": "0.015",
 	"PRIMEWeight": "32",
 	"WETHWeight":"8"
+	},
+"crPool2":{
+	"lpTokenName":"Prime Liquidity Pool Two Token",
+	"lpTokenSymbol":"BPRIME2",
+	"lpTokenAmount":"100000",
+	"PRIMEAmount": "1000",
+	"BALAmount": "1000",
+	"swapFee": "0.01",
+	"PRIMEWeight": "25",
+	"BALWeight":"25"
 	},
 "yieldRewards":{
 	"reward":"500000",
