@@ -49,7 +49,6 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
       * @param _name         Farm name
       * @param _rewardToken  Reward token contract address
       * @param _stakingToken Staking token contract address
-      * @param _initreward   Initial reward
       * @param _starttime    Start time
       * @param _duration     Duration of the staking in days
       * @param _avatar       Address of reward distribution recepient
@@ -58,21 +57,18 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         string calldata _name,
         address         _rewardToken,
         address         _stakingToken,
-        uint256         _initreward,
         uint256         _starttime,
         uint256         _duration,
         address         _avatar
     ) external initializer {
-        require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be null");
-        require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be null");
-        require(_initreward != 0,                             "StakingRewards: initreward cannot be null");
+        require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be zero address");
+        require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be zero address");
         require(_starttime != 0,                              "StakingRewards: starttime cannot be null");
         require(_duration != 0,                               "StakingRewards: duration cannot be null");
 
         name = _name;
         rewardToken  = _rewardToken;
         stakingToken = _stakingToken;
-        initreward = _initreward;
         starttime = _starttime;
         duration = (_duration * 24 hours);
 
@@ -197,7 +193,7 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     }
 
     function getReward() public nonReentrant updateReward(msg.sender) protected checkStart {
-        uint256 reward = earned(msg.sender);
+        uint256 reward = rewards[msg.sender];
         if (reward > 0) {
             rewards[msg.sender] = 0;
             rewardToken.safeTransfer(msg.sender, reward);
