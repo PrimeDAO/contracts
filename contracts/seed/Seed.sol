@@ -170,7 +170,7 @@ contract Seed {
         uint feeAmount = (_amount.mul(uint(PPM))).mul(fee).div(PPM100);
 
         uint _lockTokens = tokenLocks[msg.sender].amount;
-        _addLock(msg.sender, (_lockTokens.add(_amount)).mul(price).div(PCT_BASE), _amount, feeAmount);
+        _addLock(msg.sender, (_lockTokens.add((_amount).mul(price).div(PCT_BASE))), _amount, feeAmount);
     }
 
     /**
