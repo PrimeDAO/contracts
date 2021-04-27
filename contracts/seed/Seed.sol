@@ -163,7 +163,8 @@ contract Seed {
         require((fundingToken.balanceOf(address(this)).add(_amount)) <= cap, "Seed: amount exceeds contract sale cap");
         require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
         require( seedToken.balanceOf(address(this)) >=
-            (fundingToken.balanceOf(address(this)).add(_amount)).mul(price).div(PCT_BASE), "Seed: seed distribution exceeded");
+            (fundingToken.balanceOf(address(this)).add(_amount)).mul(price).div(PCT_BASE),
+            "Seed: seed distribution exceeded");
 
         if (fundingToken.balanceOf(address(this)) >= successMinimum) {
             minimumReached = true;
