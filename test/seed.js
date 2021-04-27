@@ -184,6 +184,7 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
+                    await seedToken.transfer(setup.data.seed.address, smallBuyAmount, {from:setup.root});
                     await fundingToken.transfer(buyer2, smallBuyAmount, {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, smallBuyAmount, {from:buyer2});
                 });
@@ -362,6 +363,8 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
+
+                    await seedToken.transfer(setup.data.seed.address, cap, {from:setup.root});
                     await fundingToken.transfer(buyer2, buyAmount, {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer2});
                 });
