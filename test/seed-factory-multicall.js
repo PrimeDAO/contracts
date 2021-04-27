@@ -122,7 +122,7 @@ contract('SeedFactory', (accounts) => {
             });
             it('changes parent', async () => {
                 let newSeed = await Seed.new();
-                const calldata = helpers.encodeChangeParent(newSeed.address);
+                const calldata = helpers.encodeChangeParentSeed(newSeed.address);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls([seedFactory.address],[calldata], [0], metadata);
                 const proposalId = helpers.getNewProposalId(_tx);
                 await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
