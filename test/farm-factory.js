@@ -18,6 +18,8 @@ const deploy = async (accounts) => {
     setup.organization = await helpers.setup.organization(setup);
     // deploy balancer infrastructure
     setup.balancer = await helpers.setup.balancer(setup);
+    // deploy incentives contract
+    setup.incentives = await helpers.setup.incentives(setup);
     // deploy token4rep
     setup.token4rep = await helpers.setup.token4rep(setup);
     // deploy farmFactory
@@ -184,7 +186,23 @@ contract('FarmFactory', (accounts) => {
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'TokenRescued', {});
                 expect(Number(balance)).to.equal(Number(balanceBefore)-Number(rescueAmount));
             });
+            it('fails to change a parent not using avatar', async () => {
+                await expectRevert( setup.farmFactory.changeParent(setup.incentives.stakingRewards.address),
+                    'FarmFactory: protected operation');
+            });
 
+            it('Changes a parent', async () => {
+                const calldata = helpers.encodeChangeParentFarm(setup.incentives.stakingRewards.address);
+                const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], accounts[1]);
+                const proposalId = helpers.getNewProposalId(_tx);
+                await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                const tx = await  setup.primeDAO.farmManager.execute(proposalId);
+
+                // store data
+                setup.data.tx = tx;
+                const parent = await setup.farmFactory.parent();
+                expect(parent).to.equal(setup.incentives.stakingRewards.address);
+            });
         });
     });
 
