@@ -99,8 +99,6 @@ contract Seed {
     struct Lock {
         uint256 startTime;
         uint256 amount;
-        uint16  vestingDuration;
-        uint16  vestingCliff;
         uint16  daysClaimed;
         uint256 totalClaimed;
         uint256 fundingAmount;
@@ -126,17 +124,17 @@ contract Seed {
       * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
     */
     function initialize(
-            address _beneficiary,
-            address _admin,
-            address[] memory _tokens,
-            uint[] memory    _successMinimumAndCap,
-            uint    _price,
-            uint    _startTime,
-            uint    _endTime,
-            uint16  _vestingDuration,
-            uint16  _vestingCliff,
-            bool    _isWhitelisted,
-            uint8   _fee
+        address _beneficiary,
+        address _admin,
+        address[] memory _tokens,
+        uint[] memory    _successMinimumAndCap,
+        uint    _price,
+        uint    _startTime,
+        uint    _endTime,
+        uint16  _vestingDuration,
+        uint16  _vestingCliff,
+        bool    _isWhitelisted,
+        uint8   _fee
     ) public initializer {
         beneficiary     = _beneficiary;
         admin           = _admin;
@@ -308,14 +306,6 @@ contract Seed {
         return tokenLocks[_locker].amount;
     }
 
-    function getVestingDuration(address _locker) public view returns(uint16) {
-        return tokenLocks[_locker].vestingDuration;
-    }
-
-    function getVestingCliff(address _locker) public view returns(uint16) {
-        return tokenLocks[_locker].vestingCliff;
-    }
-
     function getDaysClaimed(address _locker) public view returns(uint16) {
         return tokenLocks[_locker].daysClaimed;
     }
@@ -339,7 +329,7 @@ contract Seed {
         uint256 _fundingAmount,
         uint256 _fee
     )
-        internal
+    internal
     {
 
         uint256 amountVestedPerDay = _amount.div(vestingDuration);
@@ -348,13 +338,11 @@ contract Seed {
         Lock memory lock = Lock({
             startTime: _currentTime(),
             amount: _amount,
-            vestingDuration: vestingDuration,
-            vestingCliff: vestingCliff,
             daysClaimed: 0,
             totalClaimed: 0,
             fundingAmount: _fundingAmount,
             fee: _fee
-        });
+            });
         tokenLocks[_recipient] = lock;
         emit LockAdded(_recipient, _amount);
         totalLockCount++;
@@ -367,17 +355,17 @@ contract Seed {
         uint elapsedTime = _currentTime().sub(tokenLock.startTime);
         uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
 
-        if (elapsedDays < tokenLock.vestingCliff) {
+        if (elapsedDays < vestingCliff) {
             return (uint16(elapsedDays), 0);
         }
 
         // If over vesting duration, all tokens vested
-        if (elapsedDays >= tokenLock.vestingDuration) {
+        if (elapsedDays >= vestingDuration) {
             uint256 remainingGrant = tokenLock.amount.sub(tokenLock.totalClaimed);
-            return (tokenLock.vestingDuration, remainingGrant);
+            return (vestingDuration, remainingGrant);
         } else {
             uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
-            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(tokenLock.vestingDuration));
+            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(vestingDuration));
             uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
             return (daysVested, amountVested);
         }
