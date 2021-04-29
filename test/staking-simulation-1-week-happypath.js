@@ -84,7 +84,7 @@ contract('Staking: 1 week happypath', (accounts) => {
                     await setup.balancer.pool.transfer(accounts[9], quarterStake);
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, quarterStake, { from: accounts[9] });
 
-                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address);
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
                     const calldata = helpers.encodeIncreaseReward(setup.incentives.stakingRewards.address, _initreward);
                     const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], constants.ZERO_BYTES32);

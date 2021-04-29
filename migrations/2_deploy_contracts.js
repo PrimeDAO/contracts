@@ -7,7 +7,6 @@ const BalancerSafeMathMock = artifacts.require('BalancerSafeMathMock');
 const BalancerProxy = artifacts.require('BalancerProxy');
 const PrimeToken = artifacts.require('PrimeToken');
 const PriceOracle = artifacts.require('PriceOracle');
-const VestingFactory = artifacts.require('VestingFactory');
 const StakingRewards = artifacts.require('StakingRewards');
 const RepRedeemer = artifacts.require('RepRedeemer');
 const SeedFactory = artifacts.require('SeedFactory');
@@ -27,14 +26,12 @@ module.exports = async function (deployer, network) {
         await deployer.deploy(PriceOracle);
         await deployer.deploy(LockingToken4Reputation);
         await deployer.deploy(BalancerProxy);
-        await deployer.deploy(VestingFactory);
         await deployer.deploy(RepRedeemer);
 
         contracts.mainnet.StakingRewards = StakingRewards.address;
         contracts.mainnet.PriceOracle = PriceOracle.address;
         contracts.mainnet.LockingToken4Reputation = LockingToken4Reputation.address;
         contracts.mainnet.BalancerProxy = BalancerProxy.address;
-        contracts.mainnet.VestingFactory = VestingFactory.address;
         contracts.mainnet.RepRedeemer = RepRedeemer.address;
 
         // overwrite contranctAddresses.json
@@ -48,7 +45,6 @@ module.exports = async function (deployer, network) {
         await deployer.deploy(StakingRewards);
         await deployer.deploy(PriceOracle);
         await deployer.deploy(BalancerProxy);
-        await deployer.deploy(VestingFactory);
         await deployer.deploy(RepRedeemer);
         await deployer.deploy(SeedFactory);
         await deployer.deploy(Seed);
@@ -57,7 +53,6 @@ module.exports = async function (deployer, network) {
         contracts.kovan.StakingRewards = StakingRewards.address;
         contracts.kovan.PriceOracle = PriceOracle.address;
         contracts.kovan.BalancerProxy = BalancerProxy.address;
-        contracts.kovan.VestingFactory = VestingFactory.address;
         contracts.kovan.RepRedeemer = RepRedeemer.address;
         contracts.kovan.SeedFactory = SeedFactory.address;
         contracts.kovan.Seed = Seed.address;
