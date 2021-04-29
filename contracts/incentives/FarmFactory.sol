@@ -114,7 +114,6 @@ contract FarmFactory is CloneFactory {
 			_name,
 			_rewardToken,
 			_stakingToken,
-			_initreward,
 			_starttime,
 			_duration,
 			address(avatar)
