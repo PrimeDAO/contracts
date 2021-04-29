@@ -23,7 +23,6 @@ const RightsManager = artifacts.require('RightsManager');
 const SmartPoolManager = artifacts.require('SmartPoolManager');
 const BalancerProxy = artifacts.require('BalancerProxy');
 const PrimeToken = artifacts.require('PrimeToken');
-const VestingFactory = artifacts.require('VestingFactory');
 const RepRedeemer = artifacts.require('RepRedeemer');
 
 
@@ -242,20 +241,6 @@ const token4rep = async (setup) => {
     return { params, contract, priceOracle };
 };
 
-const vesting = async (setup) => {
-    // vesting parameters
-    const params = {
-        cliffDuration: 0,
-        duration: 45*60*60,
-        revocable: true
-    };
-
-    const factory = await VestingFactory.new();
-
-    return { factory, params };
-};
-
-
 const primeDAO = async (setup) => {
     // deploy balancer generic scheme
     const poolManager = await GenericScheme.new();
@@ -297,7 +282,6 @@ module.exports = {
     incentives,
     repRedeemer,
     tokens,
-    vesting,
     balancer,
     DAOStack,
     organization,

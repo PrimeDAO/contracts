@@ -271,16 +271,6 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getAmount(buyer1)).toString()).to.equal((amount).toString());
                 });
             });
-            context('» getVestingDuration', () => {
-                it('returns correct duration', async () => {
-                    expect((await setup.seed.getVestingDuration(buyer1)).toString()).to.equal(vestingDuration.toString());
-                });
-            });
-            context('» getVestingCliff', () => {
-                it('returns correct cliff', async () => {
-                    expect((await setup.seed.getVestingCliff(buyer1)).toString()).to.equal(vestingCliff.toString());
-                });
-            });
             context('» getDaysClaimed', () => {
                 it('returns correct claimed', async () => {
                     expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('91');

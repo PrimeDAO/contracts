@@ -48,13 +48,16 @@ const encodeRescueTokens = (stakingRewards, amount, token, to) => {
 const encodeIncreaseReward = (farm, amount) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.increaseReward(farm, amount).encodeABI();
 };
+const encodeChangeParentFarm = (newParent) => {
+  return new web3.eth.Contract(FarmFactory.abi).methods.changeParent(newParent).encodeABI();
+};
 const encodeApprove = (spender, amount) => {
   return new web3.eth.Contract(IERC20.abi).methods.approve(spender, amount).encodeABI();
 };
 const encodeDeploySeed = (admin, tokens, successMinimumAndCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata) => {
   return new web3.eth.Contract(SeedFactory.abi).methods.deploySeed(admin, tokens, successMinimumAndCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata).encodeABI();
 };
-const encodeChangeParent = (newParent) => {
+const encodeChangeParentSeed = (newParent) => {
   return new web3.eth.Contract(SeedFactory.abi).methods.changeParent(newParent).encodeABI();
 };
 const encodeChangeAvatar = (newAvatar) => {
@@ -120,12 +123,13 @@ module.exports = {
   encodeCreateFarm,
   encodeRescueTokens,
   encodeIncreaseReward,
+  encodeChangeParentFarm,
   encodeJoinPool,
   encodeExitPool,
   getNewProposalId,
   encodeApprove,
   encodeDeploySeed,
-  encodeChangeParent,
+  encodeChangeParentSeed,
   encodeChangeAvatar,
   values: {
     AMOUNT,

@@ -70,7 +70,6 @@ contract FarmFactory is CloneFactory {
   	*/
 	function changeParent(StakingRewards newParent) public protected{
 		parent = newParent;
-		parent.transferOwnership(address(avatar));
 	}
 
 	/**
