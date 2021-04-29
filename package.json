@@ -6,6 +6,7 @@
   "scripts": {
     "test": "truffle test",
     "lint": "solhint 'contracts/**/*.sol' && npx eslint test/*.js",
+    "compile": "truffle compile --all",
     "deploy:contracts:kovan": "truffle migrate --network kovan --reset",
     "deploy:dao:kovan": "npx run scripts/kovan/migrateDAO.js --network kovan",
     "setup:oracle:kovan": "npx truffle exec scripts/kovan/setupPriceOracle.js --network kovan",
