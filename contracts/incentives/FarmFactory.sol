@@ -124,6 +124,11 @@ contract FarmFactory is CloneFactory {
 		return newFarm;
 	}
 
+	/**
+  	* @dev           	Increases reward on a staking rewards contract.
+  	* @param _farm  	Farm address.
+  	* @param _amount  Reward token address.
+  	*/
 	function increaseReward(
 		address _farm,
 		uint    _amount
