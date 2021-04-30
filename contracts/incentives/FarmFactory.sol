@@ -188,7 +188,7 @@ contract FarmFactory is CloneFactory {
 			address(_farm),
 			abi.encodeWithSelector(
 				_farm.notifyRewardAmount.selector,
-				_amount.add(oldBalance)
+				_amount
 			),
 			avatar,
 			0
