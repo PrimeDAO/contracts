@@ -159,7 +159,8 @@ contract Seed {
     */
     function buy(uint256 _seedAmount) public protected checked {
         uint256 fundingAmount = _seedAmount.mul(price).div(PCT_BASE);
-        require((fundingToken.balanceOf(address(this)).add(fundingAmount)) <= cap, "Seed: amount exceeds contract sale cap");
+        require((fundingToken.balanceOf(address(this)).add(fundingAmount)) <= cap,
+            "Seed: amount exceeds contract sale cap");
         require( seedToken.balanceOf(address(this)) >=
         (fundingToken.balanceOf(address(this)).mul(price).div(PCT_BASE)).add(_seedAmount),
             "Seed: seed distribution exceeded");
