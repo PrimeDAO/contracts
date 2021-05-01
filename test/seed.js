@@ -53,6 +53,7 @@ contract('Seed', (accounts) => {
     let buyer1TimeLock;
     let seed;
     let metadata;
+    const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -65,8 +66,8 @@ contract('Seed', (accounts) => {
             successMinimum = toWei('10');
             cap = toWei('100');
             price = toWei('0.01');
-            buyAmount = toWei('50');
-            smallBuyAmount = toWei('9');
+            buyAmount = toWei('5000');
+            smallBuyAmount = toWei('900');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -79,7 +80,7 @@ contract('Seed', (accounts) => {
             context('» parameters are valid', () => {
                 it('it initializes seed', async () => {
                     // emulate creation & initialization via seedfactory & fund with seedTokens
-                    await seedToken.transfer(setup.seed.address, cap, {from:setup.root});
+                    await seedToken.transfer(setup.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
 
                     await setup.seed.initialize(
                         setup.organization.avatar.address,
@@ -105,7 +106,8 @@ contract('Seed', (accounts) => {
                     expect(await setup.seed.isWhitelisted()).to.equal(isWhitelisted);
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect(await setup.seed.closed()).to.equal(false);
-                    expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal(cap);
+                    expect((await seedToken.balanceOf(setup.seed.address)).toString()).to
+                        .equal(((new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10))).toString());
                 });
                 it('it reverts on double initialization', async () => {
                     await expectRevert(
@@ -137,12 +139,12 @@ contract('Seed', (accounts) => {
                     buyer1TimeLock = await time.latest();
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
                     setup.data.tx = tx;
-
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'LockAdded');
-                    expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to.equal(buyAmount);
+                    expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to
+                        .equal((buyAmount*price/pct_base).toString());
                 });
                 it('updates fee mapping for locker', async () => {
-                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('1'));
+                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('100'));
                 });
             });
         });
@@ -163,7 +165,8 @@ contract('Seed', (accounts) => {
                     });
                 });
                 it('funds dao with fee', async () => {
-                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to.equal(toWei('1'));
+                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
+                        .equal(toWei('100'));
                 });
             });
         });
@@ -184,9 +187,9 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
-                    await seedToken.transfer(setup.data.seed.address, smallBuyAmount, {from:setup.root});
-                    await fundingToken.transfer(buyer2, smallBuyAmount, {from:setup.root});
-                    await fundingToken.approve(setup.data.seed.address, smallBuyAmount, {from:buyer2});
+                    await seedToken.transfer(setup.data.seed.address, (new BN(smallBuyAmount,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await fundingToken.transfer(buyer2, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:buyer2});
                 });
                 it('returns funding tokens to buyer', async () => {
                     await setup.data.seed.buy(smallBuyAmount, {from:buyer2});
@@ -196,18 +199,19 @@ contract('Seed', (accounts) => {
                     setup.data.tx = tx;
 
                     expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'FundingReclaimed');
-                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(smallBuyAmount);
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to
+                        .equal(((new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10))).toString());
                 });
                 it('clears `fee` mapping', async () => {
                     expect((await setup.data.seed.getFee(buyer2)).toString()).to.equal('0');
                 });
                 it('clears `tokenLock.amount`', async () => {
-                    expect((await setup.data.seed.getAmount(buyer2)).toString()).to.equal('0');
+                    expect((await setup.data.seed.getSeedAmount(buyer2)).toString()).to.equal('0');
                 });
                 it('cannot be called once funding minimum is reached', async () => {
-                    await fundingToken.transfer(buyer2, toWei('1'), {from:setup.root});
+                    await fundingToken.transfer(buyer2, toWei('10'), {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, toWei('10'), {from:buyer2});
-                    await setup.data.seed.buy(toWei('10'), {from:buyer2});
+                    await setup.data.seed.buy(toWei('1000'), {from:buyer2});
                     await expectRevert(
                         setup.data.seed.buyBack({from:buyer2}),
                         "Seed: minimum already met"
@@ -265,11 +269,12 @@ contract('Seed', (accounts) => {
             });
             context('» getAmount', () => {
                 it('returns correct amount', async () => {
-                    let pct_base = new BN('1000000000000000000'); // 10**18
-                    let p = new BN(price);
-                    let a = new BN(buyAmount);
-                    let amount = new BN(p.mul(a).div(pct_base));
-                    expect((await setup.seed.getAmount(buyer1)).toString()).to.equal((amount).toString());
+                    // TODO: all this numbers doesn't make sense anymore, as we are sending amount of seedTokens we
+                    // TODO: are willing to buy, not amount of fundingTokens we are willing to waste
+                    // let p = new BN(price);
+                    // let a = new BN(buyAmount);
+                    // let amount = new BN(a.mul(pct_base).div(p));
+                    expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((buyAmount).toString());
                 });
             });
             context('» getDaysClaimed', () => {
@@ -354,7 +359,7 @@ contract('Seed', (accounts) => {
                         fee
                     );
 
-                    await seedToken.transfer(setup.data.seed.address, cap, {from:setup.root});
+                    await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.transfer(buyer2, buyAmount, {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer2});
                 });
@@ -385,7 +390,7 @@ contract('Seed', (accounts) => {
             successMinimum = toWei('10');
             cap = toWei('100');
             price = toWei('0.01');
-            buyAmount = toWei('50');
+            buyAmount = toWei('5000');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -401,7 +406,7 @@ contract('Seed', (accounts) => {
                 it('initializes', async () => {
 
                     // emulate creation & initialization via seedfactory & fund with seedTokens
-                    await seedToken.transfer(seed.address, cap, {from:setup.root});
+                    await seedToken.transfer(seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
 
                     await seed.initialize(
                         setup.organization.avatar.address,
@@ -427,7 +432,7 @@ contract('Seed', (accounts) => {
                     expect(await seed.isWhitelisted()).to.equal(isWhitelisted);
                     expect((await seed.fee()).toString()).to.equal(fee.toString());
                     expect(await seed.closed()).to.equal(false);
-                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal(cap);
+                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal((new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)).toString());
 
                 });
                 it('it reverts on double initialization', async () => {
@@ -487,9 +492,9 @@ contract('Seed', (accounts) => {
                     await fundingToken.transfer(buyer2, toWei('100'), {from:setup.root});
                     await fundingToken.approve(seed.address, toWei('100'), {from:buyer2});
                     await seed.whitelist(buyer2,{from:admin});
-                    await seed.buy(toWei('99'),{from:buyer2});
+                    await seed.buy(toWei('9900'),{from:buyer2});
                     await expectRevert(
-                        seed.buy(toWei('2'),{from:buyer2}),
+                        seed.buy(toWei('200'),{from:buyer2}),
                         "Seed: amount exceeds contract sale cap"
                     );
                 });
