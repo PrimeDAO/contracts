@@ -50,7 +50,7 @@ contract('Seed', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
-    let buyer1TimeLock;
+    // let buyer1TimeLock;
     let seed;
     let metadata;
     const pct_base = new BN('1000000000000000000'); // 10**18
@@ -136,7 +136,7 @@ contract('Seed', (accounts) => {
                     await fundingToken.approve(setup.seed.address, buyAmount, {from:buyer1});
                 });
                 it('it buys tokens ', async () => {
-                    buyer1TimeLock = await time.latest();
+                    // buyer1TimeLock = await time.latest();
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'LockAdded');
