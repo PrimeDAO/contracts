@@ -217,7 +217,7 @@ contract Seed {
     /**
       * @dev         Returns funding tokens to user.
     */
-    function buyBack() public protected checked beforeMinimumReached {
+    function retrieveFundingTokens() public protected checked beforeMinimumReached {
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint amount = tokenLock.fundingAmount;
         tokenLock.seedAmount = 0;
