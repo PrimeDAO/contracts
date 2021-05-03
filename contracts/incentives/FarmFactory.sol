@@ -97,14 +97,11 @@ contract FarmFactory is CloneFactory {
 		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _initreward,
 			ERROR_CREATE_FARM);
 
-		bool success;
-		Controller controller = Controller(avatar.owner());
-
 		// create new farm
 		address newFarm = createClone(address(parent));
 
 		// transfer rewards to the new farm
-		controller
+		Controller(avatar.owner())
 		.externalTokenTransfer(
 			IERC20(_rewardToken),
 			newFarm,
@@ -121,19 +118,6 @@ contract FarmFactory is CloneFactory {
 			_duration,
 			address(avatar)
 		);
-
-		//call notify reward amount
-		(success,) = controller.genericCall(
-			newFarm,
-			abi.encodeWithSelector(
-				StakingRewards(newFarm).notifyRewardAmount.selector,
-				_initreward
-			),
-			avatar,
-			0
-		);
-
-		require(success, ERROR_CREATE_FARM);
 
 		emit FarmCreated(newFarm, _stakingToken);
 

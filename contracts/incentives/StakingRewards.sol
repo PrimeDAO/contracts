@@ -73,11 +73,18 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         duration = (_duration * 24 hours);
 
         rewardDistribution = _avatar;
+
+        // initial notifyRewardsAmount
+        totalRewards = IERC20(_rewardToken).balanceOf(address(this));
+        rewardRate = totalRewards.div(duration);
+        lastUpdateTime = block.timestamp;
+        periodFinish = block.timestamp.add(duration);
+        emit RewardAdded(totalRewards);
     }
 
     uint256 public duration;
 
-    uint256 public initreward;
+    uint256 public totalRewards;
     uint256 public starttime;
     uint256 public periodFinish;
     uint256 public rewardRate;
@@ -225,5 +232,4 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         _balances[msg.sender] = _balances[msg.sender].sub(_amount);
         stakingToken.safeTransfer(msg.sender, _amount);
     }
-
 }
