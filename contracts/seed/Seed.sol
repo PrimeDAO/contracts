@@ -225,7 +225,7 @@ contract Seed {
         tokenLock.fundingAmount = 0;
         uint feeAmount = (amount.mul(uint(PPM))).mul(fee).div(PPM100);
         require(
-            fundingToken.transfer(msg.sender, (amount+feeAmount)),
+            fundingToken.transfer(msg.sender, (amount.add(feeAmount))),
             "Seed: cannot return funding tokens to msg.sender"
         );
         emit FundingReclaimed(msg.sender, amount);
