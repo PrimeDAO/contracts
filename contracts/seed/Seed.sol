@@ -158,20 +158,38 @@ contract Seed {
       * @param _seedAmount       The amount of seed tokens to buy.
     */
     function buy(uint256 _seedAmount) public protected checked {
-        //        TODO: DEAR ZNATOKI, Attention, question from our viewers, why do we need to divide anything anyway
+        //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
-        require((fundingToken.balanceOf(address(this)).add(fundingAmount)) <= cap,
+        //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
+        uint256 alreadyLockedSeedTokens = (fundingToken.balanceOf(address(this)).mul(PCT_BASE)).div(price);
+        //  feeAmount is an amount of fee we are going to get in seedTokens
+        uint feeAmount = (_seedAmount.mul(uint(PPM))).mul(fee).div(PPM100);
+        //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
+        uint lockedSeedFee = (alreadyLockedSeedTokens.mul(uint(PPM))).mul(fee).div(PPM100);
+
+        // We are that overall supply of fundingToken that will be in the end of this function execution
+        // will be less then maximum cap
+        // balanceToBe = currentBalance + amountOfFundTokenToExchange + amountOfFundTokenToPayForFee
+        require( (fundingToken.balanceOf(address(this)).
+                  add(fundingAmount).
+                  add((feeAmount.mul(price)).div(PCT_BASE))) <= cap,
             "Seed: amount exceeds contract sale cap");
-        require( seedToken.balanceOf(address(this)) >=
-        ((fundingToken.balanceOf(address(this)).mul(PCT_BASE)).div(price)).add(_seedAmount),
+
+        // We are calculating that we are not exceeding balance of seedTokens in this contract
+        // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
+        require( seedToken.balanceOf(address(this)) >= (alreadyLockedSeedTokens.
+                                                        add(_seedAmount).
+                                                        add(feeAmount)),
             "Seed: seed distribution exceeded");
-        require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount), "Seed: no tokens");
+
+        // Here we are sending amount of tokens to pay for lock and fee
+        // FundingTokensSent = fundingAmount + fundingFee
+        require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount.
+            add(feeAmount.mul(price).div(PCT_BASE))), "Seed: no tokens");
 
         if (fundingToken.balanceOf(address(this)) >= successMinimum) {
             minimumReached = true;
         }
-
-        uint feeAmount = (_seedAmount.mul(uint(PPM))).mul(fee).div(PPM100);
 
         uint _lockTokens = tokenLocks[msg.sender].seedAmount;
         _addLock(msg.sender, _seedAmount, (_lockTokens.add(fundingAmount)), feeAmount);
@@ -205,8 +223,9 @@ contract Seed {
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
+        uint feeAmount = (amount.mul(uint(PPM))).mul(fee).div(PPM100);
         require(
-            fundingToken.transfer(msg.sender, amount),
+            fundingToken.transfer(msg.sender, (amount+feeAmount)),
             "Seed: cannot return funding tokens to msg.sender"
         );
         emit FundingReclaimed(msg.sender, amount);

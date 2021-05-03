@@ -50,7 +50,6 @@ contract('Seed', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
-    // let buyer1TimeLock;
     let seed;
     let metadata;
     const pct_base = new BN('1000000000000000000'); // 10**18
@@ -64,10 +63,10 @@ contract('Seed', (accounts) => {
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             successMinimum = toWei('10');
-            cap = toWei('100');
+            cap = toWei('102');
             price = toWei('0.01');
             buyAmount = toWei('5000');
-            smallBuyAmount = toWei('900');
+            smallBuyAmount = toWei('918');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -141,7 +140,7 @@ contract('Seed', (accounts) => {
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'LockAdded');
                     expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to
-                        .equal((buyAmount*price/pct_base).toString());
+                        .equal(((buyAmount*price/pct_base) + (fee * (buyAmount*price/pct_base)/100)).toString());
                 });
                 it('updates fee mapping for locker', async () => {
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('100'));
@@ -174,7 +173,7 @@ contract('Seed', (accounts) => {
             context('» generics', () => {
                 before('!! deploy new contract + top up buyer balance', async () => {
                     setup.data.seed = await Seed.new();
-                    setup.data.seed.initialize(
+                    await setup.data.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
                         [seedToken.address, fundingToken.address],
@@ -187,12 +186,13 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
-                    await seedToken.transfer(setup.data.seed.address, (new BN(smallBuyAmount,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+
+                    await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.transfer(buyer2, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:buyer2});
                 });
                 it('returns funding tokens to buyer', async () => {
-                    await setup.data.seed.buy(smallBuyAmount, {from:buyer2});
+                    await setup.data.seed.buy(toWei('900'), {from:buyer2});
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal('0');
 
                     let tx = await setup.data.seed.buyBack({from:buyer2});
@@ -209,8 +209,8 @@ contract('Seed', (accounts) => {
                     expect((await setup.data.seed.getSeedAmount(buyer2)).toString()).to.equal('0');
                 });
                 it('cannot be called once funding minimum is reached', async () => {
-                    await fundingToken.transfer(buyer2, toWei('10'), {from:setup.root});
-                    await fundingToken.approve(setup.data.seed.address, toWei('10'), {from:buyer2});
+                    await fundingToken.transfer(buyer2, toWei('10.2'), {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, toWei('10.2'), {from:buyer2});
                     await setup.data.seed.buy(toWei('1000'), {from:buyer2});
                     await expectRevert(
                         setup.data.seed.buyBack({from:buyer2}),
@@ -261,22 +261,8 @@ contract('Seed', (accounts) => {
                     expect(await setup.seed.checkWhitelisted(buyer1)).to.equal(false);
                 });
             });
-            context('» getStartTime', () => {
-                // occasional blocktime mismatch in test env
-                it('returns correct startTime', async () => {
-                    //TODO: this test is crap, because time may be different(we save time locally, but the time of
-                    // transaction execution will be different, as there is a lag between transaction being sent into
-                    // blockchain and executed, rework pls)
-                    // expect((await setup.seed.getStartTime(buyer1)).toString()).to.equal(buyer1TimeLock.toString());
-                });
-            });
             context('» getAmount', () => {
                 it('returns correct amount', async () => {
-                    // TODO: all this numbers doesn't make sense anymore, as we are sending amount of seedTokens we
-                    // TODO: are willing to buy, not amount of fundingTokens we are willing to waste
-                    // let p = new BN(price);
-                    // let a = new BN(buyAmount);
-                    // let amount = new BN(a.mul(pct_base).div(p));
                     expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((buyAmount).toString());
                 });
             });
@@ -391,7 +377,7 @@ contract('Seed', (accounts) => {
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             successMinimum = toWei('10');
-            cap = toWei('100');
+            cap = toWei('102');
             price = toWei('0.01');
             buyAmount = toWei('5000');
             startTime  = await time.latest();
@@ -492,8 +478,8 @@ contract('Seed', (accounts) => {
         context('# cap', () => {
             context('» check cap', () => {
                 it('cannot buy more than cap', async () => {
-                    await fundingToken.transfer(buyer2, toWei('100'), {from:setup.root});
-                    await fundingToken.approve(seed.address, toWei('100'), {from:buyer2});
+                    await fundingToken.transfer(buyer2, toWei('102'), {from:setup.root});
+                    await fundingToken.approve(seed.address, toWei('102'), {from:buyer2});
                     await seed.whitelist(buyer2,{from:admin});
                     await seed.buy(toWei('9900'),{from:buyer2});
                     await expectRevert(
