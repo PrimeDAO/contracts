@@ -39,21 +39,21 @@
     "absolutePath": "@daostack/infra/contracts/votingMachines/ProposalExecuteInterface.sol",
     "exportedSymbols": {
       "ProposalExecuteInterface": [
-        11622
+        13287
       ]
     },
-    "id": 11623,
+    "id": 13288,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 11612,
+        "id": 13277,
         "literals": [
           "solidity",
           "0.5",
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:33"
+        "src": "0:23:38"
       },
       {
         "baseContracts": [],
@@ -61,9 +61,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 11622,
+        "id": 13287,
         "linearizedBaseContracts": [
-          11622
+          13287
         ],
         "name": "ProposalExecuteInterface",
         "nodeType": "ContractDefinition",
@@ -71,23 +71,23 @@
           {
             "body": null,
             "documentation": null,
-            "id": 11621,
+            "id": 13286,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "executeProposal",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 11617,
+              "id": 13282,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 11614,
+                  "id": 13279,
                   "name": "_proposalId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 11621,
-                  "src": "91:19:33",
+                  "scope": 13286,
+                  "src": "91:19:38",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -95,10 +95,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 11613,
+                    "id": 13278,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "91:7:33",
+                    "src": "91:7:38",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -109,11 +109,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 11616,
+                  "id": 13281,
                   "name": "_decision",
                   "nodeType": "VariableDeclaration",
-                  "scope": 11621,
-                  "src": "112:13:33",
+                  "scope": 13286,
+                  "src": "112:13:38",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -121,10 +121,10 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 11615,
+                    "id": 13280,
                     "name": "int",
                     "nodeType": "ElementaryTypeName",
-                    "src": "112:3:33",
+                    "src": "112:3:38",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -134,19 +134,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "90:36:33"
+              "src": "90:36:38"
             },
             "returnParameters": {
-              "id": 11620,
+              "id": 13285,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 11619,
+                  "id": 13284,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 11621,
-                  "src": "144:4:33",
+                  "scope": 13286,
+                  "src": "144:4:38",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -154,10 +154,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 11618,
+                    "id": 13283,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "144:4:33",
+                    "src": "144:4:38",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -167,40 +167,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "143:6:33"
+              "src": "143:6:38"
             },
-            "scope": 11622,
-            "src": "66:84:33",
+            "scope": 13287,
+            "src": "66:84:38",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 11623,
-        "src": "25:127:33"
+        "scope": 13288,
+        "src": "25:127:38"
       }
     ],
-    "src": "0:153:33"
+    "src": "0:153:38"
   },
   "legacyAST": {
     "absolutePath": "@daostack/infra/contracts/votingMachines/ProposalExecuteInterface.sol",
     "exportedSymbols": {
       "ProposalExecuteInterface": [
-        11622
+        13287
       ]
     },
-    "id": 11623,
+    "id": 13288,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 11612,
+        "id": 13277,
         "literals": [
           "solidity",
           "0.5",
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:33"
+        "src": "0:23:38"
       },
       {
         "baseContracts": [],
@@ -208,9 +208,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 11622,
+        "id": 13287,
         "linearizedBaseContracts": [
-          11622
+          13287
         ],
         "name": "ProposalExecuteInterface",
         "nodeType": "ContractDefinition",
@@ -218,23 +218,23 @@
           {
             "body": null,
             "documentation": null,
-            "id": 11621,
+            "id": 13286,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "executeProposal",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 11617,
+              "id": 13282,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 11614,
+                  "id": 13279,
                   "name": "_proposalId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 11621,
-                  "src": "91:19:33",
+                  "scope": 13286,
+                  "src": "91:19:38",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -242,10 +242,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 11613,
+                    "id": 13278,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "91:7:33",
+                    "src": "91:7:38",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -256,11 +256,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 11616,
+                  "id": 13281,
                   "name": "_decision",
                   "nodeType": "VariableDeclaration",
-                  "scope": 11621,
-                  "src": "112:13:33",
+                  "scope": 13286,
+                  "src": "112:13:38",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -268,10 +268,10 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 11615,
+                    "id": 13280,
                     "name": "int",
                     "nodeType": "ElementaryTypeName",
-                    "src": "112:3:33",
+                    "src": "112:3:38",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
@@ -281,19 +281,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "90:36:33"
+              "src": "90:36:38"
             },
             "returnParameters": {
-              "id": 11620,
+              "id": 13285,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 11619,
+                  "id": 13284,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 11621,
-                  "src": "144:4:33",
+                  "scope": 13286,
+                  "src": "144:4:38",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -301,10 +301,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 11618,
+                    "id": 13283,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "144:4:33",
+                    "src": "144:4:38",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -314,28 +314,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "143:6:33"
+              "src": "143:6:38"
             },
-            "scope": 11622,
-            "src": "66:84:33",
+            "scope": 13287,
+            "src": "66:84:38",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 11623,
-        "src": "25:127:33"
+        "scope": 13288,
+        "src": "25:127:38"
       }
     ],
-    "src": "0:153:33"
+    "src": "0:153:38"
   },
   "compiler": {
     "name": "solc",
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.0",
-  "updatedAt": "2021-01-04T09:54:30.766Z",
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2021-04-29T16:22:59.894Z",
   "devdoc": {
     "methods": {}
   },

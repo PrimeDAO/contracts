@@ -39,21 +39,21 @@
     "absolutePath": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
     "exportedSymbols": {
       "PriceOracleInterface": [
-        5937
+        7602
       ]
     },
-    "id": 5938,
+    "id": 7603,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5927,
+        "id": 7592,
         "literals": [
           "solidity",
           "0.5",
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:21"
+        "src": "0:23:26"
       },
       {
         "baseContracts": [],
@@ -61,9 +61,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 5937,
+        "id": 7602,
         "linearizedBaseContracts": [
-          5937
+          7602
         ],
         "name": "PriceOracleInterface",
         "nodeType": "ContractDefinition",
@@ -71,23 +71,23 @@
           {
             "body": null,
             "documentation": null,
-            "id": 5936,
+            "id": 7601,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getPrice",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5930,
+              "id": 7595,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5929,
+                  "id": 7594,
                   "name": "token",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5936,
-                  "src": "81:13:21",
+                  "scope": 7601,
+                  "src": "81:13:26",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -95,10 +95,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5928,
+                    "id": 7593,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "81:7:21",
+                    "src": "81:7:26",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -109,19 +109,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "80:15:21"
+              "src": "80:15:26"
             },
             "returnParameters": {
-              "id": 5935,
+              "id": 7600,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5932,
+                  "id": 7597,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5936,
-                  "src": "119:4:21",
+                  "scope": 7601,
+                  "src": "119:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -129,10 +129,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5931,
+                    "id": 7596,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "119:4:21",
+                    "src": "119:4:26",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -143,11 +143,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5934,
+                  "id": 7599,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5936,
-                  "src": "125:4:21",
+                  "scope": 7601,
+                  "src": "125:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -155,10 +155,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5933,
+                    "id": 7598,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "125:4:21",
+                    "src": "125:4:26",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -168,40 +168,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "118:12:21"
+              "src": "118:12:26"
             },
-            "scope": 5937,
-            "src": "63:68:21",
+            "scope": 7602,
+            "src": "63:68:26",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5938,
-        "src": "25:109:21"
+        "scope": 7603,
+        "src": "25:109:26"
       }
     ],
-    "src": "0:135:21"
+    "src": "0:135:26"
   },
   "legacyAST": {
     "absolutePath": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
     "exportedSymbols": {
       "PriceOracleInterface": [
-        5937
+        7602
       ]
     },
-    "id": 5938,
+    "id": 7603,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5927,
+        "id": 7592,
         "literals": [
           "solidity",
           "0.5",
           ".13"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:21"
+        "src": "0:23:26"
       },
       {
         "baseContracts": [],
@@ -209,9 +209,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 5937,
+        "id": 7602,
         "linearizedBaseContracts": [
-          5937
+          7602
         ],
         "name": "PriceOracleInterface",
         "nodeType": "ContractDefinition",
@@ -219,23 +219,23 @@
           {
             "body": null,
             "documentation": null,
-            "id": 5936,
+            "id": 7601,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getPrice",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5930,
+              "id": 7595,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5929,
+                  "id": 7594,
                   "name": "token",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5936,
-                  "src": "81:13:21",
+                  "scope": 7601,
+                  "src": "81:13:26",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -243,10 +243,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5928,
+                    "id": 7593,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "81:7:21",
+                    "src": "81:7:26",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -257,19 +257,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "80:15:21"
+              "src": "80:15:26"
             },
             "returnParameters": {
-              "id": 5935,
+              "id": 7600,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5932,
+                  "id": 7597,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5936,
-                  "src": "119:4:21",
+                  "scope": 7601,
+                  "src": "119:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -277,10 +277,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5931,
+                    "id": 7596,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "119:4:21",
+                    "src": "119:4:26",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -291,11 +291,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 5934,
+                  "id": 7599,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5936,
-                  "src": "125:4:21",
+                  "scope": 7601,
+                  "src": "125:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -303,10 +303,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5933,
+                    "id": 7598,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "125:4:21",
+                    "src": "125:4:26",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -316,28 +316,28 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "118:12:21"
+              "src": "118:12:26"
             },
-            "scope": 5937,
-            "src": "63:68:21",
+            "scope": 7602,
+            "src": "63:68:26",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5938,
-        "src": "25:109:21"
+        "scope": 7603,
+        "src": "25:109:26"
       }
     ],
-    "src": "0:135:21"
+    "src": "0:135:26"
   },
   "compiler": {
     "name": "solc",
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.0",
-  "updatedAt": "2021-01-04T09:54:30.640Z",
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2021-04-29T16:22:59.801Z",
   "devdoc": {
     "methods": {}
   },
