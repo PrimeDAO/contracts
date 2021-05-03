@@ -30,16 +30,9 @@ to install node modules
 npm i
 ```
 
-run
-```
-truffle develop
-```
-
-and then
-
 to compile run
 ```
-compile
+npm run compile
 ```
 
 to test
