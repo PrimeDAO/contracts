@@ -130,6 +130,7 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
 
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp.add(duration);
+        totalRewards = totalRewards.add(reward);
         emit RewardAdded(reward);
     }
 
