@@ -135,7 +135,6 @@ contract('Seed', (accounts) => {
                     await fundingToken.approve(setup.seed.address, buyAmount, {from:buyer1});
                 });
                 it('it buys tokens ', async () => {
-                    // buyer1TimeLock = await time.latest();
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'LockAdded');
