@@ -98,7 +98,7 @@ contract Seed {
 
     struct Lock {
         uint256 startTime;
-        uint256 amount;
+        uint256 seedAmount;
         uint16  daysClaimed;
         uint256 totalClaimed;
         uint256 fundingAmount;
@@ -155,20 +155,44 @@ contract Seed {
 
     /**
       * @dev                     Buy seed tokens.
-      * @param _amount           The amount of tokens to buy.
+      * @param _seedAmount       The amount of seed tokens to buy.
     */
-    function buy(uint256 _amount) public protected checked {
-        require((fundingToken.balanceOf(address(this)).add(_amount)) <= cap, "Seed: amount exceeds contract sale cap");
-        require(fundingToken.transferFrom(msg.sender, address(this), _amount), "Seed: no tokens");
+    function buy(uint256 _seedAmount) public protected checked {
+        //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
+        uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
+        //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
+        uint256 alreadyLockedSeedTokens = (fundingToken.balanceOf(address(this)).mul(PCT_BASE)).div(price);
+        //  feeAmount is an amount of fee we are going to get in seedTokens
+        uint feeAmount = (_seedAmount.mul(uint(PPM))).mul(fee).div(PPM100);
+        //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
+        uint lockedSeedFee = (alreadyLockedSeedTokens.mul(uint(PPM))).mul(fee).div(PPM100);
+
+        // We are that overall supply of fundingToken that will be in the end of this function execution
+        // will be less then maximum cap
+        // balanceToBe = currentBalance + amountOfFundTokenToExchange + amountOfFundTokenToPayForFee
+        require( (fundingToken.balanceOf(address(this)).
+                  add(fundingAmount).
+                  add((feeAmount.mul(price)).div(PCT_BASE))) <= cap,
+            "Seed: amount exceeds contract sale cap");
+
+        // We are calculating that we are not exceeding balance of seedTokens in this contract
+        // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
+        require( seedToken.balanceOf(address(this)) >= (alreadyLockedSeedTokens.
+                                                        add(_seedAmount).
+                                                        add(feeAmount)),
+            "Seed: seed distribution exceeded");
+
+        // Here we are sending amount of tokens to pay for lock and fee
+        // FundingTokensSent = fundingAmount + fundingFee
+        require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount.
+            add(feeAmount.mul(price).div(PCT_BASE))), "Seed: no tokens");
 
         if (fundingToken.balanceOf(address(this)) >= successMinimum) {
             minimumReached = true;
         }
 
-        uint feeAmount = (_amount.mul(uint(PPM))).mul(fee).div(PPM100);
-
-        uint _lockTokens = tokenLocks[msg.sender].amount;
-        _addLock(msg.sender, (_lockTokens.add((_amount).mul(price).div(PCT_BASE))), _amount, feeAmount);
+        uint _lockTokens = tokenLocks[msg.sender].seedAmount;
+        _addLock(msg.sender, _seedAmount, (_lockTokens.add(fundingAmount)), feeAmount);
     }
 
     /**
@@ -196,11 +220,12 @@ contract Seed {
     function buyBack() public protected checked beforeMinimumReached {
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint amount = tokenLock.fundingAmount;
-        tokenLock.amount = 0;
+        tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
+        uint feeAmount = (amount.mul(uint(PPM))).mul(fee).div(PPM100);
         require(
-            fundingToken.transfer(msg.sender, amount),
+            fundingToken.transfer(msg.sender, (amount.add(feeAmount))),
             "Seed: cannot return funding tokens to msg.sender"
         );
         emit FundingReclaimed(msg.sender, amount);
@@ -302,8 +327,8 @@ contract Seed {
         return tokenLocks[_locker].startTime;
     }
 
-    function getAmount(address _locker) public view returns(uint256) {
-        return tokenLocks[_locker].amount;
+    function getSeedAmount(address _locker) public view returns(uint256) {
+        return tokenLocks[_locker].seedAmount;
     }
 
     function getDaysClaimed(address _locker) public view returns(uint16) {
@@ -325,26 +350,26 @@ contract Seed {
 
     function _addLock(
         address _recipient,
-        uint256 _amount,
+        uint256 _seedAmount,
         uint256 _fundingAmount,
         uint256 _fee
     )
     internal
     {
 
-        uint256 amountVestedPerDay = _amount.div(vestingDuration);
+        uint256 amountVestedPerDay = _seedAmount.div(vestingDuration);
         require(amountVestedPerDay > 0, "Seed: amountVestedPerDay > 0");
 
         Lock memory lock = Lock({
             startTime: _currentTime(),
-            amount: _amount,
+            seedAmount: _seedAmount,
             daysClaimed: 0,
             totalClaimed: 0,
             fundingAmount: _fundingAmount,
             fee: _fee
             });
         tokenLocks[_recipient] = lock;
-        emit LockAdded(_recipient, _amount);
+        emit LockAdded(_recipient, _seedAmount);
         totalLockCount++;
     }
 
@@ -361,11 +386,11 @@ contract Seed {
 
         // If over vesting duration, all tokens vested
         if (elapsedDays >= vestingDuration) {
-            uint256 remainingGrant = tokenLock.amount.sub(tokenLock.totalClaimed);
+            uint256 remainingGrant = tokenLock.seedAmount.sub(tokenLock.totalClaimed);
             return (vestingDuration, remainingGrant);
         } else {
             uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
-            uint256 amountVestedPerDay = tokenLock.amount.div(uint256(vestingDuration));
+            uint256 amountVestedPerDay = tokenLock.seedAmount.div(uint256(vestingDuration));
             uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
             return (daysVested, amountVested);
         }
