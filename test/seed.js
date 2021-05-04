@@ -168,7 +168,7 @@ contract('Seed', (accounts) => {
                 });
             });
         });
-        context('# buyBack', () => {
+        context('# retrieveFundingTokens', () => {
             context('» generics', () => {
                 before('!! deploy new contract + top up buyer balance', async () => {
                     setup.data.seed = await Seed.new();
@@ -194,7 +194,7 @@ contract('Seed', (accounts) => {
                     await setup.data.seed.buy(toWei('900'), {from:buyer2});
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal('0');
 
-                    let tx = await setup.data.seed.buyBack({from:buyer2});
+                    let tx = await setup.data.seed.retrieveFundingTokens({from:buyer2});
                     setup.data.tx = tx;
 
                     expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'FundingReclaimed');
@@ -212,7 +212,7 @@ contract('Seed', (accounts) => {
                     await fundingToken.approve(setup.data.seed.address, toWei('10.2'), {from:buyer2});
                     await setup.data.seed.buy(toWei('1000'), {from:buyer2});
                     await expectRevert(
-                        setup.data.seed.buyBack({from:buyer2}),
+                        setup.data.seed.retrieveFundingTokens({from:buyer2}),
                         "Seed: minimum already met"
                     );
                 });
