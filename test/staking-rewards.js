@@ -440,9 +440,14 @@ contract('StakingRewards', (accounts) => {
                 rewardAmount = toWei('100');
             });
             context('» periodFinish is 0 on deployment', async () => {
+                /*  Note:-
+                    Commenting this because, to test periodFinish == 0, the contract does not needs to be initialised.
+                    The function stakingRewards.initialise sets the periodFinish to a block.timestamp + (_durationDays * 24 hours )
+
                 before('!! initialize contract', async () => {
                     await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
                 });
+                */
                 it('returns 0', async () => {
                     let periodFinish = (await setup.incentives.stakingRewards.periodFinish()).toString();
                     let lastTimeRewardApplicable = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toString();
