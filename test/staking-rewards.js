@@ -440,14 +440,6 @@ contract('StakingRewards', (accounts) => {
                 rewardAmount = toWei('100');
             });
             context('» periodFinish is 0 on deployment', async () => {
-                /*  Note:-
-                    Commenting this because, to test periodFinish == 0, the contract does not needs to be initialised.
-                    The function stakingRewards.initialise sets the periodFinish to a block.timestamp + (_durationDays * 24 hours )
-
-                before('!! initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
-                });
-                */
                 it('returns 0', async () => {
                     let periodFinish = (await setup.incentives.stakingRewards.periodFinish()).toString();
                     let lastTimeRewardApplicable = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toString();
@@ -456,10 +448,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» periodFinish == notifyRewardAmount + 1 week', async () => {
                 before('!! notify reward amount', async () => {
-                    // The contract needs to be initialised 
                     await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
-                    // end of contract initialisation.
-
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
                     await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
