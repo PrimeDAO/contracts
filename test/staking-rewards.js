@@ -456,6 +456,10 @@ contract('StakingRewards', (accounts) => {
             });
             context('» periodFinish == notifyRewardAmount + 1 week', async () => {
                 before('!! notify reward amount', async () => {
+                    // The contract needs to be initialised 
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
+                    // end of contract initialisation.
+
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
                     await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
