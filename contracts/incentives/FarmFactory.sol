@@ -169,7 +169,6 @@ contract FarmFactory is CloneFactory {
 	{
 		bool success;
 		address _rewardToken = _farm.rewardToken();
-		uint oldBalance = IERC20(_rewardToken).balanceOf(address(_farm));
 
 		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
 			ERROR_INCREASE_REWARD);

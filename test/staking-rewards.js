@@ -440,9 +440,6 @@ contract('StakingRewards', (accounts) => {
                 rewardAmount = toWei('100');
             });
             context('» periodFinish is 0 on deployment', async () => {
-                before('!! initialize contract', async () => {
-                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
-                });
                 it('returns 0', async () => {
                     let periodFinish = (await setup.incentives.stakingRewards.periodFinish()).toString();
                     let lastTimeRewardApplicable = (await setup.incentives.stakingRewards.lastTimeRewardApplicable()).toString();
@@ -451,6 +448,7 @@ contract('StakingRewards', (accounts) => {
             });
             context('» periodFinish == notifyRewardAmount + 1 week', async () => {
                 before('!! notify reward amount', async () => {
+                    await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
                     await setup.balancer.pool.approve(setup.incentives.stakingRewards.address, stakeAmount, { from: accounts[1] });
                     await setup.tokens.primeToken.approve(accounts[1], rewardAmount);
                     await setup.tokens.primeToken.transfer(setup.organization.avatar.address, _initreward);
