@@ -217,7 +217,8 @@ contract Seed {
     /**
       * @dev         Returns funding tokens to user.
     */
-    function retrieveFundingTokens() public protected beforeMinimumReached {
+    function retrieveFundingTokens() public beforeMinimumReached {
+        require(paused != true, "Seed: should not be paused");
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint amount = tokenLock.fundingAmount;
@@ -256,10 +257,12 @@ contract Seed {
     */
     function close() public onlyAdmin protected {
         // transfer all the tokens back to admin
+        /*
         require(
             fundingToken.transfer(admin, fundingToken.balanceOf(address(this))),
             "Seed: should transfer funding tokens to admin"
         );
+        */
         require(
             seedToken.transfer(admin, seedToken.balanceOf(address(this))),
             "Seed: should transfer seed tokens to admin"
