@@ -6,12 +6,12 @@
         {
           "crpPool": "0x0BdAF6D38150B0Aed813634b1a1239E690e506f2",
           "bPool": "0xBd0a53833f6646CF3A5d94EE3711BF8b387F33A5",
-          "farm": "0x6d598a2345AB00782010BA07A201e7aba8a9d1E7"
+          "farm": "0x6a494Ebd44B87FfFa6b85ecBc7A9c3104E4fD453"
         }
       ],
       "mainnet": [
         {
-          "pool": "0x",
+          "crpPool": "0x51A2310B37ead1D8F8Fe01B89b4Cd68FA58992d0",
           "farm": "0x"
         }
       ]
@@ -24,12 +24,12 @@
         {
           "crpPool": "0xd716d8298fc38Ba19E8F5b7c3d4Ad76448A9cB38",
           "bPool": "0xc9c53Bae33a53098FD76cEa0Ec8e0Fbf17394ef9",
-          "farm": "0x04f219CeE7F1F9037ba2d64EeDDf6646749B7f31"
+          "farm": "0x33e5ff73D933B7ff425d37CC3c01e7074C7fB256"
         }
       ],
       "mainnet": [
         {
-          "pool": "0x",
+          "crpPool": "0x10af9c5fd15b510c8586bf163249c5a8a78d8263",
           "farm": "0x"
         }
       ]
