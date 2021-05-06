@@ -235,10 +235,8 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
-                    // Also changed the below staatement, so that on buy() the limit does not exceeds
                     await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:buyer2});
-                    // the buyer buys seed token here, to test retrieveFundingTokens()
                     await setup.data.seed.buy(toWei('900'), {from:buyer2});
                 });
                 it('can only be called by admin', async () => {
@@ -252,13 +250,10 @@ contract('Seed', (accounts) => {
                     await setup.data.seed.close({from:admin});
                     expect((await seedToken.balanceOf(admin)).toString()).to.equal(stBalance.toString());
                 });
-                // Added two test.
-                // Checks if the funding tokens are still in the contract
                 it('donot transfer funding tokens to the admin', async () => {
                     let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
                     expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(ftBalance.toString());
                 });
-                // Checks if the buyer can retrieve token back even the contract is closed
                 it('returns funding tokens to buyer', async () => {
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal('0');
 

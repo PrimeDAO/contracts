@@ -256,13 +256,7 @@ contract Seed {
       * @dev                     Close distribution.
     */
     function close() public onlyAdmin protected {
-        // transfer all the tokens back to admin
-        /*
-        require(
-            fundingToken.transfer(admin, fundingToken.balanceOf(address(this))),
-            "Seed: should transfer funding tokens to admin"
-        );
-        */
+        // transfer seed tokens back to admin
         require(
             seedToken.transfer(admin, seedToken.balanceOf(address(this))),
             "Seed: should transfer seed tokens to admin"
