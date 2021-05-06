@@ -218,9 +218,9 @@ contract Seed {
       * @dev         Returns funding tokens to user.
     */
     function retrieveFundingTokens() public protected beforeMinimumReached {
+        require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint amount = tokenLock.fundingAmount;
-        require(amount > 0, "Seed: zero funding amount");
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
