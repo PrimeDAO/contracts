@@ -235,8 +235,9 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
-                    await fundingToken.transfer(buyer2, smallBuyAmount, {from:setup.root});
-                    await fundingToken.approve(setup.data.seed.address, smallBuyAmount, {from:buyer2});
+                    await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:buyer2});
+                    await setup.data.seed.buy(toWei('900'), {from:buyer2});
                 });
                 it('can only be called by admin', async () => {
                     await expectRevert(
@@ -244,12 +245,24 @@ contract('Seed', (accounts) => {
                         "Seed: caller should be admin"
                     );
                 });
-                it('transfers all tokens to the admin', async () => {
-                    let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
+                it('transfers seed tokens to the admin', async () => {
                     let stBalance = await seedToken.balanceOf(setup.data.seed.address);
                     await setup.data.seed.close({from:admin});
-                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal(ftBalance.toString());
                     expect((await seedToken.balanceOf(admin)).toString()).to.equal(stBalance.toString());
+                });
+                it('donot transfer funding tokens to the admin', async () => {
+                    let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
+                    expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(ftBalance.toString());
+                });
+                it('returns funding tokens to buyer', async () => {
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal('0');
+
+                    let tx = await setup.data.seed.retrieveFundingTokens({from:buyer2});
+                    setup.data.tx = tx;
+
+                    expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'FundingReclaimed');
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to
+                        .equal(((new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10))).toString());
                 });
             });
         });
