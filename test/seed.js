@@ -296,6 +296,11 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal(amountMinusFee.toString());
                 });
             });
+            context('» getStartTime', () => {
+                it('returns correct startTime', async () => {
+                    expect((await setup.seed.getStartTime()).toString()).to.equal(startTime.toString());
+                })
+            })
         });
         context('# admin functions', () => {
             context('» update metadata', () => {
