@@ -190,8 +190,20 @@ contract Seed {
             minimumReached = true;
         }
 
-        uint _lockTokens = tokenLocks[msg.sender].seedAmount;
-        _addLock(msg.sender, _seedAmount, (_lockTokens.add(fundingAmount)), feeAmount);
+        uint _prevSeedAmount = tokenLocks[msg.sender].seedAmount;
+        uint _prevFundingAmount = tokenLocks[msg.sender].fundingAmount;
+        uint16 _prevDaysClaimed = tokenLocks[msg.sender].daysClaimed;
+        uint _prevTotalClaimed = tokenLocks[msg.sender].totalClaimed;
+        uint _prevFee = tokenLocks[msg.sender].fee;
+
+        _addLock(
+            msg.sender,
+            (_prevSeedAmount.add(_seedAmount)),
+            (_prevFundingAmount.add(fundingAmount)),
+            _prevDaysClaimed,
+            _prevTotalClaimed,
+            (_prevFee.add(feeAmount))
+            );
     }
 
     /**
@@ -349,6 +361,8 @@ contract Seed {
         address _recipient,
         uint256 _seedAmount,
         uint256 _fundingAmount,
+        uint16 _daysClaimed,
+        uint256 _totalClaimed,
         uint256 _fee
     )
     internal
@@ -359,8 +373,8 @@ contract Seed {
 
         Lock memory lock = Lock({
             seedAmount: _seedAmount,
-            daysClaimed: 0,
-            totalClaimed: 0,
+            daysClaimed: _daysClaimed,
+            totalClaimed: _totalClaimed,
             fundingAmount: _fundingAmount,
             fee: _fee
             });
