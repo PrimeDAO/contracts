@@ -33,7 +33,7 @@ contract Seed {
     uint    public successMinimum;
     uint    public cap;
     uint    public price;
-    uint    public startTime;   // change required - done
+    uint    public startTime;
     uint    public endTime;
     bool    public isWhitelisted;
     uint16  public vestingDuration;
@@ -96,7 +96,7 @@ contract Seed {
         _;
     }
 
-    struct Lock {  // change required - Not required as startTime already a global variable - done
+    struct Lock { 
         uint256 seedAmount;
         uint16  daysClaimed;
         uint256 totalClaimed;
@@ -140,7 +140,7 @@ contract Seed {
         successMinimum  = _successMinimumAndCap[0];
         cap             = _successMinimumAndCap[1];
         price           = _price;
-        startTime       = _startTime;   // change required - no change, it sets global startTime - done
+        startTime       = _startTime;
         endTime         = _endTime;
         vestingDuration = _vestingDuration;
         vestingCliff    = _vestingCliff;
@@ -320,8 +320,8 @@ contract Seed {
         return whitelisted[_buyer];
     }
 
-    function getStartTime() public view returns(uint256) {   // as startTime is global and not depends on _locker - done
-        return startTime;   // change required - should return global startTime - done
+    function getStartTime() public view returns(uint256) {
+        return startTime;  
     }
 
     function getSeedAmount(address _locker) public view returns(uint256) {
@@ -357,7 +357,7 @@ contract Seed {
         uint256 amountVestedPerDay = _seedAmount.div(vestingDuration);
         require(amountVestedPerDay > 0, "Seed: amountVestedPerDay > 0");
 
-        Lock memory lock = Lock({  // change required - startTime will be removed from Lock struct - done
+        Lock memory lock = Lock({
             seedAmount: _seedAmount,
             daysClaimed: 0,
             totalClaimed: 0,
@@ -373,7 +373,7 @@ contract Seed {
         Lock storage tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
-        uint elapsedTime = _currentTime().sub(startTime); // change required - use global startTime var - done
+        uint elapsedTime = _currentTime().sub(startTime);
         uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
 
         if (elapsedDays < vestingCliff) {
