@@ -96,8 +96,7 @@ contract Seed {
         _;
     }
 
-    struct Lock {
-        uint256 startTime;
+    struct Lock { 
         uint256 seedAmount;
         uint16  daysClaimed;
         uint256 totalClaimed;
@@ -321,8 +320,8 @@ contract Seed {
         return whitelisted[_buyer];
     }
 
-    function getStartTime(address _locker) public view returns(uint256) {
-        return tokenLocks[_locker].startTime;
+    function getStartTime() public view returns(uint256) {
+        return startTime;  
     }
 
     function getSeedAmount(address _locker) public view returns(uint256) {
@@ -359,7 +358,6 @@ contract Seed {
         require(amountVestedPerDay > 0, "Seed: amountVestedPerDay > 0");
 
         Lock memory lock = Lock({
-            startTime: _currentTime(),
             seedAmount: _seedAmount,
             daysClaimed: 0,
             totalClaimed: 0,
@@ -375,7 +373,7 @@ contract Seed {
         Lock storage tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
-        uint elapsedTime = _currentTime().sub(tokenLock.startTime);
+        uint elapsedTime = _currentTime().sub(startTime);
         uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
 
         if (elapsedDays < vestingCliff) {
