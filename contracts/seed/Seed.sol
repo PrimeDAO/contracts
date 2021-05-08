@@ -192,6 +192,7 @@ contract Seed {
             msg.sender,
             (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
             (tokenLocks[msg.sender].fundingAmount.add(fundingAmount)),  // Previous Funding Amount + new funding amount
+            tokenLocks[msg.sender].daysClaimed,
             tokenLocks[msg.sender].totalClaimed,
             (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
             );
