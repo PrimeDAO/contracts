@@ -166,9 +166,7 @@ contract Seed {
         //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
         uint lockedSeedFee = (alreadyLockedSeedTokens.mul(uint(PPM))).mul(fee).div(PPM100);
 
-        // We are that overall supply of fundingToken that will be in the end of this function execution
-        // will be less then maximum hardCap
-        // balanceToBe = currentBalance + amountOfFundTokenToExchange + amountOfFundTokenToPayForFee
+        // total fundingAmount should not be greater than the hardCap
         require( (fundingToken.balanceOf(address(this)).
                   add(fundingAmount).
                   add((feeAmount.mul(price)).div(PCT_BASE))) <= hardCap,
@@ -190,8 +188,14 @@ contract Seed {
             minimumReached = true;
         }
 
-        uint _lockTokens = tokenLocks[msg.sender].seedAmount;
-        _addLock(msg.sender, _seedAmount, (_lockTokens.add(fundingAmount)), feeAmount);
+        _addLock(
+            msg.sender,
+            (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
+            (tokenLocks[msg.sender].fundingAmount.add(fundingAmount)),  // Previous Funding Amount + new funding amount
+            tokenLocks[msg.sender].daysClaimed,
+            tokenLocks[msg.sender].totalClaimed,
+            (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
+            );
     }
 
     /**
@@ -349,6 +353,8 @@ contract Seed {
         address _recipient,
         uint256 _seedAmount,
         uint256 _fundingAmount,
+        uint16 _daysClaimed,
+        uint256 _totalClaimed,
         uint256 _fee
     )
     internal
@@ -359,8 +365,8 @@ contract Seed {
 
         Lock memory lock = Lock({
             seedAmount: _seedAmount,
-            daysClaimed: 0,
-            totalClaimed: 0,
+            daysClaimed: _daysClaimed,
+            totalClaimed: _totalClaimed,
             fundingAmount: _fundingAmount,
             fee: _fee
             });
