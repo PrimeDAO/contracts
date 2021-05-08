@@ -79,7 +79,7 @@ contract SeedFactory is CloneFactory {
       * @param _tokens                Array containing two params:
                                         - The address of the token being distributed.
       *                                 - The address of the token being exchanged for seed token.
-      * @param _successMinimumAndCap  Array containing two params:
+      * @param softAndHardCap  Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
@@ -93,7 +93,7 @@ contract SeedFactory is CloneFactory {
     function deploySeed(
         address          _admin,
         address[] memory _tokens,
-        uint[]    memory _successMinimumAndCap,
+        uint[]    memory softAndHardCap,
         uint  	         _price,
         uint 	         _startTime,
         uint 	         _endTime,
@@ -117,7 +117,7 @@ contract SeedFactory is CloneFactory {
             msg.sender,
             _admin,
             _tokens,
-            _successMinimumAndCap,
+            softAndHardCap,
             _price,
             _startTime,
             _endTime,
@@ -129,7 +129,7 @@ contract SeedFactory is CloneFactory {
 
         // fund
         require(
-            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
+            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), softAndHardCap[1]),
             "SeedFactory: cannot transfer seed tokens"
         );
 

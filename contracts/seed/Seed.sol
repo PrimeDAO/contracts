@@ -111,7 +111,7 @@ contract Seed {
       * @param _tokens                Array containing two params:
                                         - The address of the token being distributed.
       *                                 - The address of the token being exchanged for seed token.
-      * @param _successMinimumAndCap  Array containing two params:
+      * @param softAndHardCap         Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
@@ -126,7 +126,7 @@ contract Seed {
         address _beneficiary,
         address _admin,
         address[] memory _tokens,
-        uint[] memory    _successMinimumAndCap,
+        uint[] memory    softAndHardCap,
         uint    _price,
         uint    _startTime,
         uint    _endTime,
@@ -137,8 +137,8 @@ contract Seed {
     ) public initializer {
         beneficiary     = _beneficiary;
         admin           = _admin;
-        softCap         = _successMinimumAndCap[0];
-        hardCap         = _successMinimumAndCap[1];
+        softCap         = softAndHardCap[0];
+        hardCap         = softAndHardCap[1];
         price           = _price;
         startTime       = _startTime;
         endTime         = _endTime;
