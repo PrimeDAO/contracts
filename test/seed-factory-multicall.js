@@ -4,6 +4,7 @@
 const { expect } = require('chai');
 const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
+const { BN } = require('@openzeppelin/test-helpers/src/setup');
 const SeedFactory = artifacts.require('SeedFactory');
 const Seed = artifacts.require('Seed');
 const { toWei } = web3.utils;
@@ -50,6 +51,7 @@ contract('SeedFactory', (accounts) => {
     let seedFactory;
     let newSeed;
     let metadata;
+    const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -75,9 +77,11 @@ contract('SeedFactory', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
+                const reqSeedAmount = ((new BN(softCap)).div(new BN(price)).mul(pct_base));
+
                 // top up admins token balance
-                await seedToken.transfer(admin, softCap, {from:setup.root});
-                await seedToken.approve(seedFactory.address, softCap, {from:admin});
+                await seedToken.transfer(admin, reqSeedAmount, {from:setup.root});
+                await seedToken.approve(seedFactory.address, reqSeedAmount, {from:admin});
 
                 const calldata = helpers.encodeDeploySeed(
                     admin,

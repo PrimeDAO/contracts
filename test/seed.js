@@ -52,7 +52,7 @@ contract('Seed', (accounts) => {
     let fee;
     let seed;
     let metadata;
-    const pct_base = new BN('1000000000000000000'); // 10**18;
+    const pct_base = new BN('1000000000000000000'); // 10**18
     const timesTwo = 2;
     const timesTwoBN = new BN(2,10);
 
