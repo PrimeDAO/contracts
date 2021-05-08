@@ -166,9 +166,7 @@ contract Seed {
         //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
         uint lockedSeedFee = (alreadyLockedSeedTokens.mul(uint(PPM))).mul(fee).div(PPM100);
 
-        // We are that overall supply of fundingToken that will be in the end of this function execution
-        // will be less then maximum cap
-        // balanceToBe = currentBalance + amountOfFundTokenToExchange + amountOfFundTokenToPayForFee
+        // total fundingAmount should not be greater than the hardCap
         require( (fundingToken.balanceOf(address(this)).
                   add(fundingAmount).
                   add((feeAmount.mul(price)).div(PCT_BASE))) <= cap,
@@ -190,19 +188,12 @@ contract Seed {
             minimumReached = true;
         }
 
-        uint _prevSeedAmount = tokenLocks[msg.sender].seedAmount;
-        uint _prevFundingAmount = tokenLocks[msg.sender].fundingAmount;
-        uint16 _prevDaysClaimed = tokenLocks[msg.sender].daysClaimed;
-        uint _prevTotalClaimed = tokenLocks[msg.sender].totalClaimed;
-        uint _prevFee = tokenLocks[msg.sender].fee;
-
         _addLock(
             msg.sender,
-            (_prevSeedAmount.add(_seedAmount)),
-            (_prevFundingAmount.add(fundingAmount)),
-            _prevDaysClaimed,
-            _prevTotalClaimed,
-            (_prevFee.add(feeAmount))
+            (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
+            (tokenLocks[msg.sender].fundingAmount.add(fundingAmount)),  // Previous Funding Amount + new funding amount
+            tokenLocks[msg.sender].totalClaimed,
+            (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
             );
     }
 
