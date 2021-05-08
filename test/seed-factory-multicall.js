@@ -38,7 +38,7 @@ contract('SeedFactory', (accounts) => {
     let admin;
     let seedToken;
     let fundingToken;
-    let cap;
+    let hardCap;
     let price;
     let startTime;
     let endTime;
@@ -46,7 +46,7 @@ contract('SeedFactory', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
-    let successMinimum;
+    let softCap;
     let seedFactory;
     let newSeed;
     let metadata;
@@ -57,9 +57,9 @@ contract('SeedFactory', (accounts) => {
             admin = accounts[1];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            cap = toWei('100');
+            hardCap = toWei('100');
             price = toWei('0.01');
-            successMinimum = toWei('100');
+            softCap = toWei('100');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -76,13 +76,13 @@ contract('SeedFactory', (accounts) => {
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
                 // top up admins token balance
-                await seedToken.transfer(admin, successMinimum, {from:setup.root});
-                await seedToken.approve(seedFactory.address, successMinimum, {from:admin});
+                await seedToken.transfer(admin, softCap, {from:setup.root});
+                await seedToken.approve(seedFactory.address, softCap, {from:admin});
 
                 const calldata = helpers.encodeDeploySeed(
                     admin,
                     [seedToken.address, fundingToken.address],
-                    [successMinimum,cap],
+                    [softCap,hardCap],
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),

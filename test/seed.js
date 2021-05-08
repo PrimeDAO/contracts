@@ -39,8 +39,8 @@ contract('Seed', (accounts) => {
     let buyer2;
     let seedToken;
     let fundingToken;
-    let successMinimum;
-    let cap;
+    let softCap;
+    let hardCap;
     let price;
     let buyAmount;
     let smallBuyAmount;
@@ -62,8 +62,8 @@ contract('Seed', (accounts) => {
             buyer2 = accounts[3];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            successMinimum = toWei('10');
-            cap = toWei('102');
+            softCap = toWei('10');
+            hardCap = toWei('102');
             price = toWei('0.01');
             buyAmount = toWei('5000');
             smallBuyAmount = toWei('918');
@@ -79,13 +79,13 @@ contract('Seed', (accounts) => {
             context('» parameters are valid', () => {
                 it('it initializes seed', async () => {
                     // emulate creation & initialization via seedfactory & fund with seedTokens
-                    await seedToken.transfer(setup.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await seedToken.transfer(setup.seed.address, (new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
 
                     await setup.seed.initialize(
                         setup.organization.avatar.address,
                         admin,
                         [seedToken.address, fundingToken.address],
-                        [successMinimum,cap],
+                        [softCap,hardCap],
                         price,
                         startTime,
                         endTime,
@@ -100,13 +100,13 @@ contract('Seed', (accounts) => {
                     expect(await setup.seed.admin()).to.equal(admin);
                     expect(await setup.seed.seedToken()).to.equal(seedToken.address);
                     expect(await setup.seed.fundingToken()).to.equal(fundingToken.address);
-                    expect((await setup.seed.successMinimum()).toString()).to.equal(successMinimum);
+                    expect((await setup.seed.softCap()).toString()).to.equal(softCap);
                     expect((await setup.seed.price()).toString()).to.equal(price);
                     expect(await setup.seed.isWhitelisted()).to.equal(isWhitelisted);
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect(await setup.seed.closed()).to.equal(false);
                     expect((await seedToken.balanceOf(setup.seed.address)).toString()).to
-                        .equal(((new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10))).toString());
+                        .equal(((new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10))).toString());
                 });
                 it('it reverts on double initialization', async () => {
                     await expectRevert(
@@ -114,7 +114,7 @@ contract('Seed', (accounts) => {
                             setup.organization.avatar.address,
                             admin,
                             [seedToken.address, fundingToken.address],
-                            [successMinimum,cap],
+                            [softCap,hardCap],
                             price,
                             startTime,
                             endTime,
@@ -176,7 +176,7 @@ contract('Seed', (accounts) => {
                         setup.organization.avatar.address,
                         admin,
                         [seedToken.address, fundingToken.address],
-                        [successMinimum,cap],
+                        [softCap,hardCap],
                         price,
                         startTime,
                         endTime,
@@ -186,7 +186,7 @@ contract('Seed', (accounts) => {
                         fee
                     );
 
-                    await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await seedToken.transfer(setup.data.seed.address, (new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.transfer(buyer2, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:buyer2});
                 });
@@ -226,7 +226,7 @@ contract('Seed', (accounts) => {
                         setup.organization.avatar.address,
                         admin,
                         [seedToken.address, fundingToken.address],
-                        [successMinimum,cap],
+                        [softCap,hardCap],
                         price,
                         startTime,
                         endTime,
@@ -235,7 +235,7 @@ contract('Seed', (accounts) => {
                         isWhitelisted,
                         fee
                     );
-                    await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await seedToken.transfer(setup.data.seed.address, (new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, (new BN(smallBuyAmount,10)).mul(new BN(price,10)).div(new BN(pct_base,10)), {from:buyer2});
                     await setup.data.seed.buy(toWei('900'), {from:buyer2});
                 });
@@ -355,7 +355,7 @@ contract('Seed', (accounts) => {
                         setup.organization.avatar.address,
                         admin,
                         [seedToken.address, fundingToken.address],
-                        [successMinimum,cap],
+                        [softCap,hardCap],
                         price,
                         startTime,
                         endTime,
@@ -365,7 +365,7 @@ contract('Seed', (accounts) => {
                         fee
                     );
 
-                    await seedToken.transfer(setup.data.seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await seedToken.transfer(setup.data.seed.address, (new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
                     await fundingToken.transfer(buyer2, buyAmount, {from:setup.root});
                     await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer2});
                 });
@@ -393,8 +393,8 @@ contract('Seed', (accounts) => {
             buyer1 = accounts[2];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            successMinimum = toWei('10');
-            cap = toWei('102');
+            softCap = toWei('10');
+            hardCap = toWei('102');
             price = toWei('0.01');
             buyAmount = toWei('5000');
             startTime  = await time.latest();
@@ -412,13 +412,13 @@ contract('Seed', (accounts) => {
                 it('initializes', async () => {
 
                     // emulate creation & initialization via seedfactory & fund with seedTokens
-                    await seedToken.transfer(seed.address, (new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
+                    await seedToken.transfer(seed.address, (new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)), {from:setup.root});
 
                     await seed.initialize(
                         setup.organization.avatar.address,
                         admin,
                         [seedToken.address, fundingToken.address],
-                        [successMinimum,cap],
+                        [softCap,hardCap],
                         price,
                         startTime,
                         endTime,
@@ -433,12 +433,12 @@ contract('Seed', (accounts) => {
                     expect(await seed.admin()).to.equal(admin);
                     expect(await seed.seedToken()).to.equal(seedToken.address);
                     expect(await seed.fundingToken()).to.equal(fundingToken.address);
-                    expect((await seed.successMinimum()).toString()).to.equal(successMinimum);
+                    expect((await seed.softCap()).toString()).to.equal(softCap);
                     expect((await seed.price()).toString()).to.equal(price);
                     expect(await seed.isWhitelisted()).to.equal(isWhitelisted);
                     expect((await seed.fee()).toString()).to.equal(fee.toString());
                     expect(await seed.closed()).to.equal(false);
-                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal((new BN(cap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)).toString());
+                    expect((await seedToken.balanceOf(seed.address)).toString()).to.equal((new BN(hardCap,10)).div(new BN(price,10)).mul(new BN(pct_base,10)).toString());
 
                 });
                 it('it reverts on double initialization', async () => {
@@ -447,7 +447,7 @@ contract('Seed', (accounts) => {
                             setup.organization.avatar.address,
                             admin,
                             [seedToken.address, fundingToken.address],
-                            [successMinimum,cap],
+                            [softCap,hardCap],
                             price,
                             startTime,
                             endTime,
@@ -492,16 +492,16 @@ contract('Seed', (accounts) => {
                 });
             });
         });
-        context('# cap', () => {
-            context('» check cap', () => {
-                it('cannot buy more than cap', async () => {
+        context('# hardCap', () => {
+            context('» check hardCap', () => {
+                it('cannot buy more than hardCap', async () => {
                     await fundingToken.transfer(buyer2, toWei('102'), {from:setup.root});
                     await fundingToken.approve(seed.address, toWei('102'), {from:buyer2});
                     await seed.whitelist(buyer2,{from:admin});
                     await seed.buy(toWei('9900'),{from:buyer2});
                     await expectRevert(
                         seed.buy(toWei('200'),{from:buyer2}),
-                        "Seed: amount exceeds contract sale cap"
+                        "Seed: amount exceeds contract sale hardCap"
                     );
                 });
             });

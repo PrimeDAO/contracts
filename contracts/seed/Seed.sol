@@ -30,8 +30,8 @@ contract Seed {
     // Locked parameters
     address public beneficiary;
     address public admin;
-    uint    public successMinimum;
-    uint    public cap;
+    uint    public softCap;
+    uint    public hardCap;
     uint    public price;
     uint    public startTime;
     uint    public endTime;
@@ -137,8 +137,8 @@ contract Seed {
     ) public initializer {
         beneficiary     = _beneficiary;
         admin           = _admin;
-        successMinimum  = _successMinimumAndCap[0];
-        cap             = _successMinimumAndCap[1];
+        softCap         = _successMinimumAndCap[0];
+        hardCap         = _successMinimumAndCap[1];
         price           = _price;
         startTime       = _startTime;
         endTime         = _endTime;
@@ -167,12 +167,12 @@ contract Seed {
         uint lockedSeedFee = (alreadyLockedSeedTokens.mul(uint(PPM))).mul(fee).div(PPM100);
 
         // We are that overall supply of fundingToken that will be in the end of this function execution
-        // will be less then maximum cap
+        // will be less then maximum hardCap
         // balanceToBe = currentBalance + amountOfFundTokenToExchange + amountOfFundTokenToPayForFee
         require( (fundingToken.balanceOf(address(this)).
                   add(fundingAmount).
-                  add((feeAmount.mul(price)).div(PCT_BASE))) <= cap,
-            "Seed: amount exceeds contract sale cap");
+                  add((feeAmount.mul(price)).div(PCT_BASE))) <= hardCap,
+            "Seed: amount exceeds contract sale hardCap");
 
         // We are calculating that we are not exceeding balance of seedTokens in this contract
         // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
@@ -186,7 +186,7 @@ contract Seed {
         require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount.
             add(feeAmount.mul(price).div(PCT_BASE))), "Seed: no tokens");
 
-        if (fundingToken.balanceOf(address(this)) >= successMinimum) {
+        if (fundingToken.balanceOf(address(this)) >= softCap) {
             minimumReached = true;
         }
 
