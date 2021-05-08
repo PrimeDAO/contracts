@@ -129,9 +129,11 @@ contract SeedFactory is CloneFactory {
             _fee
         );
 
+        uint reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
+
         // fund
         require(
-            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), (_softAndHardCap[1].div(_price)).mul(10**18)),
+            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
             "SeedFactory: cannot transfer seed tokens"
         );
 
