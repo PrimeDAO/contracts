@@ -52,7 +52,9 @@ contract('Seed', (accounts) => {
     let fee;
     let seed;
     let metadata;
-    const pct_base = new BN('1000000000000000000'); // 10**18
+    const pct_base = new BN('1000000000000000000'); // 10**18;
+    const timesTwo = 2;
+    const timesTwoBN = new BN(2,10);
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -144,6 +146,20 @@ contract('Seed', (accounts) => {
                 it('updates fee mapping for locker', async () => {
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal(toWei('100'));
                 });
+                it('updates lock when it buys tokens', async () => {
+                    let prevSeedAmount = await setup.seed.getSeedAmount(buyer1);
+                    let prevFeeAmount = await setup.seed.getFee(buyer1);
+
+                    let tx = await setup.seed.buy(buyAmount, {from:buyer1});
+                    setup.data.tx = tx;
+
+                    await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'LockAdded');
+                    expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to
+                        .equal((timesTwo*((buyAmount*price/pct_base) + (fee * (buyAmount*price/pct_base)/100))).toString());
+                        
+                    expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((prevSeedAmount.mul(timesTwoBN)).toString());
+                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal((prevFeeAmount.mul(timesTwoBN)).toString());
+                });
             });
         });
         context('# claimLock', () => {
@@ -164,7 +180,7 @@ contract('Seed', (accounts) => {
                 });
                 it('funds dao with fee', async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
-                        .equal(toWei('100'));
+                        .equal(toWei('200'));
                 });
             });
         });
@@ -275,7 +291,8 @@ contract('Seed', (accounts) => {
             });
             context('» getAmount', () => {
                 it('returns correct amount', async () => {
-                    expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((buyAmount).toString());
+                    expect((await setup.seed.getSeedAmount(buyer1)).toString()).to
+                        .equal(((new BN(buyAmount,10)).mul(timesTwoBN)).toString());
                 });
             });
             context('» getDaysClaimed', () => {
@@ -293,14 +310,14 @@ contract('Seed', (accounts) => {
                     let a = new BN(buyAmount);
                     let f = new BN(2);
                     let amountMinusFee = new BN(a.mul(f).div(new BN(100)));
-                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(amountMinusFee.toString());
+                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal((amountMinusFee.mul(timesTwoBN)).toString());
                 });
             });
             context('» getStartTime', () => {
                 it('returns correct startTime', async () => {
                     expect((await setup.seed.getStartTime()).toString()).to.equal(startTime.toString());
-                })
-            })
+                });
+            });
         });
         context('# admin functions', () => {
             context('» update metadata', () => {
