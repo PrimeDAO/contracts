@@ -30,8 +30,8 @@ contract Seed {
     // Locked parameters
     address public beneficiary;
     address public admin;
-    uint    public successMinimum;
-    uint    public cap;
+    uint    public softCap;
+    uint    public hardCap;
     uint    public price;
     uint    public startTime;
     uint    public endTime;
@@ -111,7 +111,7 @@ contract Seed {
       * @param _tokens                Array containing two params:
                                         - The address of the token being distributed.
       *                                 - The address of the token being exchanged for seed token.
-      * @param _successMinimumAndCap  Array containing two params:
+      * @param _softAndHardCap         Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
@@ -126,7 +126,7 @@ contract Seed {
         address _beneficiary,
         address _admin,
         address[] memory _tokens,
-        uint[] memory    _successMinimumAndCap,
+        uint[] memory    _softAndHardCap,
         uint    _price,
         uint    _startTime,
         uint    _endTime,
@@ -137,8 +137,8 @@ contract Seed {
     ) public initializer {
         beneficiary     = _beneficiary;
         admin           = _admin;
-        successMinimum  = _successMinimumAndCap[0];
-        cap             = _successMinimumAndCap[1];
+        softCap         = _softAndHardCap[0];
+        hardCap         = _softAndHardCap[1];
         price           = _price;
         startTime       = _startTime;
         endTime         = _endTime;
@@ -169,8 +169,8 @@ contract Seed {
         // total fundingAmount should not be greater than the hardCap
         require( (fundingToken.balanceOf(address(this)).
                   add(fundingAmount).
-                  add((feeAmount.mul(price)).div(PCT_BASE))) <= cap,
-            "Seed: amount exceeds contract sale cap");
+                  add((feeAmount.mul(price)).div(PCT_BASE))) <= hardCap,
+            "Seed: amount exceeds contract sale hardCap");
 
         // We are calculating that we are not exceeding balance of seedTokens in this contract
         // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
@@ -184,7 +184,7 @@ contract Seed {
         require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount.
             add(feeAmount.mul(price).div(PCT_BASE))), "Seed: no tokens");
 
-        if (fundingToken.balanceOf(address(this)) >= successMinimum) {
+        if (fundingToken.balanceOf(address(this)) >= softCap) {
             minimumReached = true;
         }
 

@@ -4,6 +4,7 @@
 const { expect } = require('chai');
 const { /*constants,*/ time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
+const { BN } = require('@openzeppelin/test-helpers/src/setup');
 const SeedFactory = artifacts.require('SeedFactory');
 const Seed = artifacts.require('Seed');
 const { toWei } = web3.utils;
@@ -39,7 +40,7 @@ contract('SeedFactory', (accounts) => {
     let admin;
     let seedToken;
     let fundingToken;
-    let cap;
+    let hardCap;
     let price;
     let startTime;
     let endTime;
@@ -47,10 +48,11 @@ contract('SeedFactory', (accounts) => {
     let vestingCliff;
     let isWhitelisted;
     let fee;
-    let successMinimum;
+    let softCap;
     let seedFactory;
     let newSeed;
     let metadata;
+    const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -58,9 +60,9 @@ contract('SeedFactory', (accounts) => {
             admin = accounts[1];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            cap = toWei('100');
+            hardCap = toWei('100');
             price = toWei('0.01');
-            successMinimum = toWei('100');
+            softCap = toWei('100');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
@@ -75,14 +77,16 @@ contract('SeedFactory', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
+                const reqSeedAmount = ((new BN(softCap)).div(new BN(price)).mul(pct_base));
+
                 // top up admins token balance
-                await seedToken.transfer(admin, successMinimum, {from:setup.root});
-                await seedToken.approve(seedFactory.address, successMinimum, {from:admin});
+                await seedToken.transfer(admin, reqSeedAmount, {from:setup.root});
+                await seedToken.approve(seedFactory.address, reqSeedAmount, {from:admin});
 
                 tx = await seedFactory.deploySeed(
                     admin,
                     [seedToken.address, fundingToken.address],
-                    [successMinimum,cap],
+                    [softCap,hardCap],
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),

@@ -16,6 +16,7 @@ pragma solidity 0.5.13;
 import "@daostack/arc/contracts/controller/Avatar.sol";
 import "@daostack/arc/contracts/controller/Controller.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./Seed.sol";
 import "../utils/CloneFactory.sol";
 
@@ -25,6 +26,7 @@ import "../utils/CloneFactory.sol";
  * @dev   Enable primeDAO governance to create new Seed contracts.
  */
 contract SeedFactory is CloneFactory {
+    using SafeMath for uint256;
 
     Avatar    public avatar;
     Seed      public parent;
@@ -79,7 +81,7 @@ contract SeedFactory is CloneFactory {
       * @param _tokens                Array containing two params:
                                         - The address of the token being distributed.
       *                                 - The address of the token being exchanged for seed token.
-      * @param _successMinimumAndCap  Array containing two params:
+      * @param _softAndHardCap  Array containing two params:
                                         - the minimum distribution threshold
                                         - the highest possible amount to be raised in wei.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
@@ -93,7 +95,7 @@ contract SeedFactory is CloneFactory {
     function deploySeed(
         address          _admin,
         address[] memory _tokens,
-        uint[]    memory _successMinimumAndCap,
+        uint[]    memory _softAndHardCap,
         uint  	         _price,
         uint 	         _startTime,
         uint 	         _endTime,
@@ -117,7 +119,7 @@ contract SeedFactory is CloneFactory {
             msg.sender,
             _admin,
             _tokens,
-            _successMinimumAndCap,
+            _softAndHardCap,
             _price,
             _startTime,
             _endTime,
@@ -127,9 +129,11 @@ contract SeedFactory is CloneFactory {
             _fee
         );
 
+        uint reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
+
         // fund
         require(
-            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _successMinimumAndCap[1]),
+            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
             "SeedFactory: cannot transfer seed tokens"
         );
 
