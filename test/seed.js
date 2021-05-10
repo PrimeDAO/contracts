@@ -188,7 +188,7 @@ contract('Seed', (accounts) => {
             context('» generics', () => {
                 before('!! deploy new contract + top up buyer balance', async () => {
                     let newStartTime  = await time.latest();
-                    let newEndTime = await startTime.add(await time.duration.days(7));
+                    let newEndTime = await newStartTime.add(await time.duration.days(7));
 
 
                     setup.data.seed = await Seed.new();
