@@ -187,6 +187,10 @@ contract('Seed', (accounts) => {
         context('# retrieveFundingTokens', () => {
             context('» generics', () => {
                 before('!! deploy new contract + top up buyer balance', async () => {
+                    let newStartTime  = await time.latest();
+                    let newEndTime = await startTime.add(await time.duration.days(7));
+
+
                     setup.data.seed = await Seed.new();
                     await setup.data.seed.initialize(
                         setup.organization.avatar.address,
@@ -194,8 +198,8 @@ contract('Seed', (accounts) => {
                         [seedToken.address, fundingToken.address],
                         [softCap,hardCap],
                         price,
-                        startTime,
-                        endTime,
+                        newStartTime,
+                        newEndTime,
                         vestingDuration,
                         vestingCliff,
                         isWhitelisted,
