@@ -91,8 +91,8 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
         // initial notifyRewardsAmount
         totalRewards = IERC20(_rewardToken).balanceOf(address(this));
         rewardRate = totalRewards.div(duration);
-        lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(duration);
+        lastUpdateTime = _starttime;
+        periodFinish = _starttime.add(duration);
         emit RewardAdded(totalRewards);
     }
 
