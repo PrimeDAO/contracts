@@ -10,7 +10,7 @@
 * ===========
 *
 * StakingRewards.sol originally published by Synthetix under MIT license.
-* Modified by PrimeDAO under GNU v3 lincense.
+* Modified by PrimeDAO under GNU General Public License v3.0.
 *
 */
 
