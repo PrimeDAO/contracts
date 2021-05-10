@@ -9,7 +9,7 @@
 
 * ===========
 *
-* RewardDistributionRecipient.sol originally published by Synthetix under MIT license.
+* RewardDistributionRecipient.sol was originally published by Synthetix under MIT license.
 * Modified by PrimeDAO under GNU General Public License v3.0.
 *
 */

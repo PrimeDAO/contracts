@@ -39,14 +39,14 @@
     "absolutePath": "@daostack/infra/contracts/votingMachines/ProposalExecuteInterface.sol",
     "exportedSymbols": {
       "ProposalExecuteInterface": [
-        13287
+        13444
       ]
     },
-    "id": 13288,
+    "id": 13445,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 13277,
+        "id": 13434,
         "literals": [
           "solidity",
           "0.5",
@@ -61,9 +61,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 13287,
+        "id": 13444,
         "linearizedBaseContracts": [
-          13287
+          13444
         ],
         "name": "ProposalExecuteInterface",
         "nodeType": "ContractDefinition",
@@ -71,22 +71,22 @@
           {
             "body": null,
             "documentation": null,
-            "id": 13286,
+            "id": 13443,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "executeProposal",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 13282,
+              "id": 13439,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 13279,
+                  "id": 13436,
                   "name": "_proposalId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13286,
+                  "scope": 13443,
                   "src": "91:19:38",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -95,7 +95,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 13278,
+                    "id": 13435,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "91:7:38",
@@ -109,10 +109,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 13281,
+                  "id": 13438,
                   "name": "_decision",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13286,
+                  "scope": 13443,
                   "src": "112:13:38",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -121,7 +121,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 13280,
+                    "id": 13437,
                     "name": "int",
                     "nodeType": "ElementaryTypeName",
                     "src": "112:3:38",
@@ -137,15 +137,15 @@
               "src": "90:36:38"
             },
             "returnParameters": {
-              "id": 13285,
+              "id": 13442,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 13284,
+                  "id": 13441,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13286,
+                  "scope": 13443,
                   "src": "144:4:38",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -154,7 +154,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 13283,
+                    "id": 13440,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "144:4:38",
@@ -169,14 +169,14 @@
               ],
               "src": "143:6:38"
             },
-            "scope": 13287,
+            "scope": 13444,
             "src": "66:84:38",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 13288,
+        "scope": 13445,
         "src": "25:127:38"
       }
     ],
@@ -186,14 +186,14 @@
     "absolutePath": "@daostack/infra/contracts/votingMachines/ProposalExecuteInterface.sol",
     "exportedSymbols": {
       "ProposalExecuteInterface": [
-        13287
+        13444
       ]
     },
-    "id": 13288,
+    "id": 13445,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 13277,
+        "id": 13434,
         "literals": [
           "solidity",
           "0.5",
@@ -208,9 +208,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 13287,
+        "id": 13444,
         "linearizedBaseContracts": [
-          13287
+          13444
         ],
         "name": "ProposalExecuteInterface",
         "nodeType": "ContractDefinition",
@@ -218,22 +218,22 @@
           {
             "body": null,
             "documentation": null,
-            "id": 13286,
+            "id": 13443,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "executeProposal",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 13282,
+              "id": 13439,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 13279,
+                  "id": 13436,
                   "name": "_proposalId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13286,
+                  "scope": 13443,
                   "src": "91:19:38",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -242,7 +242,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 13278,
+                    "id": 13435,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "91:7:38",
@@ -256,10 +256,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 13281,
+                  "id": 13438,
                   "name": "_decision",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13286,
+                  "scope": 13443,
                   "src": "112:13:38",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -268,7 +268,7 @@
                     "typeString": "int256"
                   },
                   "typeName": {
-                    "id": 13280,
+                    "id": 13437,
                     "name": "int",
                     "nodeType": "ElementaryTypeName",
                     "src": "112:3:38",
@@ -284,15 +284,15 @@
               "src": "90:36:38"
             },
             "returnParameters": {
-              "id": 13285,
+              "id": 13442,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 13284,
+                  "id": 13441,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 13286,
+                  "scope": 13443,
                   "src": "144:4:38",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -301,7 +301,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 13283,
+                    "id": 13440,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "144:4:38",
@@ -316,14 +316,14 @@
               ],
               "src": "143:6:38"
             },
-            "scope": 13287,
+            "scope": 13444,
             "src": "66:84:38",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 13288,
+        "scope": 13445,
         "src": "25:127:38"
       }
     ],
@@ -335,7 +335,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2021-04-29T16:22:59.894Z",
+  "updatedAt": "2021-05-10T11:00:12.843Z",
   "devdoc": {
     "methods": {}
   },
