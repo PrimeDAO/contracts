@@ -33,61 +33,61 @@ contract FarmFactory is CloneFactory {
 
 
     Avatar public avatar;
-    StakingRewards public parent;
+    StakingRewards public masterCopy;
     bool   public initialized;
 
     event FarmCreated(address indexed newFarm, address indexed pool);
-    event TokenRescued(address farm, address token, address to);
-    event RewardIncreased(address farm, uint amount);
+    event TokenRescued(address indexed farm, address indexed token, address indexed to);
+    event RewardIncreased(address indexed farm, uint indexed amount);
 
     modifier initializer() {
-        require(!initialized,                   "FarmFactory: contract already initialized");
+        require(!initialized, 					"FarmFactory: contract already initialized");
         initialized = true;
         _;
     }
 
     modifier protected() {
-        require(initialized,                    "FarmFactory: contract not initialized");
-        require(msg.sender == address(avatar),  "FarmFactory: protected operation");
+        require(initialized,					"FarmFactory: contract not initialized");
+        require(msg.sender == address(avatar),	"FarmFactory: protected operation");
         _;
     }
 
     /**
       * @dev           Initialize proxy.
       * @param _avatar The address of the Avatar controlling this contract.\
-      * @param _parent The address of the StakingRewards contract which will be a parent for all of the cloness.
+      * @param _masterCopy The address of the StakingRewards contract which will be a masterCopy for all of the cloness.
       */
-    function initialize(Avatar _avatar, StakingRewards _parent) external initializer {
-        require(_avatar != Avatar(0),           "FarmFactory: avatar cannot be null");
-        require(_parent != StakingRewards(0),   "FarmFactory: parent cannot be null");
+    function initialize(Avatar _avatar, StakingRewards _masterCopy) external initializer {
+        require(_avatar != Avatar(0), 			"FarmFactory: avatar cannot be null");
+        require(_masterCopy != StakingRewards(0), 	"FarmFactory: masterCopy cannot be null");
         avatar = _avatar;
-        parent = _parent;
+        masterCopy = _masterCopy;
     }
 
     /**
-    * @dev             Update StakingReward contract which works as a base for clones.
-    * @param newParent The address of the new StakingReward basis.
+    * @dev                 Update StakingReward contract which works as a base for clones.
+    * @param newMasterCopy The address of the new StakingReward basis.
     */
-    function changeParent(StakingRewards newParent) public protected{
-        parent = newParent;
+    function changeMasterCopy(StakingRewards newMasterCopy) public protected{
+        masterCopy = newMasterCopy;
     }
 
     /**
-      * @dev                    Create new farm.
-      * @param _name            Farm name.
-      * @param _rewardToken     Reward token address.
-      * @param _stakingToken    staking token address.
-      * @param _initreward      Initial reward.
-      * @param _starttime       Program start time.
-      * @param _duration        Program duration.
+      * @dev           			Create new farm.
+      * @param _name  			Farm name.
+      * @param _rewardToken  	Reward token address.
+      * @param _stakingToken 	staking token address.
+      * @param _initreward 		Initial reward.
+      * @param _starttime 		Program start time.
+      * @param _duration 		Program duration.
       */
     function createFarm(
         string memory _name,
-        address       _rewardToken,
-        address       _stakingToken,
-        uint256       _initreward,
-        uint256       _starttime,
-        uint256       _duration
+        address 	  _rewardToken,
+        address 	  _stakingToken,
+        uint256 	  _initreward,
+        uint256 	  _starttime,
+        uint256 	  _duration
     )
     public
     payable
@@ -98,7 +98,7 @@ contract FarmFactory is CloneFactory {
             ERROR_CREATE_FARM);
 
         // create new farm
-        address newFarm = createClone(address(parent));
+        address newFarm = createClone(address(masterCopy));
 
         // transfer rewards to the new farm
         Controller(avatar.owner())
@@ -140,17 +140,17 @@ contract FarmFactory is CloneFactory {
     }
 
     /**
-      * @dev                    Rescues tokens from an existing farm.
+      * @dev           			Rescues tokens from an existing farm.
       * @param _stakingRewards  Existing Staking Rewards contract.
-      * @param _amount          Staking token address.
-      * @param _token           Token address to be rescued.
-      * @param _to              Rescue to an address.
+      * @param _amount		 	Staking token address.
+      * @param _token 			Token address to be rescued.
+      * @param _to 				Rescue to an address.
       */
     function rescueTokens(
-        StakingRewards  _stakingRewards,
-        uint            _amount,
-        address         _token,
-        address         _to
+        StakingRewards 	_stakingRewards,
+        uint    		_amount,
+        address 		_token,
+        address 		_to
     )
     public
     protected
@@ -163,62 +163,62 @@ contract FarmFactory is CloneFactory {
 
     function _increaseReward(
         StakingRewards _farm,
-        uint           _amount
-    )
-    internal
-    {
-        bool success;
-        address _rewardToken = _farm.rewardToken();
+        uint    	   _amount
+	)
+	internal
+	{
+		bool success;
+		address _rewardToken = _farm.rewardToken();
 
-        require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
-            ERROR_INCREASE_REWARD);
+		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
+			ERROR_INCREASE_REWARD);
 
-        Controller controller = Controller(avatar.owner());
-        //transfer tokens to staking rewards contract
-        controller.externalTokenTransfer(
-            IERC20(_rewardToken),
-            address(_farm),
-            _amount,
-            avatar
-        );
+		Controller controller = Controller(avatar.owner());
+		//transfer tokens to staking rewards contract
+		controller.externalTokenTransfer(
+			IERC20(_rewardToken),
+			address(_farm),
+			_amount,
+			avatar
+		);
 
-        //call notify reward amount
-        (success,) = controller.genericCall(
-            address(_farm),
-            abi.encodeWithSelector(
-                _farm.notifyRewardAmount.selector,
-                _amount
-            ),
-            avatar,
-            0
-        );
-        require(success, ERROR_INCREASE_REWARD);
-    }
+		//call notify reward amount
+		(success,) = controller.genericCall(
+			address(_farm),
+			abi.encodeWithSelector(
+				_farm.notifyRewardAmount.selector,
+				_amount
+			),
+			avatar,
+			0
+		);
+		require(success, ERROR_INCREASE_REWARD);
+	}
 
-    function _rescueTokens(
-        StakingRewards  _stakingRewards,
-        uint            _amount,
-        address         _token,
-        address         _to
-    )
-    internal
-    {
-        bool success;
-        Controller controller = Controller(avatar.owner());
-        require( IERC20(_token).balanceOf(address(_stakingRewards)) >= _amount,
-            ERROR_RESCUE_TOKENS);
+	function _rescueTokens(
+		StakingRewards 	_stakingRewards,
+		uint    	 	_amount,
+		address 		_token,
+		address 		_to
+	)
+	internal
+	{
+		bool success;
+		Controller controller = Controller(avatar.owner());
+		require( IERC20(_token).balanceOf(address(_stakingRewards)) >= _amount,
+			ERROR_RESCUE_TOKENS);
 
-        (success,) = controller.genericCall(
-            address(_stakingRewards),
-            abi.encodeWithSelector(
-                _stakingRewards.rescueTokens.selector,
-                _token,
-                _amount,
-                _to
-            ),
-            avatar,
-            0
-        );
-        require(success, ERROR_RESCUE_TOKENS);
-    }
+		(success,) = controller.genericCall(
+			address(_stakingRewards),
+			abi.encodeWithSelector(
+				_stakingRewards.rescueTokens.selector,
+				_token,
+				_amount,
+				_to
+			),
+			avatar,
+			0
+		);
+		require(success, ERROR_RESCUE_TOKENS);
+	}
 }

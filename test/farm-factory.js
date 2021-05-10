@@ -186,13 +186,13 @@ contract('FarmFactory', (accounts) => {
                 await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'TokenRescued', {});
                 expect(Number(balance)).to.equal(Number(balanceBefore)-Number(rescueAmount));
             });
-            it('fails to change a parent not using avatar', async () => {
-                await expectRevert( setup.farmFactory.changeParent(setup.incentives.stakingRewards.address),
+            it('fails to change a master copy not using avatar', async () => {
+                await expectRevert( setup.farmFactory.changeMasterCopy(setup.incentives.stakingRewards.address),
                     'FarmFactory: protected operation');
             });
 
-            it('Changes a parent', async () => {
-                const calldata = helpers.encodeChangeParentFarm(setup.incentives.stakingRewards.address);
+            it('Changes a master copy', async () => {
+                const calldata = helpers.encodeChangeMasterCopyFarm(setup.incentives.stakingRewards.address);
                 const _tx = await setup.primeDAO.farmManager.proposeCalls([setup.farmFactory.address],[calldata], [0], accounts[1]);
                 const proposalId = helpers.getNewProposalId(_tx);
                 await  setup.primeDAO.farmManager.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
@@ -200,8 +200,8 @@ contract('FarmFactory', (accounts) => {
 
                 // store data
                 setup.data.tx = tx;
-                const parent = await setup.farmFactory.parent();
-                expect(parent).to.equal(setup.incentives.stakingRewards.address);
+                const masterCopy = await setup.farmFactory.masterCopy();
+                expect(masterCopy).to.equal(setup.incentives.stakingRewards.address);
             });
         });
     });
