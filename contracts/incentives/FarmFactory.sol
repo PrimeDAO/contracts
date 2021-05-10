@@ -80,6 +80,7 @@ contract FarmFactory is CloneFactory {
       * @param _initreward      Initial reward.
       * @param _starttime       Program start time.
       * @param _duration        Program duration.
+      * @return                 New factory address.
       */
     function createFarm(
         string memory _name,

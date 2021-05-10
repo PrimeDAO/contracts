@@ -7,6 +7,11 @@
 ██║░░░░░██║░░██║██║██║░╚═╝░██║███████╗██████╔╝██║░░██║╚█████╔╝
 ╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═╝░░╚═╝░╚════╝░
 
+* ===========
+*
+* StakingRewards.sol originally published by Synthetix under MIT license.
+* Modified by PrimeDAO under GNU v3 lincense.
+*
 */
 
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -32,6 +37,15 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     address public stakingToken;
 
     bool    public initialized;
+
+    uint256 public duration;
+
+    uint256 public totalRewards;
+    uint256 public starttime;
+    uint256 public periodFinish;
+    uint256 public rewardRate;
+    uint256 public lastUpdateTime;
+    uint256 public rewardPerTokenStored;
 
     modifier initializer() {
         require(!initialized, "StakingRewards: contract already initialized");
@@ -81,15 +95,6 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         periodFinish = block.timestamp.add(duration);
         emit RewardAdded(totalRewards);
     }
-
-    uint256 public duration;
-
-    uint256 public totalRewards;
-    uint256 public starttime;
-    uint256 public periodFinish;
-    uint256 public rewardRate;
-    uint256 public lastUpdateTime;
-    uint256 public rewardPerTokenStored;
 
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
