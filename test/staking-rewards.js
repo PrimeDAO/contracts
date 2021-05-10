@@ -59,11 +59,6 @@ contract('StakingRewards', (accounts) => {
                 await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
             });
         });
-        context('» deploying account is owner', () => {
-            it('returns correct owner', async () => {
-                expect(accounts[0]).to.equal(await setup.incentives.stakingRewards.owner());
-            });
-        });
         context('» periodFinish == 0 on deployment', () => {
             before('!! deploy contract', async () => {
                 setup.data.incentives = await StakingRewards.new();
@@ -575,7 +570,7 @@ contract('StakingRewards', (accounts) => {
         context('» generics', () => {
             before('!! deploy setup & initialize contract', async () => {
                 setup = await deploy(accounts);
-                await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address);
+                await setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, accounts[0]);
             });
             context('» only deployer can change variable', async () => {
                 it(' owner can change setRewardDistribution', async () => {
@@ -584,7 +579,7 @@ contract('StakingRewards', (accounts) => {
                 it('reverts on call from other account', async () => {
                     await expectRevert(
                         setup.incentives.stakingRewards.setRewardDistribution(accounts[2], {from: accounts[2]}),
-                        'Ownable: caller is not the owner'
+                        'Caller is not reward distribution.'
                     );
                 });
             });
