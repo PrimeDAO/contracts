@@ -34,7 +34,7 @@ contract Seed {
     uint    public hardCap;
     uint    public price;
     uint    public startTime;
-    uint    public endTime;
+    // uint    public endTime;
     bool    public isWhitelisted;
     uint16  public vestingDuration;
     uint16  public vestingCliff;
@@ -129,7 +129,7 @@ contract Seed {
         uint[] memory    _softAndHardCap,
         uint    _price,
         uint    _startTime,
-        uint    _endTime,
+        // uint    _endTime,
         uint16  _vestingDuration,
         uint16  _vestingCliff,
         bool    _isWhitelisted,
@@ -141,7 +141,7 @@ contract Seed {
         hardCap         = _softAndHardCap[1];
         price           = _price;
         startTime       = _startTime;
-        endTime         = _endTime;
+        // endTime         = _endTime;
         vestingDuration = _vestingDuration;
         vestingCliff    = _vestingCliff;
         isWhitelisted   = _isWhitelisted;
