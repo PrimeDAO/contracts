@@ -118,7 +118,7 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect( await setup.seed.closed()).to.equal(false);
                     expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal((requiredSeedAmount).toString());
-                    expect((await setup.seed.remainingSeeds()).toString()).to.equal((requiredSeedAmount).toString());
+                    expect((await setup.seed.seedRemainder()).toString()).to.equal((requiredSeedAmount).toString());
                 });
                 it('it reverts on double initialization', async () => {
                     await expectRevert(
@@ -157,7 +157,7 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal(hundredETH);
                 });
                 it('updates remaining seeds', async () => {
-                    expect((await setup.seed.remainingSeeds()).toString()).to
+                    expect((await setup.seed.seedRemainder()).toString()).to
                         .equal((requiredSeedAmount.sub(new BN(buyAmount,ten))).toString());
                 });
                 it('updates lock when it buys tokens', async () => {
@@ -238,7 +238,7 @@ contract('Seed', (accounts) => {
                     expect((await setup.data.seed.getSeedAmount(buyer2)).toString()).to.equal(zeroStr);
                 });
                 it('updates remaining seeds', async () => {
-                    expect((await setup.data.seed.remainingSeeds()).toString()).to
+                    expect((await setup.data.seed.seedRemainder()).toString()).to
                         .equal(requiredSeedAmount.toString());
                 });
                 it('cannot be called once funding minimum is reached', async () => {
