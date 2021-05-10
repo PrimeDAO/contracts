@@ -11,7 +11,7 @@
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.5.13;
+pragma solidity 0.5.13;
 
 import "@daostack/arc/contracts/libs/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
