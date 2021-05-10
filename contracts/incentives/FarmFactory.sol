@@ -32,9 +32,9 @@ contract FarmFactory is CloneFactory {
     string constant ERROR_CREATE_FARM                = "FarmFactory: create failed";
 
 
-    Avatar public avatar;
+    Avatar         public avatar;
     StakingRewards public masterCopy;
-    bool   public initialized;
+    bool           public initialized;
 
     event FarmCreated(address indexed newFarm, address indexed pool);
     event TokenRescued(address indexed farm, address indexed token, address indexed to);
@@ -53,8 +53,8 @@ contract FarmFactory is CloneFactory {
     }
 
     /**
-      * @dev           Initialize proxy.
-      * @param _avatar The address of the Avatar controlling this contract.\
+      * @dev               Initialize farm factory.
+      * @param _avatar     The address of the Avatar controlling this contract.
       * @param _masterCopy The address of the StakingRewards contract which will be a masterCopy for all of the cloness.
       */
     function initialize(Avatar _avatar, StakingRewards _masterCopy) external initializer {
@@ -73,21 +73,22 @@ contract FarmFactory is CloneFactory {
     }
 
     /**
-      * @dev           			Create new farm.
-      * @param _name  			Farm name.
-      * @param _rewardToken  	Reward token address.
-      * @param _stakingToken 	staking token address.
-      * @param _initreward 		Initial reward.
-      * @param _starttime 		Program start time.
-      * @param _duration 		Program duration.
+      * @dev                    Create new farm.
+      * @param _name            Farm name.
+      * @param _rewardToken     Reward token address.
+      * @param _stakingToken    staking token address.
+      * @param _initreward      Initial reward.
+      * @param _starttime       Program start time.
+      * @param _duration        Program duration in days.
+      * @return                 New factory address.
       */
     function createFarm(
         string memory _name,
-        address 	  _rewardToken,
-        address 	  _stakingToken,
-        uint256 	  _initreward,
-        uint256 	  _starttime,
-        uint256 	  _duration
+        address       _rewardToken,
+        address       _stakingToken,
+        uint256       _initreward,
+        uint256       _starttime,
+        uint256       _duration
     )
     public
     payable
@@ -124,6 +125,11 @@ contract FarmFactory is CloneFactory {
         return newFarm;
     }
 
+    /**
+      * @dev                    Increses reward on the existing farm.
+      * @param _farm            Farm address.
+      * @param _amount          Amount of tokens being added to the distribution.
+      */
     function increaseReward(
         address _farm,
         uint    _amount
@@ -140,17 +146,17 @@ contract FarmFactory is CloneFactory {
     }
 
     /**
-      * @dev           			Rescues tokens from an existing farm.
+      * @dev                    Rescues tokens from an existing farm.
       * @param _stakingRewards  Existing Staking Rewards contract.
-      * @param _amount		 	Staking token address.
-      * @param _token 			Token address to be rescued.
-      * @param _to 				Rescue to an address.
+      * @param _amount          Staking token address.
+      * @param _token           Token address to be rescued.
+      * @param _to              Rescue to an address.
       */
     function rescueTokens(
-        StakingRewards 	_stakingRewards,
-        uint    		_amount,
-        address 		_token,
-        address 		_to
+        StakingRewards  _stakingRewards,
+        uint256         _amount,
+        address         _token,
+        address         _to
     )
     public
     protected
@@ -163,11 +169,11 @@ contract FarmFactory is CloneFactory {
 
     function _increaseReward(
         StakingRewards _farm,
-        uint    	   _amount
+        uint           _amount
 	)
 	internal
 	{
-		bool success;
+		bool    success;
 		address _rewardToken = _farm.rewardToken();
 
 		require( IERC20(_rewardToken).balanceOf(address(avatar)) >= _amount,
@@ -175,50 +181,50 @@ contract FarmFactory is CloneFactory {
 
 		Controller controller = Controller(avatar.owner());
 		//transfer tokens to staking rewards contract
-		controller.externalTokenTransfer(
-			IERC20(_rewardToken),
-			address(_farm),
-			_amount,
-			avatar
-		);
+        controller.externalTokenTransfer(
+		    IERC20(_rewardToken),
+            address(_farm),
+            _amount,
+            avatar
+        );
 
-		//call notify reward amount
-		(success,) = controller.genericCall(
-			address(_farm),
-			abi.encodeWithSelector(
-				_farm.notifyRewardAmount.selector,
-				_amount
-			),
-			avatar,
-			0
-		);
-		require(success, ERROR_INCREASE_REWARD);
-	}
+        //call notify reward amount
+        (success,) = controller.genericCall(
+            address(_farm),
+            abi.encodeWithSelector(
+                _farm.notifyRewardAmount.selector,
+                _amount
+            ),
+            avatar,
+            0
+        );
+        require(success, ERROR_INCREASE_REWARD);
+    }
 
-	function _rescueTokens(
-		StakingRewards 	_stakingRewards,
-		uint    	 	_amount,
-		address 		_token,
-		address 		_to
+    function _rescueTokens(
+        StakingRewards 	_stakingRewards,
+        uint            _amount,
+        address         _token,
+        address         _to
 	)
 	internal
 	{
-		bool success;
-		Controller controller = Controller(avatar.owner());
-		require( IERC20(_token).balanceOf(address(_stakingRewards)) >= _amount,
-			ERROR_RESCUE_TOKENS);
+        bool success;
+        Controller controller = Controller(avatar.owner());
+        require( IERC20(_token).balanceOf(address(_stakingRewards)) >= _amount,
+            ERROR_RESCUE_TOKENS);
 
-		(success,) = controller.genericCall(
-			address(_stakingRewards),
-			abi.encodeWithSelector(
-				_stakingRewards.rescueTokens.selector,
-				_token,
-				_amount,
-				_to
-			),
-			avatar,
-			0
-		);
-		require(success, ERROR_RESCUE_TOKENS);
-	}
+        (success,) = controller.genericCall(
+            address(_stakingRewards),
+            abi.encodeWithSelector(
+                _stakingRewards.rescueTokens.selector,
+                _token,
+                _amount,
+                _to
+            ),
+            avatar,
+            0
+        );
+        require(success, ERROR_RESCUE_TOKENS);
+    }
 }

@@ -39,14 +39,14 @@
     "absolutePath": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
     "exportedSymbols": {
       "PriceOracleInterface": [
-        7602
+        7759
       ]
     },
-    "id": 7603,
+    "id": 7760,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7592,
+        "id": 7749,
         "literals": [
           "solidity",
           "0.5",
@@ -61,9 +61,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 7602,
+        "id": 7759,
         "linearizedBaseContracts": [
-          7602
+          7759
         ],
         "name": "PriceOracleInterface",
         "nodeType": "ContractDefinition",
@@ -71,22 +71,22 @@
           {
             "body": null,
             "documentation": null,
-            "id": 7601,
+            "id": 7758,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getPrice",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7595,
+              "id": 7752,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7594,
+                  "id": 7751,
                   "name": "token",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7601,
+                  "scope": 7758,
                   "src": "81:13:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -95,7 +95,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7593,
+                    "id": 7750,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "81:7:26",
@@ -112,15 +112,15 @@
               "src": "80:15:26"
             },
             "returnParameters": {
-              "id": 7600,
+              "id": 7757,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7597,
+                  "id": 7754,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7601,
+                  "scope": 7758,
                   "src": "119:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -129,7 +129,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7596,
+                    "id": 7753,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "119:4:26",
@@ -143,10 +143,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 7599,
+                  "id": 7756,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7601,
+                  "scope": 7758,
                   "src": "125:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -155,7 +155,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7598,
+                    "id": 7755,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "125:4:26",
@@ -170,14 +170,14 @@
               ],
               "src": "118:12:26"
             },
-            "scope": 7602,
+            "scope": 7759,
             "src": "63:68:26",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 7603,
+        "scope": 7760,
         "src": "25:109:26"
       }
     ],
@@ -187,14 +187,14 @@
     "absolutePath": "@daostack/arc/contracts/schemes/PriceOracleInterface.sol",
     "exportedSymbols": {
       "PriceOracleInterface": [
-        7602
+        7759
       ]
     },
-    "id": 7603,
+    "id": 7760,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7592,
+        "id": 7749,
         "literals": [
           "solidity",
           "0.5",
@@ -209,9 +209,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 7602,
+        "id": 7759,
         "linearizedBaseContracts": [
-          7602
+          7759
         ],
         "name": "PriceOracleInterface",
         "nodeType": "ContractDefinition",
@@ -219,22 +219,22 @@
           {
             "body": null,
             "documentation": null,
-            "id": 7601,
+            "id": 7758,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "getPrice",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7595,
+              "id": 7752,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7594,
+                  "id": 7751,
                   "name": "token",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7601,
+                  "scope": 7758,
                   "src": "81:13:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -243,7 +243,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7593,
+                    "id": 7750,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "81:7:26",
@@ -260,15 +260,15 @@
               "src": "80:15:26"
             },
             "returnParameters": {
-              "id": 7600,
+              "id": 7757,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7597,
+                  "id": 7754,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7601,
+                  "scope": 7758,
                   "src": "119:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -277,7 +277,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7596,
+                    "id": 7753,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "119:4:26",
@@ -291,10 +291,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 7599,
+                  "id": 7756,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 7601,
+                  "scope": 7758,
                   "src": "125:4:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -303,7 +303,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7598,
+                    "id": 7755,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "125:4:26",
@@ -318,14 +318,14 @@
               ],
               "src": "118:12:26"
             },
-            "scope": 7602,
+            "scope": 7759,
             "src": "63:68:26",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 7603,
+        "scope": 7760,
         "src": "25:109:26"
       }
     ],
@@ -337,7 +337,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.4",
-  "updatedAt": "2021-04-29T16:22:59.801Z",
+  "updatedAt": "2021-05-10T11:00:12.787Z",
   "devdoc": {
     "methods": {}
   },

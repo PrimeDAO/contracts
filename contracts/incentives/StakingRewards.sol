@@ -7,6 +7,11 @@
 ██║░░░░░██║░░██║██║██║░╚═╝░██║███████╗██████╔╝██║░░██║╚█████╔╝
 ╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═╝░░╚═╝░╚════╝░
 
+* ===========
+*
+* StakingRewards.sol was originally published by Synthetix under MIT license.
+* Modified by PrimeDAO under GNU General Public License v3.0.
+*
 */
 
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -18,10 +23,10 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
-import "../utils/interfaces/IRewardDistributionRecipient.sol";
+import "./RewardDistributionRecipient.sol";
 
 
-contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
+contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
 
     using SafeMath for uint256;
     using SafeERC20 for address;
@@ -32,6 +37,15 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
     address public stakingToken;
 
     bool    public initialized;
+
+    uint256 public duration;
+
+    uint256 public totalRewards;
+    uint256 public starttime;
+    uint256 public periodFinish;
+    uint256 public rewardRate;
+    uint256 public lastUpdateTime;
+    uint256 public rewardPerTokenStored;
 
     modifier initializer() {
         require(!initialized, "StakingRewards: contract already initialized");
@@ -77,19 +91,10 @@ contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
         // initial notifyRewardsAmount
         totalRewards = IERC20(_rewardToken).balanceOf(address(this));
         rewardRate = totalRewards.div(duration);
-        lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(duration);
+        lastUpdateTime = _starttime;
+        periodFinish = _starttime.add(duration);
         emit RewardAdded(totalRewards);
     }
-
-    uint256 public duration;
-
-    uint256 public totalRewards;
-    uint256 public starttime;
-    uint256 public periodFinish;
-    uint256 public rewardRate;
-    uint256 public lastUpdateTime;
-    uint256 public rewardPerTokenStored;
 
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
