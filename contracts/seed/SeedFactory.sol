@@ -115,8 +115,9 @@ contract SeedFactory is CloneFactory {
         Seed(_newSeed).updateMetadata(_metadata);
 
         {
+            // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
             uint reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
-            // fund
+            // checks for successful transfer of the Seed Tokens.
             require(
                 IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
                 "SeedFactory: cannot transfer seed tokens"

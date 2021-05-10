@@ -159,7 +159,7 @@ contract Seed {
       * @param _seedAmount       The amount of seed tokens to buy.
     */
     function buy(uint256 _seedAmount) public protected checked {
-        remainingSeeds -=_seedAmount;
+        remainingSeeds = remainingSeeds.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
         //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
@@ -228,7 +228,7 @@ contract Seed {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint amount = tokenLock.fundingAmount;
-        remainingSeeds += tokenLock.seedAmount;
+        remainingSeeds = remainingSeeds.add(tokenLock.seedAmount);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
