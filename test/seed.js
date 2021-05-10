@@ -241,6 +241,9 @@ contract('Seed', (accounts) => {
         context('# close', () => {
             context('» generics', () => {
                 before('!! deploy new contract + top up buyer balance', async () => {
+                    let newStartTime  = await time.latest();
+                    let newEndTime = await newStartTime.add(await time.duration.days(7));
+
                     setup.data.seed = await Seed.new();
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
@@ -248,8 +251,8 @@ contract('Seed', (accounts) => {
                         [seedToken.address, fundingToken.address],
                         [softCap,hardCap],
                         price,
-                        startTime,
-                        endTime,
+                        newStartTime,
+                        newEndTime,
                         vestingDuration,
                         vestingCliff,
                         isWhitelisted,
@@ -371,6 +374,9 @@ contract('Seed', (accounts) => {
             });
             context('» withdraw', () => {
                 before('!! deploy new contract', async () => {
+                    let newStartTime  = await time.latest();
+                    let newEndTime = await newStartTime.add(await time.duration.days(7));
+
                     setup.data.seed = await Seed.new();
                     setup.data.seed.initialize(
                         setup.organization.avatar.address,
@@ -378,8 +384,8 @@ contract('Seed', (accounts) => {
                         [seedToken.address, fundingToken.address],
                         [softCap,hardCap],
                         price,
-                        startTime,
-                        endTime,
+                        newStartTime,
+                        newEndTime,
                         vestingDuration,
                         vestingCliff,
                         isWhitelisted,
