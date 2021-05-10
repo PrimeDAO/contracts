@@ -48,8 +48,8 @@ const encodeRescueTokens = (stakingRewards, amount, token, to) => {
 const encodeIncreaseReward = (farm, amount) => {
   return new web3.eth.Contract(FarmFactory.abi).methods.increaseReward(farm, amount).encodeABI();
 };
-const encodeChangeParentFarm = (newParent) => {
-  return new web3.eth.Contract(FarmFactory.abi).methods.changeParent(newParent).encodeABI();
+const encodeChangeMasterCopyFarm = (newParent) => {
+  return new web3.eth.Contract(FarmFactory.abi).methods.changeMasterCopy(newParent).encodeABI();
 };
 const encodeApprove = (spender, amount) => {
   return new web3.eth.Contract(IERC20.abi).methods.approve(spender, amount).encodeABI();
@@ -123,7 +123,7 @@ module.exports = {
   encodeCreateFarm,
   encodeRescueTokens,
   encodeIncreaseReward,
-  encodeChangeParentFarm,
+  encodeChangeMasterCopyFarm,
   encodeJoinPool,
   encodeExitPool,
   getNewProposalId,
