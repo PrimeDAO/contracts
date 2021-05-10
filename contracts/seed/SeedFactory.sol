@@ -114,6 +114,15 @@ contract SeedFactory is CloneFactory {
 
         Seed(_newSeed).updateMetadata(_metadata);
 
+        {
+            uint reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
+            // fund
+            require(
+                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
+                "SeedFactory: cannot transfer seed tokens"
+            );
+        }
+
         // initialize
         Seed(_newSeed).initialize(
             msg.sender,
@@ -127,14 +136,6 @@ contract SeedFactory is CloneFactory {
             _vestingCliff,
             _isWhitelisted,
             _fee
-        );
-
-        uint reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
-
-        // fund
-        require(
-            IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
-            "SeedFactory: cannot transfer seed tokens"
         );
 
         emit SeedCreated(address(_newSeed), msg.sender);
