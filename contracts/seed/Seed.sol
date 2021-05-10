@@ -32,6 +32,7 @@ contract Seed {
     address public admin;
     uint    public softCap;
     uint    public hardCap;
+    uint    public seedRemainder;
     uint    public price;
     uint    public startTime;
     uint    public endTime;
@@ -150,6 +151,7 @@ contract Seed {
         fee             = _fee;
         closed          = false;
         minimumReached  = false;
+        seedRemainder  = IERC20(_tokens[0]).balanceOf(address(this));
     }
 
     /**
@@ -157,6 +159,7 @@ contract Seed {
       * @param _seedAmount       The amount of seed tokens to buy.
     */
     function buy(uint256 _seedAmount) public protected checked {
+        seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
         //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
@@ -225,6 +228,7 @@ contract Seed {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint amount = tokenLock.fundingAmount;
+        seedRemainder = seedRemainder.add(tokenLock.seedAmount);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
