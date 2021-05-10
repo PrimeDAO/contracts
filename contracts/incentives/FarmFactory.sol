@@ -79,7 +79,7 @@ contract FarmFactory is CloneFactory {
       * @param _stakingToken    staking token address.
       * @param _initreward      Initial reward.
       * @param _starttime       Program start time.
-      * @param _duration        Program duration.
+      * @param _duration        Program duration in days.
       * @return                 New factory address.
       */
     function createFarm(

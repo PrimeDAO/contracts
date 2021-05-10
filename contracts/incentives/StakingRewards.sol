@@ -23,10 +23,10 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
-import "../utils/interfaces/IRewardDistributionRecipient.sol";
+import "./RewardDistributionRecipient.sol";
 
 
-contract StakingRewards is IRewardDistributionRecipient, ReentrancyGuard {
+contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
 
     using SafeMath for uint256;
     using SafeERC20 for address;
