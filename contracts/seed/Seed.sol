@@ -84,8 +84,10 @@ contract Seed {
 
     modifier checked() {
         require(isWhitelisted != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
+        require(endTime >= block.timestamp ,"Seed: the distribution is already finished");
         _;
     }
+
 
     modifier checkMinimumReached() {
         require(minimumReached == true, "Seed: minimum funding amount not met");
