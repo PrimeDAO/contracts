@@ -30,12 +30,12 @@ contract Seed {
     // Locked parameters
     address public beneficiary;
     address public admin;
-    uint    public softCap;
-    uint    public hardCap;
-    uint    public seedRemainder;
-    uint    public price;
-    uint    public startTime;
-    uint    public endTime;
+    uint256    public softCap;
+    uint256    public hardCap;
+    uint256    public seedRemainder;
+    uint256    public price;
+    uint256    public startTime;
+    uint256    public endTime;
     bool    public isWhitelisted;
     uint16  public vestingDuration;
     uint16  public vestingCliff;
@@ -64,6 +64,14 @@ contract Seed {
     event TokensClaimed(address indexed recipient, uint256 amountVested);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
     event MetadataUpdated(bytes32 indexed metadata);
+
+    struct Lock { 
+        uint256 seedAmount;
+        uint16  daysClaimed;
+        uint256 totalClaimed;
+        uint256 fundingAmount;
+        uint256 fee;
+    }
 
     modifier initializer() {
         require(!initialized, "Seed: contract already initialized");
@@ -99,14 +107,6 @@ contract Seed {
         _;
     }
 
-    struct Lock { 
-        uint256 seedAmount;
-        uint16  daysClaimed;
-        uint256 totalClaimed;
-        uint256 fundingAmount;
-        uint256 fee;
-    }
-
     /**
       * @dev                          Initialize Seed.
       * @param _admin                 The address of the admin of this contract. Funds contract
@@ -129,10 +129,10 @@ contract Seed {
         address _beneficiary,
         address _admin,
         address[] memory _tokens,
-        uint[] memory    _softAndHardCap,
-        uint    _price,
-        uint    _startTime,
-        uint    _endTime,
+        uint256[] memory    _softAndHardCap,
+        uint256    _price,
+        uint256    _startTime,
+        uint256    _endTime,
         uint16  _vestingDuration,
         uint16  _vestingCliff,
         bool    _isWhitelisted,
@@ -164,17 +164,19 @@ contract Seed {
         seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
+        // Funding Token balancec of this contract;
+        uint256 seedContractFundingTokenBal = fundingToken.balanceOf(address(this));
         //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
-        uint256 alreadyLockedSeedTokens = (fundingToken.balanceOf(address(this)).mul(PCT_BASE)).div(price);
+        uint256 alreadyLockedSeedTokens = (seedContractFundingTokenBal.mul(PCT_BASE)).div(price);
         //  feeAmount is an amount of fee we are going to get in seedTokens
-        uint feeAmount = (_seedAmount.mul(uint(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
         //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
-        uint lockedSeedFee = (alreadyLockedSeedTokens.mul(uint(PPM))).mul(fee).div(PPM100);
+        uint256 lockedSeedFee = (alreadyLockedSeedTokens.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         // total fundingAmount should not be greater than the hardCap
-        require( (fundingToken.balanceOf(address(this)).
+        require( seedContractFundingTokenBal.
                   add(fundingAmount).
-                  add((feeAmount.mul(price)).div(PCT_BASE))) <= hardCap,
+                  add((feeAmount.mul(price)).div(PCT_BASE)) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
         // We are calculating that we are not exceeding balance of seedTokens in this contract
@@ -229,12 +231,12 @@ contract Seed {
         require(paused != true, "Seed: should not be paused");
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
-        uint amount = tokenLock.fundingAmount;
+        uint256 amount = tokenLock.fundingAmount;
         seedRemainder = seedRemainder.add(tokenLock.seedAmount);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
-        uint feeAmount = (amount.mul(uint(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
         require(
             fundingToken.transfer(msg.sender, (amount.add(feeAmount))),
             "Seed: cannot return funding tokens to msg.sender"
@@ -288,7 +290,7 @@ contract Seed {
     */
     function whitelistBatch(address[] memory _buyers) public onlyAdmin protected {
         require(isWhitelisted == true, "Seed: module is not whitelisted");
-        for (uint i=0; i < _buyers.length; i++) {
+        for (uint256 i=0; i < _buyers.length; i++) {
             whitelisted[_buyers[i]] = true;
         }
     }
@@ -305,7 +307,8 @@ contract Seed {
     /**
       * @dev                     Withdraw funds from the contract
     */
-    function withdraw() public onlyAdmin checkMinimumReached protected {
+    function withdraw() public onlyAdmin checkMinimumReached {
+        require(paused != true, "Seed: should not be paused");
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 
@@ -385,8 +388,8 @@ contract Seed {
         Lock storage tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
-        uint elapsedTime = _currentTime().sub(startTime);
-        uint elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
+        uint256 elapsedTime = _currentTime().sub(startTime);
+        uint256 elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
 
         if (elapsedDays < vestingCliff) {
             return (uint16(elapsedDays), 0);

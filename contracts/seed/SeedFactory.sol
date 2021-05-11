@@ -95,10 +95,10 @@ contract SeedFactory is CloneFactory {
     function deploySeed(
         address          _admin,
         address[] memory _tokens,
-        uint[]    memory _softAndHardCap,
-        uint  	         _price,
-        uint 	         _startTime,
-        uint 	         _endTime,
+        uint256[]    memory _softAndHardCap,
+        uint256  	         _price,
+        uint256 	         _startTime,
+        uint256 	         _endTime,
         uint16 	         _vestingDuration,
         uint16 	         _vestingCliff,
         bool 	         _isWhitelisted,
@@ -116,7 +116,7 @@ contract SeedFactory is CloneFactory {
 
         {
             // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-            uint reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
+            uint256 reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
             // checks for successful transfer of the Seed Tokens.
             require(
                 IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
