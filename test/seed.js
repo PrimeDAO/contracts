@@ -174,6 +174,9 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((prevSeedAmount.mul(twoBN)).toString());
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal((prevFeeAmount.mul(twoBN)).toString());
                 });
+                it('return totalClaimed == 0', async () => {
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(zeroStr);
+                });
             });
         });
         context('# claimLock', () => {
@@ -181,9 +184,14 @@ contract('Seed', (accounts) => {
                 it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
                     await expectRevert(setup.seed.claimLock(buyer1), 'Seed: amountVested is 0');
                 });
-                it('it withdraws tokens after time passes', async () => {
+                it('calculates correct claim', async () => {
                     // increase time
                     await time.increase(time.duration.days(91));
+                    const claim = await setup.seed.calculateClaim(buyer1);
+                    const expectedClaim = new BN(91).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    expect(claim[1].toString()).to.equal(expectedClaim.toString());
+                });
+                it('it withdraws tokens after time passes', async () => {
                     // claim lock
                     let tx = await setup.seed.claimLock(buyer1, {from:buyer1});
                     setup.data.tx = tx;
