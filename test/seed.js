@@ -189,8 +189,9 @@ contract('Seed', (accounts) => {
                     await time.increase(time.duration.days(91));
                     const claim = await setup.seed.calculateClaim(buyer1);
                     const expectedClaim = new BN(91).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    expect(claim[0].toString()).to.equal('91');
                     expect(claim[1].toString()).to.equal(expectedClaim.toString());
-                });
+                }); 
                 it('it withdraws tokens after time passes', async () => {
                     // claim lock
                     let tx = await setup.seed.claimLock(buyer1, {from:buyer1});
@@ -199,6 +200,10 @@ contract('Seed', (accounts) => {
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed', {
                         recipient: buyer1
                     });
+                });
+                it('updates claim', async () => {
+                    const expectedClaim = new BN(91).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(expectedClaim.toString());
                 });
                 it('funds dao with fee', async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
