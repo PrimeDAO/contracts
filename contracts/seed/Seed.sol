@@ -30,12 +30,12 @@ contract Seed {
     // Locked parameters
     address public beneficiary;
     address public admin;
-    uint256    public softCap;
-    uint256    public hardCap;
-    uint256    public seedRemainder;
-    uint256    public price;
-    uint256    public startTime;
-    uint256    public endTime;
+    uint256 public softCap;
+    uint256 public hardCap;
+    uint256 public seedRemainder;
+    uint256 public price;
+    uint256 public startTime;
+    uint256 public endTime;
     bool    public isWhitelisted;
     uint16  public vestingDuration;
     uint16  public vestingCliff;
@@ -129,10 +129,10 @@ contract Seed {
         address _beneficiary,
         address _admin,
         address[] memory _tokens,
-        uint256[] memory    _softAndHardCap,
-        uint256    _price,
-        uint256    _startTime,
-        uint256    _endTime,
+        uint256[] memory _softAndHardCap,
+        uint256 _price,
+        uint256 _startTime,
+        uint256 _endTime,
         uint16  _vestingDuration,
         uint16  _vestingCliff,
         bool    _isWhitelisted,
@@ -164,17 +164,17 @@ contract Seed {
         seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
-        // Funding Token balancec of this contract;
-        uint256 seedContractFundingTokenBal = fundingToken.balanceOf(address(this));
+        // Funding Token balance of this contract;
+        uint256 fundingBalance = fundingToken.balanceOf(address(this));
         //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
-        uint256 alreadyLockedSeedTokens = (seedContractFundingTokenBal.mul(PCT_BASE)).div(price);
+        uint256 alreadyLockedSeedTokens = (fundingBalance.mul(PCT_BASE)).div(price);
         //  feeAmount is an amount of fee we are going to get in seedTokens
         uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
         //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
         uint256 lockedSeedFee = (alreadyLockedSeedTokens.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         // total fundingAmount should not be greater than the hardCap
-        require( seedContractFundingTokenBal.
+        require( fundingBalance.
                   add(fundingAmount).
                   add((feeAmount.mul(price)).div(PCT_BASE)) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
@@ -199,8 +199,8 @@ contract Seed {
             msg.sender,
             (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
             (tokenLocks[msg.sender].fundingAmount.add(fundingAmount)),  // Previous Funding Amount + new funding amount
-            tokenLocks[msg.sender].daysClaimed,
-            tokenLocks[msg.sender].totalClaimed,
+             tokenLocks[msg.sender].daysClaimed,
+             tokenLocks[msg.sender].totalClaimed,
             (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
             );
     }
@@ -216,7 +216,7 @@ contract Seed {
         require(amountVested > 0, "Seed: amountVested is 0");
 
         Lock storage tokenLock = tokenLocks[_locker];
-        tokenLock.daysClaimed = uint16(tokenLock.daysClaimed.add(daysVested));
+        tokenLock.daysClaimed  = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
         require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
@@ -362,7 +362,7 @@ contract Seed {
         address _recipient,
         uint256 _seedAmount,
         uint256 _fundingAmount,
-        uint16 _daysClaimed,
+        uint16  _daysClaimed,
         uint256 _totalClaimed,
         uint256 _fee
     )

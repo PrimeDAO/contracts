@@ -122,7 +122,7 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
             rewardRate = reward.div(duration);
         } else {
             uint256 remaining = periodFinish.sub(block.timestamp);
-            uint256 leftover = remaining.mul(rewardRate);
+            uint256 leftover  = remaining.mul(rewardRate);
             rewardRate = reward.add(leftover).div(duration);
         }
 
@@ -134,8 +134,8 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
         require(rewardRate <= balance.div(duration), "StakingRewards: Provided reward too high");
 
         lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(duration);
-        totalRewards = totalRewards.add(reward);
+        periodFinish   = block.timestamp.add(duration);
+        totalRewards   = totalRewards.add(reward);
         emit RewardAdded(reward);
     }
 
