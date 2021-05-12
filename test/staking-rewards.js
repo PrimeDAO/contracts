@@ -66,6 +66,10 @@ contract('StakingRewards', (accounts) => {
             it(' == 0', async () => {
                 expect((await setup.data.incentives.periodFinish()).toNumber()).to.equal(0);
             });
+            it('isActive returns false', async () => {
+                await expectRevert(setup.data.incentives.isActive(),
+                    "SafeMath: subtraction overflow");
+            });
         });
         context('» reward token parameter is not valid', () => {
             before('!! deploy contract', async () => {
@@ -91,7 +95,7 @@ contract('StakingRewards', (accounts) => {
             });
             it('it reverts', async () => {
                 await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, 0, _durationDays, setup.organization.avatar.address),
-                    'StakingRewards: starttime cannot be null');
+                    'StakingRewards: starttime cannot be zero');
             });
         });
         context('» _durationDays parameter is not valid: 0', () => {
@@ -100,7 +104,7 @@ contract('StakingRewards', (accounts) => {
             });
             it('it reverts', async () => {
                 await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, 0, setup.organization.avatar.address),
-                    'StakingRewards: duration cannot be null');
+                    'StakingRewards: duration cannot be zero');
             });
         });
     });
@@ -562,6 +566,9 @@ contract('StakingRewards', (accounts) => {
                         amount: halfReward
                     });
                     expect(rewardBefore).to.not.equal(await setup.incentives.stakingRewards.rewardRate());
+                });
+                it('isActive returns true', async () => {
+                    expect(await setup.incentives.stakingRewards.isActive()).to.equal(true);
                 });
             });
         });

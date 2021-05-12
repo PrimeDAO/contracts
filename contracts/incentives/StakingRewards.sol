@@ -47,6 +47,17 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
 
+    mapping(address => uint256) public userRewardPerTokenPaid;
+    mapping(address => uint256) public rewards;
+
+    uint256 private _totalSupply;
+    mapping(address => uint256) private _balances;
+
+    event RewardAdded(uint256 reward);
+    event Staked(address indexed user, uint256 amount);
+    event Withdrawn(address indexed user, uint256 amount);
+    event RewardPaid(address indexed user, uint256 reward);
+
     modifier initializer() {
         require(!initialized, "StakingRewards: contract already initialized");
         initialized = true;
@@ -77,8 +88,8 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
     ) external initializer {
         require(_rewardToken  != address(0),                  "StakingRewards: rewardToken cannot be zero address");
         require(_stakingToken != address(0),                  "StakingRewards: stakingToken cannot be zero address");
-        require(_starttime != 0,                              "StakingRewards: starttime cannot be null");
-        require(_duration != 0,                               "StakingRewards: duration cannot be null");
+        require(_starttime != 0,                              "StakingRewards: starttime cannot be zero");
+        require(_duration != 0,                               "StakingRewards: duration cannot be zero");
 
         name = _name;
         rewardToken  = _rewardToken;
@@ -96,17 +107,6 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
         emit RewardAdded(totalRewards);
     }
 
-    mapping(address => uint256) public userRewardPerTokenPaid;
-    mapping(address => uint256) public rewards;
-
-    uint256 private _totalSupply;
-    mapping(address => uint256) private _balances;
-
-    event RewardAdded(uint256 reward);
-    event Staked(address indexed user, uint256 amount);
-    event Withdrawn(address indexed user, uint256 amount);
-    event RewardPaid(address indexed user, uint256 reward);
-
     modifier updateReward(address account) {
         rewardPerTokenStored = rewardPerToken();
         lastUpdateTime = lastTimeRewardApplicable();
@@ -122,7 +122,7 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
             rewardRate = reward.div(duration);
         } else {
             uint256 remaining = periodFinish.sub(block.timestamp);
-            uint256 leftover = remaining.mul(rewardRate);
+            uint256 leftover  = remaining.mul(rewardRate);
             rewardRate = reward.add(leftover).div(duration);
         }
 
@@ -130,12 +130,12 @@ contract StakingRewards is RewardDistributionRecipient, ReentrancyGuard {
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-        uint balance = IERC20(rewardToken).balanceOf(address(this));
+        uint256 balance = IERC20(rewardToken).balanceOf(address(this));
         require(rewardRate <= balance.div(duration), "StakingRewards: Provided reward too high");
 
         lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(duration);
-        totalRewards = totalRewards.add(reward);
+        periodFinish   = block.timestamp.add(duration);
+        totalRewards   = totalRewards.add(reward);
         emit RewardAdded(reward);
     }
 
