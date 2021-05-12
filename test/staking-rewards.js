@@ -95,7 +95,7 @@ contract('StakingRewards', (accounts) => {
             });
             it('it reverts', async () => {
                 await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, 0, _durationDays, setup.organization.avatar.address),
-                    'StakingRewards: starttime cannot be null');
+                    'StakingRewards: starttime cannot be zero');
             });
         });
         context('» _durationDays parameter is not valid: 0', () => {
@@ -104,7 +104,7 @@ contract('StakingRewards', (accounts) => {
             });
             it('it reverts', async () => {
                 await expectRevert(setup.data.incentives.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, 0, setup.organization.avatar.address),
-                    'StakingRewards: duration cannot be null');
+                    'StakingRewards: duration cannot be zero');
             });
         });
     });
