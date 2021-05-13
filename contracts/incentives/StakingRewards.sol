@@ -22,7 +22,7 @@ import "@daostack/arc/contracts/libs/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/math/Math.sol";
-import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
+import "../utils/ReentrancyGuard.sol";
 import "./RewardDistributionRecipient.sol";
 
 
