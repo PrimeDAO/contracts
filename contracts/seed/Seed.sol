@@ -104,7 +104,7 @@ contract Seed {
     }
 
     modifier allowedToRetrieve() {
-        require(minimumReached != true, "Seed: minimum funding amount not met");
+        require(minimumReached == false, "Seed: minimum already met");
         require(paused != true, "Seed: should not be paused");
         _;
     }
