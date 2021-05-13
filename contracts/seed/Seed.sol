@@ -177,9 +177,6 @@ contract Seed {
         // Funding Token balance of this contract;
         uint256 fundingBalance = fundingToken.balanceOf(address(this));
 
-        //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
-        // uint256 alreadyLockedSeedTokens = (fundingBalance.mul(PCT_BASE)).div(price);
-
         //  feeAmount is an amount of fee we are going to get in seedTokens
         uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
 
@@ -194,14 +191,6 @@ contract Seed {
 
         require( seedToken.balanceOf(address(this)) >= seedRemainder,
             "Seed: seed distribution exceeded");
-
-
-        // We are calculating that we are not exceeding balance of seedTokens in this contract
-        // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
-        // require( seedToken.balanceOf(address(this)) >= (alreadyLockedSeedTokens.
-        //                                                 add(_seedAmount).
-        //                                                 add(feeAmount)),
-        //     "Seed: seed distribution exceeded");
 
         // Here we are sending amount of tokens to pay for lock and fee
         // FundingTokensSent = fundingAmount + fundingFee
