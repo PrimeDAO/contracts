@@ -117,6 +117,7 @@ contract Seed {
 
     /**
       * @dev                          Initialize Seed.
+      * @param _beneficiary           The address that recieves fees.
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
       * @param _tokens                Array containing two params:
@@ -131,7 +132,7 @@ contract Seed {
       * @param _vestingDuration       Vesting period duration in days.
       * @param _vestingCliff          Cliff duration in days.
       * @param _permissionedSeed         Set to true if only whitelisted adresses are allowed to participate.
-      * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
+      * @param _fee                   Success fee expressed as a % (e.g. 2 = 2% fee)
     */
     function initialize(
         address _beneficiary,
@@ -166,21 +167,21 @@ contract Seed {
     }
 
     /**
-      * @dev                     Buy seed tokens.
+      * @dev                     Buy and lock seed tokens.
       * @param _seedAmount       The amount of seed tokens to buy.
     */
     function buy(uint256 _seedAmount) public isActive allowedToBuy {
-        seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
+
         // Funding Token balance of this contract;
         uint256 fundingBalance = fundingToken.balanceOf(address(this));
+
         //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
-        uint256 alreadyLockedSeedTokens = (fundingBalance.mul(PCT_BASE)).div(price);
+        // uint256 alreadyLockedSeedTokens = (fundingBalance.mul(PCT_BASE)).div(price);
+
         //  feeAmount is an amount of fee we are going to get in seedTokens
         uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
-        //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
-        uint256 lockedSeedFee = (alreadyLockedSeedTokens.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         // total fundingAmount should not be greater than the hardCap
         require( fundingBalance.
@@ -188,12 +189,19 @@ contract Seed {
                   add((feeAmount.mul(price)).div(PCT_BASE)) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
+        // the amount of seed tokens still to be distributed
+        seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
+
+        require( seedToken.balanceOf(address(this)) >= seedRemainder,
+            "Seed: seed distribution exceeded");
+
+
         // We are calculating that we are not exceeding balance of seedTokens in this contract
         // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
-        require( seedToken.balanceOf(address(this)) >= (alreadyLockedSeedTokens.
-                                                        add(_seedAmount).
-                                                        add(feeAmount)),
-            "Seed: seed distribution exceeded");
+        // require( seedToken.balanceOf(address(this)) >= (alreadyLockedSeedTokens.
+        //                                                 add(_seedAmount).
+        //                                                 add(feeAmount)),
+        //     "Seed: seed distribution exceeded");
 
         // Here we are sending amount of tokens to pay for lock and fee
         // FundingTokensSent = fundingAmount + fundingFee
