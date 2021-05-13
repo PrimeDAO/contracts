@@ -56,6 +56,8 @@ contract Seed {
     uint256   public totalLockCount;
     bool      public initialized;
     bool      public minimumReached;
+    bool      public maximumReached;
+
 
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
@@ -90,7 +92,7 @@ contract Seed {
         _;
     }
 
-    modifier checked() {
+    modifier senderIsAllowedToBuy() {
         require(isWhitelisted != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
         require(endTime >= block.timestamp ,"Seed: the distribution is already finished");
         _;
@@ -160,7 +162,7 @@ contract Seed {
       * @dev                     Buy seed tokens.
       * @param _seedAmount       The amount of seed tokens to buy.
     */
-    function buy(uint256 _seedAmount) public protected checked {
+    function buy(uint256 _seedAmount) public protected senderIsAllowedToBuy {
         seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
