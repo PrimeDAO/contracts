@@ -56,6 +56,7 @@ contract Seed {
     uint256   public totalLockCount;
     bool      public initialized;
     bool      public minimumReached;
+    bool      public maximumReached;   
 
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
@@ -90,20 +91,27 @@ contract Seed {
         _;
     }
 
-    modifier senderIsAllowedToBuy() {
+    modifier allowedToBuy() {
         require(permissionedSeed != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
         require(endTime >= block.timestamp ,"Seed: the distribution is already finished");
         _;
     }
 
-
-    modifier checkMinimumReached() {
+    modifier allowedToClaim() {
         require(minimumReached == true, "Seed: minimum funding amount not met");
+        require(endTime <= block.timestamp  || maximumReached == true,"Seed: the distribution has not yet finished");
         _;
     }
 
-    modifier beforeMinimumReached() {
-        require(minimumReached == false, "Seed: minimum already met");
+    modifier allowedToRetrieve() {
+        require(minimumReached != true, "Seed: minimum funding amount not met");
+        require(paused != true, "Seed: should not be paused");
+        _;
+    }
+
+    modifier allowedToWithdraw() {
+        require(minimumReached == true, "Seed: minimum funding amount not met");
+        require(paused != true, "Seed: should not be paused");
         _;
     }
 
@@ -153,14 +161,15 @@ contract Seed {
         fee             = _fee;
         closed          = false;
         minimumReached  = false;
-        seedRemainder  = IERC20(_tokens[0]).balanceOf(address(this));
+        maximumReached  = false;
+        seedRemainder   = IERC20(_tokens[0]).balanceOf(address(this));
     }
 
     /**
       * @dev                     Buy seed tokens.
       * @param _seedAmount       The amount of seed tokens to buy.
     */
-    function buy(uint256 _seedAmount) public isActive senderIsAllowedToBuy {
+    function buy(uint256 _seedAmount) public isActive allowedToBuy {
         seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
@@ -193,6 +202,8 @@ contract Seed {
 
         if (fundingToken.balanceOf(address(this)) >= softCap) {
             minimumReached = true;
+        } else if (fundingToken.balanceOf(address(this)) >= hardCap) {
+            maximumReached = true;            
         }
 
         _addLock(
@@ -209,7 +220,7 @@ contract Seed {
       * @dev                     Claim locked tokens.
       * @param _locker           The address of the locker.
     */
-    function claimLock(address _locker) public checkMinimumReached {
+    function claimLock(address _locker) public allowedToClaim {
         uint16 daysVested;
         uint256 amountVested;
         (daysVested, amountVested) = _calculateClaim(_locker);
@@ -227,8 +238,7 @@ contract Seed {
     /**
       * @dev         Returns funding tokens to user.
     */
-    function retrieveFundingTokens() public beforeMinimumReached {
-        require(paused != true, "Seed: should not be paused");
+    function retrieveFundingTokens() public allowedToRetrieve {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
@@ -307,8 +317,7 @@ contract Seed {
     /**
       * @dev                     Withdraw funds from the contract
     */
-    function withdraw() public onlyAdmin checkMinimumReached {
-        require(paused != true, "Seed: should not be paused");
+    function withdraw() public onlyAdmin allowedToWithdraw {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 
