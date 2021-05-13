@@ -43,7 +43,9 @@ const deployStakingClone = async (setup, stakingOptions) => {
     const tx = await setup.primeDAO.farmManager.execute(proposalId);
     setup.data.tx = tx;
     const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.farmFactory, 'FarmCreated', {});
-    return await StakingRewards.at(receipt.args[0]);
+    const contract = await StakingRewards.at(receipt.args[0]);
+    console.log(await contract._notEntered());  // for testing I have made the variable '_notEntered' at ReentrancyGuard to public
+    return contract;
 };
 
 contract('StakingRewards Clone', (accounts) => {
@@ -74,9 +76,11 @@ contract('StakingRewards Clone', (accounts) => {
             const stakingOptions = [_name, rewardToken.address, stakingToken.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address];
             setup.incentives.stakingRewards = await deployStakingClone(setup, stakingOptions);
             await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
+            console.log(await setup.incentives.stakingRewards._notEntered());
         });
         context('» reverts when initialise is called', () => {
             it('it cannot initializes contract', async () => {
+                console.log(await setup.incentives.stakingRewards._notEntered());
                 await expectRevert(setup.incentives.stakingRewards.initialize(_name, setup.tokens.primeToken.address, setup.balancer.pool.address, _starttime, _durationDays, setup.organization.avatar.address),
                     'StakingRewards: contract already initialized');
             });
@@ -91,10 +95,12 @@ contract('StakingRewards Clone', (accounts) => {
                 expect(startTime.toString()).to.equal(_starttime.toString());
             });
             it('correct duration', async () => {
+                console.log(await setup.incentives.stakingRewards._notEntered());
                 const duration = await setup.incentives.stakingRewards.duration();
                 expect(duration.toString()).to.equal((_durationDays*24*60*60).toString());
             });
             it('lastUpdateTime == startTime', async () => {
+                console.log(await setup.incentives.stakingRewards._notEntered());
                 const lastUpdateTime = await setup.incentives.stakingRewards.lastUpdateTime();
                 expect(lastUpdateTime.toString()).to.equal(_starttime.toString());
             });
@@ -111,7 +117,9 @@ contract('StakingRewards Clone', (accounts) => {
                 await rewardToken.transfer(setup.organization.avatar.address, _initreward);
                 const stakingOptions = [_name, rewardToken.address, stakingToken.address, _initreward, _starttime, _durationDays, setup.organization.avatar.address];
                 setup.incentives.stakingRewards = await deployStakingClone(setup, stakingOptions);
+                console.log(await setup.incentives.stakingRewards._notEntered());
                 await setup.tokens.primeToken.transfer(setup.incentives.stakingRewards.address, _initreward);
+                console.log(await setup.incentives.stakingRewards._notEntered());
             });
             it('it reverts', async () => {
                 await expectRevert(
