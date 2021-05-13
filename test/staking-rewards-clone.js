@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require('chai');
-const { constants, time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { constants, /* time, */  expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const helpers = require('./helpers');
 
 const StakingRewards = artifacts.require('StakingRewards');
@@ -50,17 +50,17 @@ const deployStakingClone = async (setup, stakingOptions) => {
 
 contract('StakingRewards Clone', (accounts) => {
     let setup;
-    let stakeAmount;
-    let halfStake;
-    let rewardAmount;
+    // let stakeAmount;
+    // let halfStake;
+    // let rewardAmount;
     let _name = 'newFarm';
     // let rescueAmount = toWei('100');
     // let stakingAmount = toWei('100');
     let _initreward = toWei('9249.999999999999475712');
-    let _badInitReward;
+    // let _badInitReward;
     let _starttime = 1600560000; // 2020-09-20 00:00:00 (UTC +00:00)
     let _durationDays = 7;
-    let initTime;
+    // let initTime;
     let rewardToken;
     let stakingToken;
     // let rescueToken;
@@ -109,7 +109,7 @@ contract('StakingRewards Clone', (accounts) => {
     context('# stake', async () => {
         before('!! deploy clone', async () => {
             setup = await deploy(accounts);
-            stakeAmount = toWei('100');
+            // stakeAmount = toWei('100');
         });
         context('stake parameter is not valid', async () => {
             before('!! deploy clone and fund', async () => {
