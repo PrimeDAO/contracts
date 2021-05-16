@@ -179,13 +179,13 @@ contract('Seed', (accounts) => {
         context('# claimLock', () => {
             context('» generics', () => {
                 it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1), 'Seed: amountVested is 0');
+                    await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).div(twoBN)), 'Seed: amountVested is 0');
                 });
                 it('it withdraws tokens after time passes', async () => {
                     // increase time
                     await time.increase(time.duration.days(91));
                     // claim lock
-                    let tx = await setup.seed.claimLock(buyer1, {from:buyer1});
+                    let tx = await setup.seed.claimLock(buyer1, toWei('50'), {from:buyer1});
                     setup.data.tx = tx;
 
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed', {
@@ -193,6 +193,13 @@ contract('Seed', (accounts) => {
                     });
                 });
                 it('funds dao with fee', async () => {
+                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
+                        .equal(twoHundredETH);
+                });
+                it('funds dao only once per user', async () => {
+                    let tx = await setup.seed.claimLock(buyer1, toWei('50'), {from:buyer1});
+                    setup.data.tx = tx;
+
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
                         .equal(twoHundredETH);
                 });

@@ -209,17 +209,23 @@ contract Seed {
       * @dev                     Claim locked tokens.
       * @param _locker           The address of the locker.
     */
-    function claimLock(address _locker) public checkMinimumReached {
+    function claimLock(address _locker, uint256 _maxClaimAmount) public checkMinimumReached {
         uint16 daysVested;
         uint256 amountVested;
-        (daysVested, amountVested) = _calculateClaim(_locker);
+        require(
+            tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed) >= _maxClaimAmount
+            ,"Seed: claim more than balance");
+        (daysVested, amountVested) = _calculateClaim(_locker, _maxClaimAmount);
         require(amountVested > 0, "Seed: amountVested is 0");
 
         Lock storage tokenLock = tokenLocks[_locker];
+        uint256 previouslyClaimed = tokenLock.totalClaimed;
         tokenLock.daysClaimed  = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
-        require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
+        if(previouslyClaimed==0){
+            require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
+        }
         require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
         emit TokensClaimed(_locker, amountVested);
     }
@@ -326,7 +332,7 @@ contract Seed {
 
     // GETTER FUNCTIONS
     function calculateClaim(address _locker) public view returns(uint16, uint256) {
-        return _calculateClaim(_locker);
+        return _calculateClaim(_locker, tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed));
     }
 
     function checkWhitelisted(address _buyer) public view returns(bool) {
@@ -384,7 +390,7 @@ contract Seed {
         totalLockCount++;
     }
 
-    function _calculateClaim(address _locker) private view returns (uint16, uint256) {
+    function _calculateClaim(address _locker, uint256 _maxClaimAmount) private view returns (uint16, uint256) {
         Lock storage tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
@@ -396,14 +402,25 @@ contract Seed {
         }
 
         // If over vesting duration, all tokens vested
-        if (elapsedDays >= vestingDuration) {
+        uint256 amountVestedPerDay = tokenLock.seedAmount.div(uint256(vestingDuration));
+
+        if (elapsedDays >= vestingDuration){
             uint256 remainingGrant = tokenLock.seedAmount.sub(tokenLock.totalClaimed);
-            return (vestingDuration, remainingGrant);
-        } else {
-            uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
-            uint256 amountVestedPerDay = tokenLock.seedAmount.div(uint256(vestingDuration));
-            uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
-            return (daysVested, amountVested);
+            if(_maxClaimAmount>=remainingGrant){
+                // daysVested = uint32(elapsedDays.sub(tokenLock.daysClaimed));
+                return (uint16(vestingDuration.sub(tokenLock.daysClaimed)), remainingGrant);
+            }
+            // claimDays = uint32(_claimAmount.div(amountVestedPerDay))
+            return (uint16(_maxClaimAmount.div(amountVestedPerDay)), _maxClaimAmount);
         }
+        
+        uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
+        uint16 claimDays = uint16(_maxClaimAmount.div(amountVestedPerDay));
+        if(daysVested >= claimDays){
+            // amountVested = uint256(claimDays.mul(amountVestedPerDay));
+            return (claimDays, uint256(claimDays.mul(amountVestedPerDay)));
+        }
+        // amountVested = uint256(daysVested.mul(amountVestedPerDay));
+        return (daysVested, uint256(daysVested.mul(amountVestedPerDay)));
     }
 }
