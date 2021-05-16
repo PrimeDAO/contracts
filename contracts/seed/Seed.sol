@@ -32,7 +32,7 @@ contract Seed {
     address public admin;
     uint256 public softCap;
     uint256 public hardCap;
-    uint256 public seedRemainder;
+    uint256 public seedAmtAtStart;
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -54,6 +54,9 @@ contract Seed {
     bool      public closed;
     bool      public paused;
     uint256   public totalLockCount;
+    uint256   public seedRemainder;
+    uint256   public fundingCollected;
+    uint256   public fundingWithdawn;
     bool      public initialized;
     bool      public minimumReached;
     bool      public maximumReached;   
@@ -163,6 +166,7 @@ contract Seed {
         minimumReached  = false;
         maximumReached  = false;
         seedRemainder   = IERC20(_tokens[0]).balanceOf(address(this));
+        seedAmtAtStart  = IERC20(_tokens[0]).balanceOf(address(this));
     }
 
     /**
@@ -206,6 +210,8 @@ contract Seed {
             maximumReached = true;            
         }
 
+        fundingCollected += fundingAmount;
+
         _addLock(
             msg.sender,
             (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
@@ -219,6 +225,7 @@ contract Seed {
     /**
       * @dev                     Claim locked tokens.
       * @param _locker           The address of the locker.
+      * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim.
     */
     function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim {
         uint16 daysVested;
@@ -324,6 +331,7 @@ contract Seed {
       * @dev                     Withdraw funds from the contract
     */
     function withdraw() public onlyAdmin allowedToWithdraw {
+        fundingWithdawn -= fundingToken.balanceOf(address(this));
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 
