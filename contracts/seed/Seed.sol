@@ -33,7 +33,6 @@ contract Seed {
     uint256 public softCap;
     uint256 public hardCap;
     uint256 public seedRemainder;
-    uint256 public allocatedSeed;
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -165,7 +164,6 @@ contract Seed {
         minimumReached  = false;
         maximumReached  = false;
         seedRemainder   = IERC20(_tokens[0]).balanceOf(address(this));
-        allocatedSeed   = seedRemainder;
     }
 
     /**
@@ -193,6 +191,9 @@ contract Seed {
 
         // the amount of seed tokens still to be distributed
         seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
+
+        require( seedToken.balanceOf(address(this)) >= seedRemainder,
+            "Seed: seed distribution exceeded");
 
         // Here we are sending amount of tokens to pay for lock and fee
         // FundingTokensSent = fundingAmount + fundingFee
@@ -225,10 +226,9 @@ contract Seed {
         (daysVested, amountVested) = _calculateClaim(_locker);
         require(amountVested > 0, "Seed: amountVested is 0");
 
-        Lock memory tokenLock = tokenLocks[_locker];
+        Lock storage tokenLock = tokenLocks[_locker];
         tokenLock.daysClaimed  = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
-        tokenLocks[_locker] = tokenLock;
 
         require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
         require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
@@ -240,14 +240,14 @@ contract Seed {
     */
     function retrieveFundingTokens() public allowedToRetrieve {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
-        Lock memory tokenLock = tokenLocks[msg.sender];
+        Lock storage tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
+        uint256 feeAmount = (tokenLock.seedAmount).mul(uint256(PPM)).mul(fee).div(PPM100);
         uint256 fundingFeeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
-        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
+        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(feeAmount);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
-        tokenLocks[msg.sender] = tokenLock;
         require(
             fundingToken.transfer(msg.sender, amount.add(fundingFeeAmount)),
             "Seed: cannot return funding tokens to msg.sender"
@@ -395,7 +395,7 @@ contract Seed {
     }
 
     function _calculateClaim(address _locker) private view returns (uint16, uint256) {
-        Lock memory tokenLock = tokenLocks[_locker];
+        Lock storage tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
         uint256 elapsedTime = _currentTime().sub(startTime);
