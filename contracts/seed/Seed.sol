@@ -331,7 +331,7 @@ contract Seed {
     }
 
     // GETTER FUNCTIONS
-    function calculateClaim(address _locker) public view returns(uint16, uint256) {
+    function calculateMaxClaim(address _locker) public view returns(uint16, uint256) {
         return _calculateClaim(_locker, tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed));
     }
 

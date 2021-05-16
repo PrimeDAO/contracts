@@ -180,14 +180,22 @@ contract('Seed', (accounts) => {
         context('# claimLock', () => {
             context('» generics', () => {
                 before('!! calculate maximum amount to claim', async () => {
-                    maxClaimAmount = (new BN(90)).mul((new BN(buyAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                    maxClaimAmount = (new BN(92)).mul((new BN(buyAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                    console.log(maxClaimAmount.toString());
+                    console.log((maxClaimAmount.div(twoBN)).toString());
                 });
                 it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
                     await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).div(twoBN)), 'Seed: amountVested is 0');
                 });
-                it('it withdraws tokens after time passes', async () => {
+                it('calculates correct claim', async () => {
                     // increase time
-                    await time.increase(time.duration.days(90));
+                    await time.increase(time.duration.days(92));
+                    const claim = await setup.seed.calculateMaxClaim(buyer1);
+                    const expectedClaim = new BN(92).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    expect(claim[0].toString()).to.equal('92');
+                    expect(claim[1].toString()).to.equal(expectedClaim.toString());
+                }); 
+                it('it withdraws tokens after time passes', async () => {
                     // claim lock
                     let tx = await setup.seed.claimLock(buyer1, maxClaimAmount.div(twoBN), {from:buyer1});
                     setup.data.tx = tx;
@@ -335,12 +343,12 @@ contract('Seed', (accounts) => {
             });
             context('» getDaysClaimed', () => {
                 it('returns correct claimed', async () => {
-                    expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('90');
+                    expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('92');
                 });
             });
             context('» getTotalClaimed', () => {
                 it('returns correct claimed', async () => {
-                    expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('90');
+                    expect((await setup.seed.getDaysClaimed(buyer1)).toString()).to.equal('92');
                 });
             });
             context('» getFee', () => {
