@@ -181,8 +181,6 @@ contract('Seed', (accounts) => {
             context('» generics', () => {
                 before('!! calculate maximum amount to claim', async () => {
                     maxClaimAmount = (new BN(92)).mul((new BN(buyAmount).mul(twoBN)).div(new BN(vestingDuration)));
-                    console.log(maxClaimAmount.toString());
-                    console.log((maxClaimAmount.div(twoBN)).toString());
                 });
                 it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
                     await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).div(twoBN)), 'Seed: amountVested is 0');
