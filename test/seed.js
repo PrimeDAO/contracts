@@ -192,7 +192,12 @@ contract('Seed', (accounts) => {
                     const expectedClaim = new BN(92).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
                     expect(claim[0].toString()).to.equal('92');
                     expect(claim[1].toString()).to.equal(expectedClaim.toString());
-                }); 
+                });
+                it('it cannot claim more than vested', async () => {
+                    await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
+                        "Seed: cannot claim more than balance"
+                    );
+                });
                 it('it withdraws tokens after time passes', async () => {
                     // claim lock
                     let tx = await setup.seed.claimLock(buyer1, maxClaimAmount.div(twoBN), {from:buyer1});

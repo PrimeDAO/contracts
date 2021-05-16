@@ -214,7 +214,7 @@ contract Seed {
         uint256 amountVested;
         require(
             tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed) >= _maxClaimAmount
-            ,"Seed: claim more than balance");
+            ,"Seed: cannot claim more than balance");
         (daysVested, amountVested) = _calculateClaim(_locker, _maxClaimAmount);
         require(amountVested > 0, "Seed: amountVested is 0");
 
