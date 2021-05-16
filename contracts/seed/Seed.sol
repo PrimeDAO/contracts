@@ -36,7 +36,7 @@ contract Seed {
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
-    bool    public isWhitelisted;
+    bool    public permissionedSeed;
     uint16  public vestingDuration;
     uint16  public vestingCliff;
     IERC20  public seedToken;
@@ -56,6 +56,7 @@ contract Seed {
     uint256   public totalLockCount;
     bool      public initialized;
     bool      public minimumReached;
+    bool      public maximumReached;   
 
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
@@ -84,26 +85,33 @@ contract Seed {
         _;
     }
 
-    modifier protected() {
+    modifier isActive() {
         require(closed != true, "Seed: should not be closed");
         require(paused != true, "Seed: should not be paused");
         _;
     }
 
-    modifier checked() {
-        require(isWhitelisted != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
+    modifier allowedToBuy() {
+        require(permissionedSeed != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
         require(endTime >= block.timestamp ,"Seed: the distribution is already finished");
         _;
     }
 
-
-    modifier checkMinimumReached() {
+    modifier allowedToClaim() {
         require(minimumReached == true, "Seed: minimum funding amount not met");
+        require(endTime <= block.timestamp  || maximumReached == true,"Seed: the distribution has not yet finished");
         _;
     }
 
-    modifier beforeMinimumReached() {
+    modifier allowedToRetrieve() {
         require(minimumReached == false, "Seed: minimum already met");
+        require(paused != true, "Seed: should not be paused");
+        _;
+    }
+
+    modifier allowedToWithdraw() {
+        require(minimumReached == true, "Seed: minimum funding amount not met");
+        require(paused != true, "Seed: should not be paused");
         _;
     }
 
@@ -122,7 +130,7 @@ contract Seed {
       * @param _endTime               Distribution end time in unix timecode.
       * @param _vestingDuration       Vesting period duration in days.
       * @param _vestingCliff          Cliff duration in days.
-      * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
+      * @param _permissionedSeed         Set to true if only whitelisted adresses are allowed to participate.
       * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
     */
     function initialize(
@@ -135,7 +143,7 @@ contract Seed {
         uint256 _endTime,
         uint16  _vestingDuration,
         uint16  _vestingCliff,
-        bool    _isWhitelisted,
+        bool    _permissionedSeed,
         uint8   _fee
     ) public initializer {
         beneficiary     = _beneficiary;
@@ -147,20 +155,21 @@ contract Seed {
         endTime         = _endTime;
         vestingDuration = _vestingDuration;
         vestingCliff    = _vestingCliff;
-        isWhitelisted   = _isWhitelisted;
+        permissionedSeed   = _permissionedSeed;
         seedToken       = IERC20(_tokens[0]);
         fundingToken    = IERC20(_tokens[1]);
         fee             = _fee;
         closed          = false;
         minimumReached  = false;
-        seedRemainder  = IERC20(_tokens[0]).balanceOf(address(this));
+        maximumReached  = false;
+        seedRemainder   = IERC20(_tokens[0]).balanceOf(address(this));
     }
 
     /**
       * @dev                     Buy seed tokens.
       * @param _seedAmount       The amount of seed tokens to buy.
     */
-    function buy(uint256 _seedAmount) public protected checked {
+    function buy(uint256 _seedAmount) public isActive allowedToBuy {
         seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
@@ -193,6 +202,8 @@ contract Seed {
 
         if (fundingToken.balanceOf(address(this)) >= softCap) {
             minimumReached = true;
+        } else if (fundingToken.balanceOf(address(this)) >= hardCap) {
+            maximumReached = true;            
         }
 
         _addLock(
@@ -209,7 +220,7 @@ contract Seed {
       * @dev                     Claim locked tokens.
       * @param _locker           The address of the locker.
     */
-    function claimLock(address _locker, uint256 _maxClaimAmount) public checkMinimumReached {
+    function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim {
         uint16 daysVested;
         uint256 amountVested;
         require(
@@ -233,8 +244,7 @@ contract Seed {
     /**
       * @dev         Returns funding tokens to user.
     */
-    function retrieveFundingTokens() public beforeMinimumReached {
-        require(paused != true, "Seed: should not be paused");
+    function retrieveFundingTokens() public allowedToRetrieve {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
@@ -255,7 +265,7 @@ contract Seed {
     /**
       * @dev                     Pause distribution.
     */
-    function pause() public onlyAdmin protected {
+    function pause() public onlyAdmin isActive {
         paused = true;
     }
 
@@ -272,7 +282,7 @@ contract Seed {
     /**
       * @dev                     Close distribution.
     */
-    function close() public onlyAdmin protected {
+    function close() public onlyAdmin isActive {
         // transfer seed tokens back to admin
         require(
             seedToken.transfer(admin, seedToken.balanceOf(address(this))),
@@ -285,8 +295,8 @@ contract Seed {
     /**
       * @dev                     Add address to whitelist.
     */
-    function whitelist(address _buyer) public onlyAdmin protected {
-        require(isWhitelisted == true, "Seed: module is not whitelisted");
+    function whitelist(address _buyer) public onlyAdmin isActive {
+        require(permissionedSeed == true, "Seed: module is not whitelisted");
 
         whitelisted[_buyer] = true;
     }
@@ -294,8 +304,8 @@ contract Seed {
     /**
       * @dev                     Add multiple addresses to whitelist.
     */
-    function whitelistBatch(address[] memory _buyers) public onlyAdmin protected {
-        require(isWhitelisted == true, "Seed: module is not whitelisted");
+    function whitelistBatch(address[] memory _buyers) public onlyAdmin isActive {
+        require(permissionedSeed == true, "Seed: module is not whitelisted");
         for (uint256 i=0; i < _buyers.length; i++) {
             whitelisted[_buyers[i]] = true;
         }
@@ -304,8 +314,8 @@ contract Seed {
     /**
       * @dev                     Remove address from whitelist.
     */
-    function unwhitelist(address buyer) public onlyAdmin protected {
-        require(isWhitelisted == true, "Seed: module is not whitelisted");
+    function unwhitelist(address buyer) public onlyAdmin isActive {
+        require(permissionedSeed == true, "Seed: module is not whitelisted");
 
         whitelisted[buyer] = false;
     }
@@ -313,8 +323,7 @@ contract Seed {
     /**
       * @dev                     Withdraw funds from the contract
     */
-    function withdraw() public onlyAdmin checkMinimumReached {
-        require(paused != true, "Seed: should not be paused");
+    function withdraw() public onlyAdmin allowedToWithdraw {
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 

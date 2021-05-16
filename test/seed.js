@@ -48,7 +48,7 @@ contract('Seed', (accounts) => {
     let endTime;
     let vestingDuration;
     let vestingCliff;
-    let isWhitelisted;
+    let permissionedSeed;
     let fee;
     let seed;
     let metadata;
@@ -81,7 +81,7 @@ contract('Seed', (accounts) => {
             endTime    = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
             vestingCliff    = 90;  // 3 months
-            isWhitelisted = false;
+            permissionedSeed = false;
             fee = 2;
             metadata = `0x`;
 
@@ -104,7 +104,7 @@ contract('Seed', (accounts) => {
                         endTime,
                         vestingDuration,
                         vestingCliff,
-                        isWhitelisted,
+                        permissionedSeed,
                         fee
                     );
 
@@ -115,7 +115,7 @@ contract('Seed', (accounts) => {
                     expect( await setup.seed.fundingToken()).to.equal(fundingToken.address);
                     expect((await setup.seed.softCap()).toString()).to.equal(softCap);
                     expect((await setup.seed.price()).toString()).to.equal(price);
-                    expect( await setup.seed.isWhitelisted()).to.equal(isWhitelisted);
+                    expect( await setup.seed.permissionedSeed()).to.equal(permissionedSeed);
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect( await setup.seed.closed()).to.equal(false);
                     expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal((requiredSeedAmount).toString());
@@ -133,7 +133,7 @@ contract('Seed', (accounts) => {
                             endTime,
                             vestingDuration,
                             vestingCliff,
-                            isWhitelisted,
+                            permissionedSeed,
                             fee
                         ),
                         'Seed: contract already initialized'
@@ -175,12 +175,18 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((prevSeedAmount.mul(twoBN)).toString());
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal((prevFeeAmount.mul(twoBN)).toString());
                 });
+                it('return totalClaimed == 0', async () => {
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(zeroStr);
+                });
             });
         });
         context('# claimLock', () => {
             context('» generics', () => {
                 before('!! calculate maximum amount to claim', async () => {
                     maxClaimAmount = (new BN(92)).mul((new BN(buyAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                });
+                it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
+                    await expectRevert(setup.seed.claimLock(buyer1), 'Seed: the distribution has not yet finished');
                 });
                 it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
                     await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).div(twoBN)), 'Seed: amountVested is 0');
@@ -206,6 +212,10 @@ contract('Seed', (accounts) => {
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed', {
                         recipient: buyer1
                     });
+                });
+                it('updates claim', async () => {
+                    const expectedClaim = new BN(91).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(expectedClaim.toString());
                 });
                 it('funds dao with fee', async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
@@ -243,7 +253,7 @@ contract('Seed', (accounts) => {
                         newEndTime,
                         vestingDuration,
                         vestingCliff,
-                        isWhitelisted,
+                        permissionedSeed,
                         fee
                     );
                 });
@@ -298,7 +308,7 @@ contract('Seed', (accounts) => {
                         newEndTime,
                         vestingDuration,
                         vestingCliff,
-                        isWhitelisted,
+                        permissionedSeed,
                         fee
                     );
 
@@ -435,7 +445,7 @@ contract('Seed', (accounts) => {
                         newEndTime,
                         vestingDuration,
                         vestingCliff,
-                        isWhitelisted,
+                        permissionedSeed,
                         fee
                     );
                 });
@@ -471,7 +481,7 @@ contract('Seed', (accounts) => {
             endTime    = await startTime.add(await time.duration.days(7));
             vestingDuration = 365; // 1 year
             vestingCliff    = 90; // 3 months
-            isWhitelisted = true;
+            permissionedSeed = true;
             fee = 2;
             requiredSeedAmount = (new BN(hardCap,ten)).div(new BN(price,ten)).mul(new BN(pct_base,ten));
         });
@@ -495,7 +505,7 @@ contract('Seed', (accounts) => {
                         endTime,
                         vestingDuration,
                         vestingCliff,
-                        isWhitelisted,
+                        permissionedSeed,
                         fee
                     );
 
@@ -506,7 +516,7 @@ contract('Seed', (accounts) => {
                     expect( await seed.fundingToken()).to.equal(fundingToken.address);
                     expect((await seed.softCap()).toString()).to.equal(softCap);
                     expect((await seed.price()).toString()).to.equal(price);
-                    expect( await seed.isWhitelisted()).to.equal(isWhitelisted);
+                    expect( await seed.permissionedSeed()).to.equal(permissionedSeed);
                     expect((await seed.fee()).toString()).to.equal(fee.toString());
                     expect( await seed.closed()).to.equal(false);
                     expect((await seedToken.balanceOf(seed.address)).toString()).to.equal(requiredSeedAmount.toString());
@@ -524,7 +534,7 @@ contract('Seed', (accounts) => {
                             endTime,
                             vestingDuration,
                             vestingCliff,
-                            isWhitelisted,
+                            permissionedSeed,
                             fee
                         ),
                         'Seed: contract already initialized'
