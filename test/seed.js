@@ -186,10 +186,7 @@ contract('Seed', (accounts) => {
                     maxClaimAmount = (new BN(92)).mul((new BN(buyAmount).mul(twoBN)).div(new BN(vestingDuration)));
                 });
                 it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1), 'Seed: the distribution has not yet finished');
-                });
-                it('it fails on withdrawing seed tokens if not vested for enough time', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).div(twoBN)), 'Seed: amountVested is 0');
+                    await expectRevert(setup.seed.claimLock(buyer1, maxClaimAmount), 'Seed: the distribution has not yet finished');
                 });
                 it('calculates correct claim', async () => {
                     // increase time
@@ -214,8 +211,8 @@ contract('Seed', (accounts) => {
                     });
                 });
                 it('updates claim', async () => {
-                    const expectedClaim = new BN(91).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(expectedClaim.toString());
+                    const expectedClaim = new BN(92).mul((new BN(buyAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(expectedClaim.div(twoBN).toString());
                 });
                 it('funds dao with fee', async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
