@@ -239,14 +239,13 @@ contract Seed {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
-        uint256 feeAmount = (tokenLock.seedAmount).mul(uint256(PPM)).mul(fee).div(PPM100);
-        uint256 fundingFeeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
-        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(feeAmount);
+        seedRemainder = seedRemainder.add(tokenLock.seedAmount);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
+        uint256 fundingFeeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
         require(
-            fundingToken.transfer(msg.sender, amount.add(fundingFeeAmount)),
+            fundingToken.transfer(msg.sender, (amount.add(fundingFeeAmount))),
             "Seed: cannot return funding tokens to msg.sender"
         );
         emit FundingReclaimed(msg.sender, amount);
