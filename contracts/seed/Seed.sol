@@ -56,7 +56,7 @@ contract Seed {
     uint256   public totalLockCount;
     uint256   public seedRemainder;
     uint256   public fundingCollected;
-    uint256   public fundingWithdawn;
+    uint256   public fundingWithdrawn;
     bool      public initialized;
     bool      public minimumReached;
     bool      public maximumReached;   
@@ -178,7 +178,7 @@ contract Seed {
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
         // Funding Token balance of this contract;
-        uint256 fundingBalance = fundingToken.balanceOf(address(this));
+        uint256 fundingBalance = fundingCollected;
         //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
         uint256 alreadyLockedSeedTokens = (fundingBalance.mul(PCT_BASE)).div(price);
         //  feeAmount is an amount of fee we are going to get in seedTokens
@@ -199,18 +199,18 @@ contract Seed {
                                                         add(feeAmount)),
             "Seed: seed distribution exceeded");
 
+        fundingCollected = fundingBalance.add(fundingAmount).add((feeAmount.mul(price)).div(PCT_BASE));
+
         // Here we are sending amount of tokens to pay for lock and fee
         // FundingTokensSent = fundingAmount + fundingFee
         require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount.
             add(feeAmount.mul(price).div(PCT_BASE))), "Seed: no tokens");
 
-        if (fundingToken.balanceOf(address(this)) >= softCap) {
+        if (fundingCollected >= softCap) {
             minimumReached = true;
-        } else if (fundingToken.balanceOf(address(this)) >= hardCap) {
+        } else if (fundingCollected >= hardCap) {
             maximumReached = true;            
         }
-
-        fundingCollected += fundingAmount;
 
         _addLock(
             msg.sender,
@@ -260,6 +260,7 @@ contract Seed {
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
         uint256 feeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        fundingCollected = fundingCollected.sub(amount.add(feeAmount));
         require(
             fundingToken.transfer(msg.sender, (amount.add(feeAmount))),
             "Seed: cannot return funding tokens to msg.sender"
@@ -331,7 +332,7 @@ contract Seed {
       * @dev                     Withdraw funds from the contract
     */
     function withdraw() public onlyAdmin allowedToWithdraw {
-        fundingWithdawn -= fundingToken.balanceOf(address(this));
+        fundingWithdrawn = fundingWithdrawn.add(fundingToken.balanceOf(address(this)));
         fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
     }
 
