@@ -205,7 +205,6 @@ contract Seed {
         } else if (fundingToken.balanceOf(address(this)) >= hardCap) {
             maximumReached = true;            
         }
-
         _addLock(
             msg.sender,
             (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
