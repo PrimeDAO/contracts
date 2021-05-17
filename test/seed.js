@@ -122,6 +122,7 @@ contract('Seed', (accounts) => {
                     expect( await setup.seed.closed()).to.equal(false);
                     expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal((requiredSeedAmount).toString());
                     expect((await setup.seed.seedRemainder()).toString()).to.equal((requiredSeedAmount).toString());
+                    expect((await setup.seed.seedAmtAtStart()).toString()).to.equal((requiredSeedAmount).toString());
                 });
                 it('it reverts on double initialization', async () => {
                     await expectRevert(
@@ -163,6 +164,12 @@ contract('Seed', (accounts) => {
                     const feeAmount = ((new BN(buyAmount)).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
                     expect((await setup.seed.seedRemainder()).toString()).to
                         .equal((requiredSeedAmount.sub(new BN(buyAmount,ten)).sub(feeAmount)).toString());
+                });
+                it('updates the remaining seeds to distribute', async () => {
+
+                });
+                it('updates the amount of funding token collected', async () => {
+
                 });
                 it('updates lock when it buys tokens', async () => {
                     let prevSeedAmount = await setup.seed.getSeedAmount(buyer1);
@@ -221,12 +228,19 @@ contract('Seed', (accounts) => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
                         .equal(twoHundredETH);
                 });
-                it('funds dao only once per user', async () => {
-                    let tx = await setup.seed.claimLock(buyer1, maxClaimAmount.div(twoBN), {from:buyer1});
-                    setup.data.tx = tx;
+                it('updates the amount of seed claimed by the claim amount fee', async () => {
 
+                });
+                it('calculates and claims exact seed amount', async () => {
+                    const claim = await setup.seed.calculateMaxClaim(buyer1);
+                    await setup.seed.claimLock(buyer1, claim[1], {from:buyer1});
+                });
+                it('funds dao only once per user', async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
                         .equal(twoHundredETH);
+                });
+                it('updates the amount of seed claimed by only the claim amount', async () => {
+
                 });
             });
         });
@@ -275,6 +289,9 @@ contract('Seed', (accounts) => {
                 it('updates remaining seeds', async () => {
                     expect((await setup.data.seed.seedRemainder()).toString()).to
                         .equal(requiredSeedAmount.toString());
+                });
+                it('updates amount of funding token collected', async () => {
+
                 });
                 it('cannot be called once funding minimum is reached', async () => {
                     await fundingToken.transfer(buyer2, toWei('10.2'), {from:setup.root});
@@ -325,7 +342,7 @@ contract('Seed', (accounts) => {
                     await setup.data.seed.close({from:admin});
                     expect((await seedToken.balanceOf(admin)).toString()).to.equal(stBalance.toString());
                 });
-                it('donot transfer funding tokens to the admin', async () => {
+                it('do not transfer funding tokens to the admin', async () => {
                     let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
                     expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(ftBalance.toString());
                 });

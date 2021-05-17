@@ -55,6 +55,7 @@ contract Seed {
     bool      public paused;
     uint256   public totalLockCount;
     uint256   public seedRemainder;
+    uint256   public seedClaimed;
     uint256   public fundingCollected;
     uint256   public fundingWithdrawn;
     bool      public initialized;
@@ -194,6 +195,7 @@ contract Seed {
             "Seed: seed distribution exceeded");
 
         fundingCollected = fundingBalance.add(fundingAmount).add((feeAmount.mul(price)).div(PCT_BASE));
+
         // the amount of seed tokens still to be distributed
         seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
 
@@ -237,7 +239,9 @@ contract Seed {
         tokenLock.daysClaimed  = uint16(tokenLock.daysClaimed.add(daysVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
 
+        seedClaimed = seedClaimed.add(amountVested);
         if(previouslyClaimed==0){
+            seedClaimed = seedClaimed.add(tokenLock.fee);
             require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
         }
         require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
@@ -292,7 +296,6 @@ contract Seed {
             seedToken.transfer(admin, seedToken.balanceOf(address(this))),
             "Seed: should transfer seed tokens to admin"
         );
-
         closed = true;
     }
 
@@ -328,8 +331,9 @@ contract Seed {
       * @dev                     Withdraw funds from the contract
     */
     function withdraw() public onlyAdmin allowedToWithdraw {
-        fundingWithdrawn = fundingWithdrawn.add(fundingToken.balanceOf(address(this)));
-        fundingToken.transfer(msg.sender, fundingToken.balanceOf(address(this)));
+        uint pendingFundingBalance = fundingCollected.sub(fundingWithdrawn);
+        fundingWithdrawn = fundingCollected;
+        fundingToken.transfer(msg.sender, pendingFundingBalance);
     }
 
     /**
