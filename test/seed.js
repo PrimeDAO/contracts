@@ -58,6 +58,8 @@ contract('Seed', (accounts) => {
 
     const ten  = 10;
     const zeroStr = '0';
+    const PPM    = 1000000;
+    const PPM100 = 100000000;
     const hundredETH     = toWei('100');
     const twoHundredETH  = toWei('200');
     const nineHundredETH = toWei('900');
@@ -158,8 +160,9 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal(hundredETH);
                 });
                 it('updates remaining seeds', async () => {
+                    const feeAmount = ((new BN(buyAmount)).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
                     expect((await setup.seed.seedRemainder()).toString()).to
-                        .equal((requiredSeedAmount.sub(new BN(buyAmount,ten))).toString());
+                        .equal((requiredSeedAmount.sub(new BN(buyAmount,ten)).sub(feeAmount)).toString());
                 });
                 it('updates lock when it buys tokens', async () => {
                     let prevSeedAmount = await setup.seed.getSeedAmount(buyer1);
@@ -232,7 +235,6 @@ contract('Seed', (accounts) => {
                 before('!! deploy new contract + top up buyer balance', async () => {
                     let newStartTime  = await time.latest();
                     let newEndTime = await newStartTime.add(await time.duration.days(7));
-
 
                     setup.data.seed = await Seed.new();
 

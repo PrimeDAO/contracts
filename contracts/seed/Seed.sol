@@ -120,6 +120,7 @@ contract Seed {
 
     /**
       * @dev                          Initialize Seed.
+      * @param _beneficiary           The address that recieves fees.
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
       * @param _tokens                Array containing two params:
@@ -134,7 +135,7 @@ contract Seed {
       * @param _vestingDuration       Vesting period duration in days.
       * @param _vestingCliff          Cliff duration in days.
       * @param _permissionedSeed         Set to true if only whitelisted adresses are allowed to participate.
-      * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
+      * @param _fee                   Success fee expressed as a % (e.g. 2 = 2% fee)
     */
     function initialize(
         address _beneficiary,
@@ -170,21 +171,18 @@ contract Seed {
     }
 
     /**
-      * @dev                     Buy seed tokens.
+      * @dev                     Buy and lock seed tokens.
       * @param _seedAmount       The amount of seed tokens to buy.
     */
     function buy(uint256 _seedAmount) public isActive allowedToBuy {
-        seedRemainder = seedRemainder.sub(_seedAmount);
         //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
+
         // Funding Token balance of this contract;
         uint256 fundingBalance = fundingCollected;
-        //  alreadyLockedSeedTokens is an amount of already locked SeedTokens without fee
-        uint256 alreadyLockedSeedTokens = (fundingBalance.mul(PCT_BASE)).div(price);
+
         //  feeAmount is an amount of fee we are going to get in seedTokens
         uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
-        //  lockedSeedFee is an amount of fee we already need to pay in seedTokens
-        uint256 lockedSeedFee = (alreadyLockedSeedTokens.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         // total fundingAmount should not be greater than the hardCap
         require( fundingBalance.
@@ -192,14 +190,12 @@ contract Seed {
                   add((feeAmount.mul(price)).div(PCT_BASE)) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
-        // We are calculating that we are not exceeding balance of seedTokens in this contract
-        // balanceToBe = amountOfSeedAlreadyLocked + amountOfSeedToLock + SeedFee
-        require( seedToken.balanceOf(address(this)) >= (alreadyLockedSeedTokens.
-                                                        add(_seedAmount).
-                                                        add(feeAmount)),
+        require( seedRemainder >= _seedAmount.add(feeAmount),
             "Seed: seed distribution exceeded");
 
         fundingCollected = fundingBalance.add(fundingAmount).add((feeAmount.mul(price)).div(PCT_BASE));
+        // the amount of seed tokens still to be distributed
+        seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
 
         // Here we are sending amount of tokens to pay for lock and fee
         // FundingTokensSent = fundingAmount + fundingFee
@@ -255,14 +251,14 @@ contract Seed {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
-        seedRemainder = seedRemainder.add(tokenLock.seedAmount);
+        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
-        uint256 feeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
-        fundingCollected = fundingCollected.sub(amount.add(feeAmount));
+        uint256 fundingFeeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        fundingCollected = fundingCollected.sub(amount.add(fundingFeeAmount));
         require(
-            fundingToken.transfer(msg.sender, (amount.add(feeAmount))),
+            fundingToken.transfer(msg.sender, (amount.add(fundingFeeAmount))),
             "Seed: cannot return funding tokens to msg.sender"
         );
         emit FundingReclaimed(msg.sender, amount);
