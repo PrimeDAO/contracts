@@ -239,7 +239,7 @@ contract Seed {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock storage tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
-        seedRemainder = seedRemainder.add(tokenLock.seedAmount);
+        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
