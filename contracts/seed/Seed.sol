@@ -186,14 +186,11 @@ contract Seed {
                   add((feeAmount.mul(price)).div(PCT_BASE)) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
-        require( seedToken.balanceOf(address(this)) >= seedRemainder,
+        require( seedRemainder >= _seedAmount.add(feeAmount),
             "Seed: seed distribution exceeded");
 
         // the amount of seed tokens still to be distributed
         seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
-
-        require( seedToken.balanceOf(address(this)) >= seedRemainder,
-            "Seed: seed distribution exceeded");
 
         // Here we are sending amount of tokens to pay for lock and fee
         // FundingTokensSent = fundingAmount + fundingFee
