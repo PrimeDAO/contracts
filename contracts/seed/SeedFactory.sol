@@ -99,8 +99,8 @@ contract SeedFactory is CloneFactory {
         uint256          _price,
         uint256          _startTime,
         uint256          _endTime,
-        uint16 	         _vestingDuration,
-        uint16 	         _vestingCliff,
+        uint32 	         _vestingDuration,
+        uint32 	         _vestingCliff,
         bool 	         _isWhitelisted,
         uint8            _fee,
         bytes32          _metadata

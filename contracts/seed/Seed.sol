@@ -24,7 +24,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
  */
 contract Seed {
     using SafeMath for uint256;
-    using SafeMath for uint16;
+    using SafeMath for uint32;
     using SafeMath for uint8;
 
     // Locked parameters
@@ -32,13 +32,13 @@ contract Seed {
     address public admin;
     uint256 public softCap;
     uint256 public hardCap;
-    uint256 public seedAmtAtStart;
+    uint256 public seedAmtAtStart;   // EXP - Amount of Seed token allocated to this contract at the start.
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
     bool    public permissionedSeed;
-    uint16  public vestingDuration;
-    uint16  public vestingCliff;
+    uint32  public vestingDuration;
+    uint32  public vestingCliff;
     IERC20  public seedToken;
     IERC20  public fundingToken;
     uint8   public fee;
@@ -54,10 +54,10 @@ contract Seed {
     bool      public closed;
     bool      public paused;
     uint256   public totalLockCount;
-    uint256   public seedRemainder;
-    uint256   public seedClaimed;
-    uint256   public fundingCollected;
-    uint256   public fundingWithdrawn;
+    uint256   public seedRemainder;    // EXP - Amount of Seed token remaining to be distributed.
+    uint256   public seedClaimed;      // EXP - Amount of Seed token that have been claimed by the user.
+    uint256   public fundingCollected; // EXP - Amount of Funding token collected.
+    uint256   public fundingWithdrawn; // EXP - Amount of Funding token withdrawn from this contract.
     bool      public initialized;
     bool      public minimumReached;
     bool      public maximumReached;   
@@ -72,7 +72,7 @@ contract Seed {
 
     struct Lock { 
         uint256 seedAmount;
-        uint16  daysClaimed;
+        uint32  secondsClaimed;
         uint256 totalClaimed;
         uint256 fundingAmount;
         uint256 fee;
@@ -133,8 +133,8 @@ contract Seed {
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
-      * @param _vestingDuration       Vesting period duration in days.
-      * @param _vestingCliff          Cliff duration in days.
+      * @param _vestingDuration       Vesting period duration in seconds.
+      * @param _vestingCliff          Cliff duration in seconds.
       * @param _permissionedSeed         Set to true if only whitelisted adresses are allowed to participate.
       * @param _fee                   Success fee expressed as a % (e.g. 2 = 2% fee)
     */
@@ -146,8 +146,8 @@ contract Seed {
         uint256 _price,
         uint256 _startTime,
         uint256 _endTime,
-        uint16  _vestingDuration,
-        uint16  _vestingCliff,
+        uint32  _vestingDuration,
+        uint32  _vestingCliff,
         bool    _permissionedSeed,
         uint8   _fee
     ) public initializer {
@@ -214,7 +214,7 @@ contract Seed {
             msg.sender,
             (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
             (tokenLocks[msg.sender].fundingAmount.add(fundingAmount)),  // Previous Funding Amount + new funding amount
-             tokenLocks[msg.sender].daysClaimed,
+             tokenLocks[msg.sender].secondsClaimed,
              tokenLocks[msg.sender].totalClaimed,
             (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
             );
@@ -226,25 +226,27 @@ contract Seed {
       * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim.
     */
     function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim {
-        uint16 daysVested;
+        uint32 secondsVested;
         uint256 amountVested;
         require(
             tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed) >= _maxClaimAmount
             ,"Seed: cannot claim more than balance");
-        (daysVested, amountVested) = _calculateClaim(_locker, _maxClaimAmount);
+        (secondsVested, amountVested) = _calculateClaim(_locker, _maxClaimAmount);
         require(amountVested > 0, "Seed: amountVested is 0");
 
-        Lock storage tokenLock = tokenLocks[_locker];
+        Lock memory tokenLock = tokenLocks[_locker];
         uint256 previouslyClaimed = tokenLock.totalClaimed;
-        tokenLock.daysClaimed  = uint16(tokenLock.daysClaimed.add(daysVested));
+        tokenLock.secondsClaimed  = uint32(tokenLock.secondsClaimed.add(secondsVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
+        tokenLocks[_locker] = tokenLock;
 
-        seedClaimed = seedClaimed.add(amountVested);
         if(previouslyClaimed==0){
             seedClaimed = seedClaimed.add(tokenLock.fee);
             require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
         }
+        seedClaimed = seedClaimed.add(amountVested);
         require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
+
         emit TokensClaimed(_locker, amountVested);
     }
 
@@ -253,12 +255,13 @@ contract Seed {
     */
     function retrieveFundingTokens() public allowedToRetrieve {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
-        Lock storage tokenLock = tokenLocks[msg.sender];
+        Lock memory tokenLock = tokenLocks[msg.sender];
         uint256 amount = tokenLock.fundingAmount;
         seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
+        tokenLocks[msg.sender] = tokenLock;
         uint256 fundingFeeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
         fundingCollected = fundingCollected.sub(amount.add(fundingFeeAmount));
         require(
@@ -349,7 +352,8 @@ contract Seed {
     }
 
     // GETTER FUNCTIONS
-    function calculateMaxClaim(address _locker) public view returns(uint16, uint256) {
+    function calculateMaxClaim(address _locker) public view returns(uint32, uint256) {
+        // EXP - Second argument - ( seed amount bought by User ).sub( seed amount user have claimed )
         return _calculateClaim(_locker, tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed));
     }
 
@@ -365,8 +369,8 @@ contract Seed {
         return tokenLocks[_locker].seedAmount;
     }
 
-    function getDaysClaimed(address _locker) public view returns(uint16) {
-        return tokenLocks[_locker].daysClaimed;
+    function getSecondsClaimed(address _locker) public view returns(uint32) {
+        return tokenLocks[_locker].secondsClaimed;
     }
 
     function getTotalClaimed(address _locker) public view returns(uint256) {
@@ -386,59 +390,72 @@ contract Seed {
         address _recipient,
         uint256 _seedAmount,
         uint256 _fundingAmount,
-        uint16  _daysClaimed,
+        uint32  _secondsClaimed,
         uint256 _totalClaimed,
         uint256 _fee
     )
     internal
     {
 
-        uint256 amountVestedPerDay = _seedAmount.div(vestingDuration);
-        require(amountVestedPerDay > 0, "Seed: amountVestedPerDay > 0");
+        uint256 amountVestedPerSecond = _seedAmount.div(vestingDuration);
+        require(amountVestedPerSecond > 0, "Seed: amountVestedPerSecond > 0");
 
-        Lock memory lock = Lock({
+        tokenLocks[_recipient] = Lock({
             seedAmount: _seedAmount,
-            daysClaimed: _daysClaimed,
+            secondsClaimed: _secondsClaimed,
             totalClaimed: _totalClaimed,
             fundingAmount: _fundingAmount,
             fee: _fee
             });
-        tokenLocks[_recipient] = lock;
         emit LockAdded(_recipient, _seedAmount);
         totalLockCount++;
     }
 
-    function _calculateClaim(address _locker, uint256 _maxClaimAmount) private view returns (uint16, uint256) {
-        Lock storage tokenLock = tokenLocks[_locker];
+    /*
+        EXP:-
+            @param _locker         - the user address who wants to claim
+            @param _maxClaimAmount - the maximum amount user wants to claim.
+    */
+    function _calculateClaim(address _locker, uint256 _maxClaimAmount) private view returns (uint32, uint256) {
+        Lock memory tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
-        uint256 elapsedTime = _currentTime().sub(startTime);
-        uint256 elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
+        uint256 elapsedSeconds = _currentTime().sub(startTime);
 
-        if (elapsedDays < vestingCliff) {
-            return (uint16(elapsedDays), 0);
+        if (elapsedSeconds < vestingCliff) {
+            return (uint32(elapsedSeconds), 0);
         }
+
+        uint256 amountVestedPerSecond = tokenLock.seedAmount.div(uint256(vestingDuration));
 
         // If over vesting duration, all tokens vested
-        uint256 amountVestedPerDay = tokenLock.seedAmount.div(uint256(vestingDuration));
-
-        if (elapsedDays >= vestingDuration){
+        if (elapsedSeconds >= vestingDuration){
+            // EXP - remaining amount of seed token left with user's lokc
             uint256 remainingGrant = tokenLock.seedAmount.sub(tokenLock.totalClaimed);
+
+            // EXP - when the user wants to claim amount > amount left in user's lock
             if(_maxClaimAmount>=remainingGrant){
-                // daysVested = uint32(elapsedDays.sub(tokenLock.daysClaimed));
-                return (uint16(vestingDuration.sub(tokenLock.daysClaimed)), remainingGrant);
+
+                // EXP - returns the remaining claimable seconds and the remaining grant
+                return (uint32(vestingDuration.sub(tokenLock.secondsClaimed)), remainingGrant);
             }
-            // claimDays = uint32(_claimAmount.div(amountVestedPerDay))
-            return (uint16(_maxClaimAmount.div(amountVestedPerDay)), _maxClaimAmount);
+
+            // EXP - when user claim is less than remaining grant
+            // EXP - returns the seconds( amount user wants to claim / amount vested per day ) and the amount user wants
+            return (uint32(_maxClaimAmount.div(amountVestedPerSecond)), _maxClaimAmount);
         }
         
-        uint16 daysVested = uint16(elapsedDays.sub(tokenLock.daysClaimed));
-        uint16 claimDays = uint16(_maxClaimAmount.div(amountVestedPerDay));
-        if(daysVested >= claimDays){
-            // amountVested = uint256(claimDays.mul(amountVestedPerDay));
-            return (claimDays, uint256(claimDays.mul(amountVestedPerDay)));
+        uint32 secondsVested = uint32(elapsedSeconds.sub(tokenLock.secondsClaimed));
+        // EXP - the seconds user to claim - (Maximum amount user wants to claim)/(amount user vested per second)
+        uint32 claimseconds = uint32(_maxClaimAmount.div(amountVestedPerSecond));
+
+        // EXP - if the user wants to claim more than he can claim at this point of time
+        if(claimseconds >= secondsVested){
+            // EXP - returns the seconds vested till now and the amount w.r.t seconds vested
+            return (secondsVested, uint256(secondsVested.mul(amountVestedPerSecond)));
         }
-        // amountVested = uint256(daysVested.mul(amountVestedPerDay));
-        return (daysVested, uint256(daysVested.mul(amountVestedPerDay)));
+        // EXP - returns the seconds user wants to claim and the amount w.r.t seconds user wants to claim
+        return (claimseconds, uint256(claimseconds.mul(amountVestedPerSecond)));
+        
     }
 }
