@@ -121,11 +121,11 @@ contract Seed {
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
       * @param _tokens                Array containing two params:
-                                        - The address of the token being distributed.
-      *                                 - The address of the token being exchanged for seed token.
+                                        - The address of the seed token being distributed.
+      *                                 - The address of the funding token being exchanged for seed token.
       * @param _softAndHardCap         Array containing two params:
-                                        - the minimum distribution threshold
-                                        - the highest possible amount to be raised in wei.
+                                        - the minimum funding token collection threshold in wei denomination.
+                                        - the highest possible funding token amount to be raised in wei denomination.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
@@ -285,6 +285,7 @@ contract Seed {
 
     /**
       * @dev                     Add address to whitelist.
+      * @param _buyer            Address which needs to be whitelisted
     */
     function whitelist(address _buyer) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -294,6 +295,7 @@ contract Seed {
 
     /**
       * @dev                     Add multiple addresses to whitelist.
+      * @param _buyers           Array of addresses to whitelist addresses in batch
     */
     function whitelistBatch(address[] memory _buyers) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -304,6 +306,7 @@ contract Seed {
 
     /**
       * @dev                     Remove address from whitelist.
+      * @param _buyer            Address which needs to be unwhitelisted
     */
     function unwhitelist(address buyer) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -320,6 +323,7 @@ contract Seed {
 
     /**
       * @dev                     Updates metadata.
+      * @param _metadata         Seed contract metadata, like about Seed or IPFS URI
     */
     function updateMetadata(bytes32 _metadata) public {
         require(
@@ -331,39 +335,73 @@ contract Seed {
     }
 
     // GETTER FUNCTIONS
+    /**
+      * @dev                     Calculates the maximum claim
+      * @param _locker           Address of lock to find the maximum claim
+    */
     function calculateClaim(address _locker) public view returns(uint16, uint256) {
         return _calculateClaim(_locker);
     }
 
+    /**
+      * @dev                     check whitelist status of a buyer
+      * @param _locker           address of buyer to check status
+    */
     function checkWhitelisted(address _buyer) public view returns(bool) {
         return whitelisted[_buyer];
     }
 
+    /**
+      * @dev                     get start time of seed distribution
+    */
     function getStartTime() public view returns(uint256) {
         return startTime;  
     }
 
+    /**
+      * @dev                     get the total seed amount bought
+      * @param _locker           Address of lock to find the total seed amount bought
+    */
     function getSeedAmount(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].seedAmount;
     }
 
+    /**
+      * @dev                     get the total days claimed
+      * @param _locker           Address of lock to find the total days claimed
+    */
     function getDaysClaimed(address _locker) public view returns(uint16) {
         return tokenLocks[_locker].daysClaimed;
     }
 
+    /**
+      * @dev                     get the total seed amount claimed
+      * @param _locker           Address of lock to find the total seed amount claimed
+    */
     function getTotalClaimed(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].totalClaimed;
     }
 
+    /**
+      * @dev                     get the fee for a locker in seed token
+      * @param _locker           Address of lock to find the fee
+    */
     function getFee(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].fee;
     }
 
     // INTERNAL FUNCTIONS
+    /**
+      * @dev                     get current time or block.timestamp
+    */
     function _currentTime() internal view returns(uint256) {
         return block.timestamp;
     }
 
+    /**
+      * @dev                     add/update lock
+      * @param _locker           Address of lock to add/update
+    */
     function _addLock(
         address _recipient,
         uint256 _seedAmount,
@@ -390,6 +428,10 @@ contract Seed {
         totalLockCount++;
     }
 
+    /**
+      * @dev                     calculates claim for a lock
+      * @param _locker           Address of lock to calculate days and amount claimable
+    */
     function _calculateClaim(address _locker) private view returns (uint16, uint256) {
         Lock storage tokenLock = tokenLocks[_locker];
 
