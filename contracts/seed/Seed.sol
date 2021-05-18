@@ -125,17 +125,17 @@ contract Seed {
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
       * @param _tokens                Array containing two params:
-                                        - The address of the token being distributed.
-      *                                 - The address of the token being exchanged for seed token.
+                                        - The address of the seed token being distributed.
+      *                                 - The address of the funding token being exchanged for seed token.
       * @param _softAndHardCap         Array containing two params:
-                                        - the minimum distribution threshold
-                                        - the highest possible amount to be raised in wei.
+                                        - the minimum funding token collection threshold in wei denomination.
+                                        - the highest possible funding token amount to be raised in wei denomination.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
       * @param _vestingDuration       Vesting period duration in seconds.
       * @param _vestingCliff          Cliff duration in seconds.
-      * @param _permissionedSeed         Set to true if only whitelisted adresses are allowed to participate.
+      * @param _permissionedSeed      Set to true if only whitelisted adresses are allowed to participate.
       * @param _fee                   Success fee expressed as a % (e.g. 2 = 2% fee)
     */
     function initialize(
@@ -176,13 +176,13 @@ contract Seed {
       * @param _seedAmount       The amount of seed tokens to buy.
     */
     function buy(uint256 _seedAmount) public isActive allowedToBuy {
-        //  fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
+        // fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
 
         // Funding Token balance of this contract;
         uint256 fundingBalance = fundingCollected;
 
-        //  feeAmount is an amount of fee we are going to get in seedTokens
+        // feeAmount is an amount of fee we are going to get in seedTokens
         uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         // total fundingAmount should not be greater than the hardCap
@@ -221,6 +221,7 @@ contract Seed {
 
     /**
       * @dev                     Claim locked tokens.
+      * @param _locker           Address of lock to calculate seconds and amount claimable
       * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim.
     */
     function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim {
@@ -235,7 +236,7 @@ contract Seed {
         Lock memory tokenLock = tokenLocks[_locker];
         uint256 previouslyClaimed = tokenLock.totalClaimed;
         tokenLock.secondsClaimed  = uint32(tokenLock.secondsClaimed.add(secondsVested));
-        tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
+        tokenLock.totalClaimed    = uint256(tokenLock.totalClaimed.add(amountVested));
         tokenLocks[_locker] = tokenLock;
 
         if(previouslyClaimed==0){
@@ -302,6 +303,7 @@ contract Seed {
 
     /**
       * @dev                     Add address to whitelist.
+      * @param _buyer            Address which needs to be whitelisted
     */
     function whitelist(address _buyer) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -311,6 +313,7 @@ contract Seed {
 
     /**
       * @dev                     Add multiple addresses to whitelist.
+      * @param _buyers           Array of addresses to whitelist addresses in batch
     */
     function whitelistBatch(address[] memory _buyers) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -321,6 +324,7 @@ contract Seed {
 
     /**
       * @dev                     Remove address from whitelist.
+      * @param buyer             Address which needs to be unwhitelisted
     */
     function unwhitelist(address buyer) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -339,6 +343,7 @@ contract Seed {
 
     /**
       * @dev                     Updates metadata.
+      * @param _metadata         Seed contract metadata, that is IPFS URI
     */
     function updateMetadata(bytes32 _metadata) public {
         require(
@@ -350,40 +355,79 @@ contract Seed {
     }
 
     // GETTER FUNCTIONS
+    /**
+      * @dev                     Calculates the maximum claim
+      * @param _locker           Address of lock to find the maximum claim
+    */
     function calculateMaxClaim(address _locker) public view returns(uint32, uint256) {
         // EXP - Second argument - ( seed amount bought by User ).sub( seed amount user have claimed )
         return _calculateClaim(_locker, tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed));
     }
 
+    /**
+      * @dev                     check whitelist status of a buyer
+      * @param _buyer            address of buyer to check status
+    */
     function checkWhitelisted(address _buyer) public view returns(bool) {
         return whitelisted[_buyer];
     }
 
+    /**
+      * @dev                      get start time of seed distribution
+    */
     function getStartTime() public view returns(uint256) {
         return startTime;  
     }
 
+    /**
+      * @dev                      get the total seed amount bought
+      * @param _locker            Address of lock to find the total seed amount bought
+    */
     function getSeedAmount(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].seedAmount;
     }
 
+    /**
+      * @dev                      get the total seconds claimed
+      * @param _locker            Address of lock to find the total seconds claimed
+    */
     function getSecondsClaimed(address _locker) public view returns(uint32) {
         return tokenLocks[_locker].secondsClaimed;
     }
 
+    /**
+      * @dev                      get the total seed amount claimed
+      * @param _locker            Address of lock to find the total seed amount claimed
+    */
     function getTotalClaimed(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].totalClaimed;
     }
 
+    /**
+      * @dev                      get the fee for a locker in seed token
+      * @param _locker            Address of lock to find the fee
+    */
     function getFee(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].fee;
     }
 
     // INTERNAL FUNCTIONS
+    /**
+      * @dev                      get current time or block.timestamp
+    */
     function _currentTime() internal view returns(uint256) {
         return block.timestamp;
     }
 
+    /**
+      * @dev                      add/update lock
+      * @param _recipient         Address of lock recipient
+      * @param _seedAmount        seed amount of the lock
+      * @param _fundingAmount     funding amount contributed
+      * @param _secondsClaimed    total seconds claimed
+      * @param _totalClaimed      total seed token amount claimed
+      * @param _fee               fee on seed amount bought
+    */
     function _addLock(
         address _recipient,
         uint256 _seedAmount,
@@ -409,6 +453,11 @@ contract Seed {
         totalLockCount++;
     }
 
+    /**
+      * @dev                     calculates claim for a lock
+      * @param _locker           Address of lock to calculate seconds and amount claimable
+      * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim
+    */
     function _calculateClaim(address _locker, uint256 _maxClaimAmount) private view returns (uint32, uint256) {
         Lock memory tokenLock = tokenLocks[_locker];
 

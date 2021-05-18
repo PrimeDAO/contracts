@@ -79,11 +79,11 @@ contract SeedFactory is CloneFactory {
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
       * @param _tokens                Array containing two params:
-                                        - The address of the token being distributed.
-      *                                 - The address of the token being exchanged for seed token.
-      * @param _softAndHardCap  Array containing two params:
-                                        - the minimum distribution threshold
-                                        - the highest possible amount to be raised in wei.
+                                        - The address of the seed token being distributed.
+      *                                 - The address of the funding token being exchanged for seed token.
+      * @param _softAndHardCap        Array containing two params:
+                                        - the minimum funding token collection threshold in wei denomination.
+                                        - the highest possible funding token amount to be raised in wei denomination.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
@@ -91,6 +91,7 @@ contract SeedFactory is CloneFactory {
       * @param _vestingCliff          Cliff duration in days.
       * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
       * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
+      * @param _metadata              Seed contract metadata, that is IPFS URI
     */
     function deploySeed(
         address          _admin,
