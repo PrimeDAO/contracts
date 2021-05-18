@@ -42,7 +42,7 @@ contract SeedFactory is CloneFactory {
 
     modifier protected() {
         require(initialized,                    "SeedFactory: contract not initialized");
-        require(msg.sender == address(avatar),	"SeedFactory: protected operation");
+        require(msg.sender == address(avatar),  "SeedFactory: protected operation");
         _;
     }
 
@@ -99,9 +99,9 @@ contract SeedFactory is CloneFactory {
         uint256          _price,
         uint256          _startTime,
         uint256          _endTime,
-        uint32 	         _vestingDuration,
-        uint32 	         _vestingCliff,
-        bool 	         _isWhitelisted,
+        uint32           _vestingDuration,
+        uint32           _vestingCliff,
+        bool             _isWhitelisted,
         uint8            _fee,
         bytes32          _metadata
     )

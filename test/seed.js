@@ -198,7 +198,7 @@ contract('Seed', (accounts) => {
                     maxClaimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buyAmount).mul(twoBN)).div(new BN(vestingDuration)));
                 });
                 it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1, maxClaimAmount), 'Seed: the distribution has not yet finished');
+                    await expectRevert(setup.seed.claimLock(maxClaimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
                 });
                 it('calculates correct claim', async () => {
                     // increase time
@@ -209,13 +209,13 @@ contract('Seed', (accounts) => {
                     expect(claim[1].toString()).to.equal(expectedClaim.toString());
                 });
                 it('it cannot claim more than vested', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1, new BN(buyAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
+                    await expectRevert(setup.seed.claimLock(new BN(buyAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
                         "Seed: cannot claim more than balance"
                     );
                 });
                 it('it withdraws tokens after time passes', async () => {
                     // claim lock
-                    let tx = await setup.seed.claimLock(buyer1, maxClaimAmount.div(twoBN), {from:buyer1});
+                    let tx = await setup.seed.claimLock(maxClaimAmount.div(twoBN), {from:buyer1});
                     setup.data.tx = tx;
 
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed', {
@@ -236,7 +236,7 @@ contract('Seed', (accounts) => {
                 it('calculates and claims exact seed amount', async () => {
                     totalSecondsClaimed = (await time.latest()).sub(startTime);
                     const claim = await setup.seed.calculateMaxClaim(buyer1);
-                    let tx = await setup.seed.claimLock(buyer1, claim[1], {from:buyer1});
+                    let tx = await setup.seed.claimLock(claim[1], {from:buyer1});
                     setup.data.tx = tx;
 
                     const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed');
