@@ -90,8 +90,8 @@ contract('SeedFactory', (accounts) => {
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),
-                    vestingDuration,
-                    vestingCliff,
+                    vestingDuration.toNumber(),
+                    vestingCliff.toNumber(),
                     isWhitelisted,
                     fee,
                     metadata
