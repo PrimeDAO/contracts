@@ -223,29 +223,29 @@ contract Seed {
       * @dev                     Claim locked tokens.
       * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim.
     */
-    function claimLock(uint256 _maxClaimAmount) public allowedToClaim {
+    function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim {
         uint32 secondsVested;
         uint256 amountVested;
         require(
-            tokenLocks[msg.sender].seedAmount.sub(tokenLocks[msg.sender].totalClaimed) >= _maxClaimAmount
+            tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed) >= _maxClaimAmount
             ,"Seed: cannot claim more than balance");
-        (secondsVested, amountVested) = _calculateClaim(msg.sender, _maxClaimAmount);
+        (secondsVested, amountVested) = _calculateClaim(_locker, _maxClaimAmount);
         require(amountVested > 0, "Seed: amountVested is 0");
 
-        Lock memory tokenLock = tokenLocks[msg.sender];
+        Lock memory tokenLock = tokenLocks[_locker];
         uint256 previouslyClaimed = tokenLock.totalClaimed;
         tokenLock.secondsClaimed  = uint32(tokenLock.secondsClaimed.add(secondsVested));
         tokenLock.totalClaimed = uint256(tokenLock.totalClaimed.add(amountVested));
-        tokenLocks[msg.sender] = tokenLock;
+        tokenLocks[_locker] = tokenLock;
 
         if(previouslyClaimed==0){
             seedClaimed = seedClaimed.add(tokenLock.fee);
             require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
         }
         seedClaimed = seedClaimed.add(amountVested);
-        require(seedToken.transfer(msg.sender, amountVested), "Seed: no tokens");
+        require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
 
-        emit TokensClaimed(msg.sender, amountVested);
+        emit TokensClaimed(_locker, amountVested);
     }
 
     /**
