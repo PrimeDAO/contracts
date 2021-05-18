@@ -306,7 +306,7 @@ contract Seed {
 
     /**
       * @dev                     Remove address from whitelist.
-      * @param _buyer            Address which needs to be unwhitelisted
+      * @param buyer            Address which needs to be unwhitelisted
     */
     function unwhitelist(address buyer) public onlyAdmin isActive {
         require(permissionedSeed == true, "Seed: module is not whitelisted");
@@ -345,7 +345,7 @@ contract Seed {
 
     /**
       * @dev                     check whitelist status of a buyer
-      * @param _locker           address of buyer to check status
+      * @param _buyer           address of buyer to check status
     */
     function checkWhitelisted(address _buyer) public view returns(bool) {
         return whitelisted[_buyer];
@@ -400,7 +400,12 @@ contract Seed {
 
     /**
       * @dev                     add/update lock
-      * @param _locker           Address of lock to add/update
+      * @param _recipient           Address of lock recipient
+      * @param _seedAmount       seed amount of the lock
+      * @param _fundingAmount    funding amount contributed
+      * @param _daysClaimed      total days claimed
+      * @param _totalClaimed     total seed token amount claimed
+      * @param _fee              fee on seed amount bought
     */
     function _addLock(
         address _recipient,
