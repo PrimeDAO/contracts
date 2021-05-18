@@ -323,7 +323,7 @@ contract Seed {
 
     /**
       * @dev                     Updates metadata.
-      * @param _metadata         Seed contract metadata, like about Seed or IPFS URI
+      * @param _metadata         Seed contract metadata, that is IPFS URI
     */
     function updateMetadata(bytes32 _metadata) public {
         require(

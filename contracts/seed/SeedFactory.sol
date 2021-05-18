@@ -91,7 +91,7 @@ contract SeedFactory is CloneFactory {
       * @param _vestingCliff          Cliff duration in days.
       * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
       * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
-      * @param _metadata              Seed contract metadata, like about Seed or IPFS URI
+      * @param _metadata              Seed contract metadata, that is IPFS URI
     */
     function deploySeed(
         address          _admin,
