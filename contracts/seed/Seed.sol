@@ -192,21 +192,19 @@ contract Seed {
 
         // total fundingAmount should not be greater than the hardCap
         require( fundingBalance.
-                  add(fundingAmount).
-                  add((feeAmount.mul(price)).div(PCT_BASE)) <= hardCap,
+                  add(fundingAmount) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
         require( seedRemainder >= _seedAmount.add(feeAmount),
             "Seed: seed distribution would be exceeded");
 
-        fundingCollected = fundingBalance.add(fundingAmount).add((feeAmount.mul(price)).div(PCT_BASE));
+        fundingCollected = fundingBalance.add(fundingAmount);
 
         // the amount of seed tokens still to be distributed
         seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
 
         // Here we are sending amount of tokens to pay for lock and fee
-        require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount.
-            add(feeAmount.mul(price).div(PCT_BASE))), "Seed: no tokens");
+        require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount), "Seed: no tokens");
 
         if (fundingCollected >= softCap) {
             minimumReached = true;
@@ -260,19 +258,18 @@ contract Seed {
     function retrieveFundingTokens() public allowedToRetrieve {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock memory tokenLock = tokenLocks[msg.sender];
-        uint256 amount = tokenLock.fundingAmount;
+        uint256 fundingAmount = tokenLock.fundingAmount;
         seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
         tokenLock.seedAmount = 0;
         tokenLock.fee = 0;
         tokenLock.fundingAmount = 0;
         tokenLocks[msg.sender] = tokenLock;
-        uint256 fundingFeeAmount = (amount.mul(uint256(PPM))).mul(fee).div(PPM100);
-        fundingCollected = fundingCollected.sub(amount.add(fundingFeeAmount));
+        fundingCollected = fundingCollected.sub(fundingAmount);
         require(
-            fundingToken.transfer(msg.sender, (amount.add(fundingFeeAmount))),
+            fundingToken.transfer(msg.sender, fundingAmount),
             "Seed: cannot return funding tokens to msg.sender"
         );
-        emit FundingReclaimed(msg.sender, amount);
+        emit FundingReclaimed(msg.sender, fundingAmount);
     }
 
     // ADMIN ACTIONS

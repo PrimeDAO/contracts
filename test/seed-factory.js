@@ -54,6 +54,8 @@ contract('SeedFactory', (accounts) => {
     let metadata;
     let receipt;
     let requiredSeedAmount;
+    const PPM    = 1000000;
+    const PPM100 = 100000000;
     const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
@@ -80,6 +82,7 @@ contract('SeedFactory', (accounts) => {
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
                 requiredSeedAmount = ((new BN(hardCap)).div(new BN(price)).mul(pct_base));
+                requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100)));
 
                 // top up admins token balance
                 await seedToken.transfer(admin, requiredSeedAmount, {from:setup.root});
