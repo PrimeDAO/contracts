@@ -148,6 +148,11 @@ contract('Seed', (accounts) => {
                     await fundingToken.transfer(buyer1, buyAmount, {from:setup.root});
                     await fundingToken.approve(setup.seed.address, buyAmount, {from:buyer1});
                 });
+                it('it cannot buy when paused', async () => {
+                    await setup.seed.pause({from:admin});
+                    await expectRevert(setup.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be paused');
+                    await setup.seed.unpause({from:admin});
+                });
                 it('it buys tokens ', async () => {
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
                     setup.data.tx = tx;
@@ -309,6 +314,15 @@ contract('Seed', (accounts) => {
                     await setup.data.seed.close({from:admin});
                     expect((await seedToken.balanceOf(admin)).toString()).to.equal(stBalance.toString());
                 });
+                it('it cannot buy when closed', async () => {
+                    await expectRevert(setup.data.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be closed');
+                });
+                it('it cannot claim when closed', async () => {
+                    await expectRevert(setup.data.seed.claimLock(buyer1, {from:buyer1}), 'Seed: should not be closed');
+                });
+                it('it cannot withdraw when closed', async () => {
+                    await expectRevert(setup.data.seed.withdraw({from:admin}), 'Seed: should not be closed');
+                });
                 it('donot transfer funding tokens to the admin', async () => {
                     let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
                     expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(ftBalance.toString());
@@ -380,6 +394,18 @@ contract('Seed', (accounts) => {
                 it('pauses contract', async () => {
                     await setup.seed.pause({from:admin});
                     expect(await setup.seed.paused()).to.equal(true);
+                });
+                it('it cannot buy when paused', async () => {
+                    await expectRevert(setup.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be paused');
+                });
+                it('it cannot claim when paused', async () => {
+                    await expectRevert(setup.seed.claimLock(buyer1, {from:buyer1}), 'Seed: should not be paused');
+                });
+                it('it cannot retrieve when paused', async () => {
+                    await expectRevert(setup.seed.retrieveFundingTokens({from:buyer2}), 'Seed: should not be paused');
+                });
+                it('it cannot withdraw when closed', async () => {
+                    await expectRevert(setup.seed.withdraw({from:admin}), 'Seed: should not be paused');
                 });
             });
             context('» unpause', () => {
