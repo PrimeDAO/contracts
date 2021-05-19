@@ -81,9 +81,10 @@ contract SeedFactory is CloneFactory {
       * @param _tokens                Array containing two params:
                                         - The address of the seed token being distributed.
       *                                 - The address of the funding token being exchanged for seed token.
-      * @param _softAndHardCap        Array containing two params:
+      * @param _softHardReq        Array containing two params:
                                         - the minimum funding token collection threshold in wei denomination.
                                         - the highest possible funding token amount to be raised in wei denomination.
+                                        - a variable to store the amount of seed to be distributed after calculation is done in this function
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
@@ -96,7 +97,7 @@ contract SeedFactory is CloneFactory {
     function deploySeed(
         address          _admin,
         address[] memory _tokens,
-        uint256[] memory _softAndHardCap,
+        uint256[] memory _softHardReq,
         uint256          _price,
         uint256          _startTime,
         uint256          _endTime,
@@ -117,10 +118,10 @@ contract SeedFactory is CloneFactory {
 
         {
             // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-            uint256 reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
+            _softHardReq[2] = (_softHardReq[1].div(_price)).mul(10**18);
             // checks for successful transfer of the Seed Tokens.
             require(
-                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
+                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _softHardReq[2]),
                 "SeedFactory: cannot transfer seed tokens"
             );
         }
@@ -130,7 +131,7 @@ contract SeedFactory is CloneFactory {
             msg.sender,
             _admin,
             _tokens,
-            _softAndHardCap,
+            _softHardReq,
             _price,
             _startTime,
             _endTime,

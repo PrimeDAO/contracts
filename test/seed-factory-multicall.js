@@ -51,6 +51,8 @@ contract('SeedFactory', (accounts) => {
     let seedFactory;
     let newSeed;
     let metadata;
+    let receipt;
+    let requiredSeedAmount;
     const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
@@ -77,16 +79,16 @@ contract('SeedFactory', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
-                const reqSeedAmount = ((new BN(softCap)).div(new BN(price)).mul(pct_base));
+                requiredSeedAmount = ((new BN(hardCap)).div(new BN(price)).mul(pct_base));
 
                 // top up admins token balance
-                await seedToken.transfer(admin, reqSeedAmount, {from:setup.root});
-                await seedToken.approve(seedFactory.address, reqSeedAmount, {from:admin});
+                await seedToken.transfer(admin, requiredSeedAmount, {from:setup.root});
+                await seedToken.approve(seedFactory.address, requiredSeedAmount, {from:admin});
 
                 const calldata = helpers.encodeDeploySeed(
                     admin,
                     [seedToken.address, fundingToken.address],
-                    [softCap,hardCap],
+                    [softCap,hardCap,0],
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),
@@ -102,10 +104,13 @@ contract('SeedFactory', (accounts) => {
                 await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                 const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
 
-
                 // store data
                 setup.data.tx = tx;
-                await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
+                receipt = await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
+            });
+            it('sets correct seedAmountAtStart', async () => {
+                newSeed = await Seed.at(await receipt.args[0]);
+                expect((await newSeed.seedAmountAtStart()).toString()).to.equal(requiredSeedAmount.toString());
             });
             it('reverts: contract already initialized', async () => {
                 await expectRevert(
