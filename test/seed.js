@@ -124,7 +124,7 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
                     expect( await setup.seed.closed()).to.equal(false);
                     expect((await setup.seed.seedRemainder()).toString()).to.equal((requiredSeedAmount).toString());
-                    expect((await setup.seed.seedAmtAtStart()).toString()).to.equal((requiredSeedAmount).toString());
+                    expect((await setup.seed.seedAmountAtStart()).toString()).to.equal((requiredSeedAmount).toString());
                     expect((await seedToken.balanceOf(setup.seed.address)).toString()).to.equal((requiredSeedAmount).toString());
                 });
                 it('it reverts on double initialization', async () => {

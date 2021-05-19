@@ -32,7 +32,7 @@ contract Seed {
     address public admin;
     uint256 public softCap;
     uint256 public hardCap;
-    uint256 public seedAmtAtStart;
+    uint256 public seedAmountAtStart;   // Amount of seed at the start of distribution
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -43,7 +43,7 @@ contract Seed {
     IERC20  public fundingToken;
     uint8   public fee;
 
-    bytes32 public metadata;
+    bytes32 public metadata;           // IPFS URI
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
     uint32  public constant PPM               = 1000000;   // parts per million
@@ -53,11 +53,11 @@ contract Seed {
     // Contract logic
     bool      public closed;
     bool      public paused;
-    uint256   public totalLockCount;
-    uint256   public seedRemainder;
-    uint256   public seedClaimed;
-    uint256   public fundingCollected;
-    uint256   public fundingWithdrawn;
+    uint256   public totalLockCount;   // Total locks that have been created. Each user can have only one lock.
+    uint256   public seedRemainder;    // Amount of seed tokens remaining to be distributed
+    uint256   public seedClaimed;      // Amount of seed token claimed by the user.
+    uint256   public fundingCollected; // Amount of funding tokens collected by the seed contract.
+    uint256   public fundingWithdrawn; // Amount of funding token withdrawn from the seed contract.
     bool      public initialized;
     bool      public minimumReached;
     bool      public maximumReached;   
@@ -168,7 +168,7 @@ contract Seed {
         minimumReached  = false;
         maximumReached  = false;
         seedRemainder   = IERC20(_tokens[0]).balanceOf(address(this));
-        seedAmtAtStart  = IERC20(_tokens[0]).balanceOf(address(this));
+        seedAmountAtStart  = seedRemainder;
     }
 
     /**
@@ -192,7 +192,7 @@ contract Seed {
             "Seed: amount exceeds contract sale hardCap");
 
         require( seedRemainder >= _seedAmount.add(feeAmount),
-            "Seed: seed distribution exceeded");
+            "Seed: seed distribution would be exceeded");
 
         fundingCollected = fundingBalance.add(fundingAmount).add((feeAmount.mul(price)).div(PCT_BASE));
 
