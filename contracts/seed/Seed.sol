@@ -299,12 +299,22 @@ contract Seed {
     */
     function close() public onlyAdmin isActive {
         // transfer seed tokens back to admin
-        require(
-            seedToken.transfer(admin, seedToken.balanceOf(address(this))),
-            "Seed: should transfer seed tokens to admin"
-        );
-        closed = true;
-        paused = false;
+        if(minimumReached){
+            // amount of seed tokens to be distributed = seedAmountAtStart - seedRemainder
+            uint256 seedToTransfer = (seedToken.balanceOf(address(this))).sub(seedAmountAtStart.sub(seedRemainder));
+            require(
+                seedToken.transfer(admin, seedToTransfer),
+                "Seed: should transfer seed tokens to admin"
+            );
+            paused = false;
+        } else {
+            require(
+                seedToken.transfer(admin, seedToken.balanceOf(address(this))),
+                "Seed: should transfer seed tokens to admin"
+            );
+            closed = true;
+            paused = false;
+        }
     }
 
     /**

@@ -32,6 +32,9 @@ contract SeedFactory is CloneFactory {
     Seed      public parent;
     bool      public initialized;
 
+    uint32  public constant PPM               = 1000000;   // parts per million
+    uint256 public constant PPM100            = 100000000; // ppm * 100
+
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
     modifier initializer() {
@@ -118,7 +121,8 @@ contract SeedFactory is CloneFactory {
 
         {
             // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-            _softHardReq[2] = (_softHardReq[1].div(_price)).mul(10**18);
+            uint256 reqSeedAmount = (_softHardReq[1].div(_price)).mul(10**18);
+            _softHardReq[2] = reqSeedAmount.add((reqSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
             // checks for successful transfer of the Seed Tokens.
             require(
                 IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _softHardReq[2]),
