@@ -221,7 +221,7 @@ contract Seed {
       * @dev                     Claim locked tokens.
       * @param _locker           The address of the locker.
     */
-    function claimLock(address _locker) public isActive allowedToClaim {
+    function claimLock(address _locker) public allowedToClaim {
         uint16 daysVested;
         uint256 amountVested;
         (daysVested, amountVested) = _calculateClaim(_locker);

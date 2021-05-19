@@ -317,9 +317,6 @@ contract('Seed', (accounts) => {
                 it('it cannot buy when closed', async () => {
                     await expectRevert(setup.data.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be closed');
                 });
-                it('it cannot claim when closed', async () => {
-                    await expectRevert(setup.data.seed.claimLock(buyer1, {from:buyer1}), 'Seed: should not be closed');
-                });
                 it('it cannot withdraw when closed', async () => {
                     await expectRevert(setup.data.seed.withdraw({from:admin}), 'Seed: should not be closed');
                 });
@@ -397,9 +394,6 @@ contract('Seed', (accounts) => {
                 });
                 it('it cannot buy when paused', async () => {
                     await expectRevert(setup.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be paused');
-                });
-                it('it cannot claim when paused', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1, {from:buyer1}), 'Seed: should not be paused');
                 });
                 it('it cannot retrieve when paused', async () => {
                     await expectRevert(setup.seed.retrieveFundingTokens({from:buyer2}), 'Seed: should not be paused');
