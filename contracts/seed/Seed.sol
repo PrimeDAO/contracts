@@ -92,8 +92,10 @@ contract Seed {
     }
 
     modifier allowedToBuy() {
+        require(maximumReached == false, "Seed: maximum funding reached" );
         require(permissionedSeed != true || whitelisted[msg.sender] == true, "Seed: sender has no rights");
-        require(endTime >= block.timestamp ,"Seed: the distribution is already finished");
+        require(endTime >= block.timestamp && startTime <= block.timestamp,
+            "Seed: only allowed during distribution period");
         _;
     }
 
@@ -104,14 +106,16 @@ contract Seed {
     }
 
     modifier allowedToRetrieve() {
-        require(minimumReached == false, "Seed: minimum already met");
         require(paused != true, "Seed: should not be paused");
+        require(startTime <= block.timestamp, "Seed: distribution haven't started");
+        require(minimumReached == false, "Seed: minimum already met");
         _;
     }
 
     modifier allowedToWithdraw() {
-        require(minimumReached == true, "Seed: minimum funding amount not met");
         require(paused != true, "Seed: should not be paused");
+        require(closed != true, "Seed: should not be closed");
+        require(minimumReached == true, "Seed: minimum funding amount not met");
         _;
     }
 
@@ -281,6 +285,7 @@ contract Seed {
         );
 
         closed = true;
+        paused = false;
     }
 
     /**
