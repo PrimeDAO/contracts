@@ -81,10 +81,10 @@ contract SeedFactory is CloneFactory {
       * @param _tokens                Array containing two params:
                                         - The address of the seed token being distributed.
       *                                 - The address of the funding token being exchanged for seed token.
-      * @param _softHardReq        Array containing two params:
+      * @param _softHardReq           Array containing two params:
                                         - the minimum funding token collection threshold in wei denomination.
                                         - the highest possible funding token amount to be raised in wei denomination.
-                                        - a variable to store the amount of seed to be distributed after calculation here
+                                        - var to store the amount of seed to be distributed after calculation here
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
