@@ -178,33 +178,33 @@ contract Seed {
 
     /**
       * @dev                     Buy and lock seed tokens.
-      * @param _seedAmount       The amount of seed tokens to buy.
+      * @param _fundingAmount       The amount of seed tokens to buy.
     */
-    function buy(uint256 _seedAmount) public isActive allowedToBuy {
+    function buy(uint256 _fundingAmount) public isActive allowedToBuy returns(uint256, uint256) {
         // fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
-        uint256 fundingAmount = (_seedAmount.mul(price)).div(PCT_BASE);
+        uint256 seedAmount = (_fundingAmount.mul(PCT_BASE)).div(price);
 
         // Funding Token balance of this contract;
         uint256 fundingBalance = fundingCollected;
 
         // feeAmount is an amount of fee we are going to get in seedTokens
-        uint256 feeAmount = (_seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmount = (seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         // total fundingAmount should not be greater than the hardCap
         require( fundingBalance.
-                  add(fundingAmount) <= hardCap,
+                  add(_fundingAmount) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
-        require( seedRemainder >= _seedAmount.add(feeAmount),
+        require( seedRemainder >= seedAmount.add(feeAmount),
             "Seed: seed distribution would be exceeded");
 
-        fundingCollected = fundingBalance.add(fundingAmount);
+        fundingCollected = fundingBalance.add(_fundingAmount);
 
         // the amount of seed tokens still to be distributed
-        seedRemainder = (seedRemainder.sub(_seedAmount)).sub(feeAmount);
+        seedRemainder = (seedRemainder.sub(seedAmount)).sub(feeAmount);
 
         // Here we are sending amount of tokens to pay for lock and fee
-        require(fundingToken.transferFrom(msg.sender, address(this), fundingAmount), "Seed: no tokens");
+        require(fundingToken.transferFrom(msg.sender, address(this), _fundingAmount), "Seed: no tokens");
 
         if (fundingCollected >= softCap) {
             minimumReached = true;
@@ -214,12 +214,14 @@ contract Seed {
 
         _addLock(
             msg.sender,
-            (tokenLocks[msg.sender].seedAmount.add(_seedAmount)),       // Previous Seed Amount + new seed amount
-            (tokenLocks[msg.sender].fundingAmount.add(fundingAmount)),  // Previous Funding Amount + new funding amount
+            (tokenLocks[msg.sender].seedAmount.add(seedAmount)),       // Previous Seed Amount + new seed amount
+            (tokenLocks[msg.sender].fundingAmount.add(_fundingAmount)),  // Previous Funding Amount + new funding amount
              tokenLocks[msg.sender].secondsClaimed,
              tokenLocks[msg.sender].totalClaimed,
             (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
             );
+
+        return (seedAmount, feeAmount);
     }
 
     /**
@@ -227,7 +229,7 @@ contract Seed {
       * @param _locker           Address of lock to calculate seconds and amount claimable
       * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim.
     */
-    function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim {
+    function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim returns(uint256, uint256) {
         uint32 secondsVested;
         uint256 amountVested;
         require(
@@ -250,6 +252,9 @@ contract Seed {
         require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
 
         emit TokensClaimed(_locker, amountVested);
+        
+        // amount of seed rewarded , total fee
+        return (amountVested, tokenLock.fee);
     }
 
     /**
@@ -298,7 +303,7 @@ contract Seed {
         // transfer seed tokens back to admin
         if(minimumReached){
             // amount of seed tokens to be distributed = seedAmountAtStart - seedRemainder
-            uint256 seedToTransfer = (seedToken.balanceOf(address(this))).sub(seedAmountAtStart.sub(seedRemainder));
+            uint256 seedToTransfer = seedAmountAtStart.sub(seedAmountAtStart.sub(seedRemainder));
             require(
                 seedToken.transfer(admin, seedToTransfer),
                 "Seed: should transfer seed tokens to admin"
@@ -306,7 +311,7 @@ contract Seed {
             paused = false;
         } else {
             require(
-                seedToken.transfer(admin, seedToken.balanceOf(address(this))),
+                seedToken.transfer(admin, seedAmountAtStart),
                 "Seed: should transfer seed tokens to admin"
             );
             closed = true;
