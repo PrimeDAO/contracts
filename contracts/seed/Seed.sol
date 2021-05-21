@@ -260,7 +260,7 @@ contract Seed {
     /**
       * @dev         Returns funding tokens to user.
     */
-    function retrieveFundingTokens() public allowedToRetrieve {
+    function retrieveFundingTokens() public allowedToRetrieve returns(uint256) {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock memory tokenLock = tokenLocks[msg.sender];
         uint256 fundingAmount = tokenLock.fundingAmount;
@@ -275,6 +275,8 @@ contract Seed {
             "Seed: cannot return funding tokens to msg.sender"
         );
         emit FundingReclaimed(msg.sender, fundingAmount);
+
+        return fundingAmount;
     }
 
     // ADMIN ACTIONS

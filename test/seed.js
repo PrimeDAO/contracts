@@ -167,9 +167,11 @@ contract('Seed', (accounts) => {
                     expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to
                         .equal(((buySeedAmount*price/pct_base)).toString());
                 });
-                // it('it returns amount of seed token rewarded and the fee', async () => {
-                //     console.log(setup.data.tx.receipt);
-                // });
+                it('it returns amount of seed token bought and the fee', async () => {
+                    let {['0']: seedAmount,['1']: feeAmount} = await setup.seed.buy.call(buyAmount, {from:buyer1});
+                    expect((await seedAmount).toString()).to.equal(buySeedAmount);
+                    expect((await feeAmount).toString()).to.equal(hundredTwoETH);
+                });
                 it('updates fee mapping for locker', async () => {
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal(hundredTwoETH);
                 });
@@ -230,9 +232,14 @@ contract('Seed', (accounts) => {
                         recipient: buyer1
                     });
                 });
-                // it('it returns amount of seed token rewarded and the fee', async () => {
-                //     console.log(setup.data.tx.receipt);
-                // });
+                it('it returns amount of seed token rewarded and the fee', async () => {
+                    const prevClaimedSeconds = await setup.seed.getSecondsClaimed(buyer1);
+                    const claimableSeconds = ((await time.latest()).sub(startTime)).sub(prevClaimedSeconds);
+                    let claimAmount = claimableSeconds.mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                    let {['0']: amountClaimed,['1']: feeAmount} = await setup.seed.claimLock.call(buyer1, claimAmount, {from:buyer1});
+                    expect((await amountClaimed).toString()).to.equal(claimAmount.toString());
+                    expect((await feeAmount).toString()).to.equal(twoHundredFourETH);
+                });
                 it('updates claim', async () => {
                     expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(maxClaimAmount.div(twoBN).toString());
                 });
@@ -291,9 +298,14 @@ contract('Seed', (accounts) => {
                         permissionedSeed,
                         fee
                     );
+
+                    await setup.data.seed.buy(smallBuyAmount, {from:buyer2});
+                });
+                it('returns funding amount when called', async () => {
+                    const fundingAmount = await setup.data.seed.retrieveFundingTokens.call({from:buyer2});
+                    expect((await fundingAmount).toString()).to.equal(smallBuyAmount);
                 });
                 it('returns funding tokens to buyer', async () => {
-                    await setup.data.seed.buy(smallBuyAmount, {from:buyer2});
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(zeroStr);
 
                     let tx = await setup.data.seed.retrieveFundingTokens({from:buyer2});
