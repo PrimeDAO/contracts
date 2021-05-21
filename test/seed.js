@@ -58,8 +58,6 @@ contract('Seed', (accounts) => {
     let claimAmount;
     let feeAmount;
     let totalClaimedByBuyer1;
-    let totalSecondsClaimed;
-    let feeOnClaimAmount;
 
     const ten  = 10;
     const zeroStr = '0';
