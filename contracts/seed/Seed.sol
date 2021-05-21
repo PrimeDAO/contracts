@@ -66,7 +66,7 @@ contract Seed {
     mapping (address => Lock)    public tokenLocks; // locker to lock
 
     event SeedsPurchased(address indexed recipient, uint256 locked);
-    event TokensClaimed(address indexed recipient, uint256 amountVested, address indexed beneficiary, uint256 feeAmount);
+    event TokensClaimed(address indexed recipient,uint256 amountVested,address indexed beneficiary,uint256 feeAmount);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
     event MetadataUpdated(bytes32 indexed metadata);
 

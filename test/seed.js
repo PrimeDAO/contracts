@@ -207,7 +207,6 @@ contract('Seed', (accounts) => {
                 before('!! calculate maximum amount to claim', async () => {
                     claimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
                     feeAmount   = (new BN(claimAmount).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
-                    // feeOnClaimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(feeAmount).mul(twoBN)).div(new BN(vestingDuration)));
                 });
                 it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
                     await expectRevert(setup.seed.claim(buyer1,claimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
@@ -447,11 +446,6 @@ contract('Seed', (accounts) => {
                         .equal(((new BN(buySeedAmount,ten)).mul(twoBN)).toString());
                 });
             });
-            // context('» getSecondsClaimed', () => {
-            //     it('returns correct claimed', async () => {
-            //         expect((await setup.seed.getSecondsClaimed(buyer1)).toString()).to.equal(totalSecondsClaimed.toString());
-            //     });
-            // });
             context('» getTotalClaimed', () => {
                 it('returns correct claimed', async () => {
                     expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(totalClaimedByBuyer1.toString());
