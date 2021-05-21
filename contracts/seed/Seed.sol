@@ -65,8 +65,8 @@ contract Seed {
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
 
-    event LockAdded(address indexed recipient, uint256 locked);
-    event TokensClaimed(address indexed recipient, uint256 amountVested);
+    event SeedsPurchased(address indexed recipient, uint256 locked);
+    event TokensClaimed(address indexed recipient, uint256 amountVested, address indexed beneficiary, uint256 feeAmount);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
     event MetadataUpdated(bytes32 indexed metadata);
 
@@ -222,6 +222,9 @@ contract Seed {
             (tokenLocks[msg.sender].fee.add(feeAmount)),                  // Previous Fee + new fee
              tokenLocks[msg.sender].feeClaimed
             );
+        
+        // buyer, seed token purchased in this transaction (not the total amount of seed purchased)
+        emit SeedsPurchased(msg.sender, seedAmount);
 
         return (seedAmount, feeAmount);
     }
@@ -229,16 +232,16 @@ contract Seed {
     /**
       * @dev                     Claim locked tokens.
       * @param _locker           Address of lock to calculate seconds and amount claimable
-      * @param _claimAmount      The maximum amount of seed token a users wants to claim.
+      * @param _claimAmount      The amount of seed token a users wants to claim.
     */
-    function claimLock(address _locker, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
+    function claim(address _locker, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
         uint32 secondsVested;
         uint256 amountClaimable;
 
         (secondsVested, amountClaimable) = _calculateClaim(_locker);
         require(amountClaimable > 0, "Seed: amountClaimable is 0");
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
-        uint feeAmountOnClaim = (_claimAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmountOnClaim = (_claimAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         Lock memory tokenLock = tokenLocks[_locker];
 
@@ -250,7 +253,7 @@ contract Seed {
         require(seedToken.transfer(beneficiary, feeAmountOnClaim), "Seed: cannot transfer to beneficiary");
         require(seedToken.transfer(_locker, _claimAmount), "Seed: no tokens");
 
-        emit TokensClaimed(_locker, _claimAmount);
+        emit TokensClaimed(_locker, _claimAmount, beneficiary, feeAmountOnClaim);
         
         // amount of seed rewarded , fee on the distributed reward collected from admin
         return (_claimAmount, feeAmountOnClaim);
@@ -478,7 +481,6 @@ contract Seed {
             fee: _fee,
             feeClaimed: _feeClaimed
             });
-        emit LockAdded(_recipient, _seedAmount);
         totalLockCount++;
     }
 
