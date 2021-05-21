@@ -76,6 +76,7 @@ contract Seed {
         uint256 totalClaimed;
         uint256 fundingAmount;
         uint256 fee;
+        uint256 feeClaimed;
     }
 
     modifier initializer() {
@@ -214,11 +215,12 @@ contract Seed {
 
         _addLock(
             msg.sender,
-            (tokenLocks[msg.sender].seedAmount.add(seedAmount)),       // Previous Seed Amount + new seed amount
+            (tokenLocks[msg.sender].seedAmount.add(seedAmount)),         // Previous Seed Amount + new seed amount
             (tokenLocks[msg.sender].fundingAmount.add(_fundingAmount)),  // Previous Funding Amount + new funding amount
              tokenLocks[msg.sender].secondsClaimed,
              tokenLocks[msg.sender].totalClaimed,
-            (tokenLocks[msg.sender].fee.add(feeAmount))                 // Previous Fee + new fee
+            (tokenLocks[msg.sender].fee.add(feeAmount)),                  // Previous Fee + new fee
+             tokenLocks[msg.sender].feeClaimed
             );
 
         return (seedAmount, feeAmount);
@@ -227,34 +229,31 @@ contract Seed {
     /**
       * @dev                     Claim locked tokens.
       * @param _locker           Address of lock to calculate seconds and amount claimable
-      * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim.
+      * @param _claimAmount      The maximum amount of seed token a users wants to claim.
     */
-    function claimLock(address _locker, uint256 _maxClaimAmount) public allowedToClaim returns(uint256, uint256) {
+    function claimLock(address _locker, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
         uint32 secondsVested;
-        uint256 amountVested;
-        require(
-            tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed) >= _maxClaimAmount
-            ,"Seed: cannot claim more than balance");
-        (secondsVested, amountVested) = _calculateClaim(_locker, _maxClaimAmount);
-        require(amountVested > 0, "Seed: amountVested is 0");
+        uint256 amountClaimable;
+
+        (secondsVested, amountClaimable) = _calculateClaim(_locker);
+        require(amountClaimable > 0, "Seed: amountClaimable is 0");
+        require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
+        uint feeAmountOnClaim = (_claimAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
 
         Lock memory tokenLock = tokenLocks[_locker];
-        uint256 previouslyClaimed = tokenLock.totalClaimed;
-        tokenLock.secondsClaimed  = uint32(tokenLock.secondsClaimed.add(secondsVested));
-        tokenLock.totalClaimed    = uint256(tokenLock.totalClaimed.add(amountVested));
+
+        tokenLock.totalClaimed    = uint256(tokenLock.totalClaimed.add(_claimAmount));
+        tokenLock.feeClaimed      = tokenLock.feeClaimed.add(feeAmountOnClaim);
         tokenLocks[_locker] = tokenLock;
-
-        if(previouslyClaimed==0){
-            seedClaimed = seedClaimed.add(tokenLock.fee);
-            require(seedToken.transfer(beneficiary, tokenLock.fee), "Seed: cannot transfer to beneficiary");
-        }
-        seedClaimed = seedClaimed.add(amountVested);
-        require(seedToken.transfer(_locker, amountVested), "Seed: no tokens");
-
-        emit TokensClaimed(_locker, amountVested);
         
-        // amount of seed rewarded , total fee
-        return (amountVested, tokenLock.fee);
+        seedClaimed = seedClaimed.add(_claimAmount).add(feeAmountOnClaim);
+        require(seedToken.transfer(beneficiary, feeAmountOnClaim), "Seed: cannot transfer to beneficiary");
+        require(seedToken.transfer(_locker, _claimAmount), "Seed: no tokens");
+
+        emit TokensClaimed(_locker, _claimAmount);
+        
+        // amount of seed rewarded , fee on the distributed reward collected from admin
+        return (_claimAmount, feeAmountOnClaim);
     }
 
     /**
@@ -379,9 +378,9 @@ contract Seed {
       * @dev                     Calculates the maximum claim
       * @param _locker           Address of lock to find the maximum claim
     */
-    function calculateMaxClaim(address _locker) public view returns(uint32, uint256) {
+    function calculateClaim(address _locker) public view returns(uint32, uint256) {
         // EXP - Second argument - ( seed amount bought by User ).sub( seed amount user have claimed )
-        return _calculateClaim(_locker, tokenLocks[_locker].seedAmount.sub(tokenLocks[_locker].totalClaimed));
+        return _calculateClaim(_locker);
     }
 
     /**
@@ -407,13 +406,13 @@ contract Seed {
         return tokenLocks[_locker].seedAmount;
     }
 
-    /**
-      * @dev                      get the total seconds claimed
-      * @param _locker            Address of lock to find the total seconds claimed
-    */
-    function getSecondsClaimed(address _locker) public view returns(uint32) {
-        return tokenLocks[_locker].secondsClaimed;
-    }
+    // /**
+    //   * @dev                      get the total seconds claimed
+    //   * @param _locker            Address of lock to find the total seconds claimed
+    // */
+    // function getSecondsClaimed(address _locker) public view returns(uint32) {
+    //     return tokenLocks[_locker].secondsClaimed;
+    // }
 
     /**
       * @dev                      get the total seed amount claimed
@@ -429,6 +428,14 @@ contract Seed {
     */
     function getFee(address _locker) public view returns(uint256) {
         return tokenLocks[_locker].fee;
+    }
+
+    /**
+      * @dev                      get the fee claimed for a locker in seed token
+      * @param _locker            Address of lock to find the fee
+    */
+    function getFeeClaimed(address _locker) public view returns(uint256) {
+        return tokenLocks[_locker].feeClaimed;
     }
 
     // INTERNAL FUNCTIONS
@@ -454,7 +461,8 @@ contract Seed {
         uint256 _fundingAmount,
         uint32  _secondsClaimed,
         uint256 _totalClaimed,
-        uint256 _fee
+        uint256 _fee,
+        uint256 _feeClaimed
     )
     internal
     {
@@ -467,7 +475,8 @@ contract Seed {
             secondsClaimed: _secondsClaimed,
             totalClaimed: _totalClaimed,
             fundingAmount: _fundingAmount,
-            fee: _fee
+            fee: _fee,
+            feeClaimed: _feeClaimed
             });
         emit LockAdded(_recipient, _seedAmount);
         totalLockCount++;
@@ -475,10 +484,9 @@ contract Seed {
 
     /**
       * @dev                     calculates claim for a lock
-      * @param _locker           Address of lock to calculate seconds and amount claimable
-      * @param _maxClaimAmount   The maximum amount of seed token a users wants to claim
+      * @param _locker           Address of lock to calculate days and amount claimable
     */
-    function _calculateClaim(address _locker, uint256 _maxClaimAmount) private view returns (uint32, uint256) {
+    function _calculateClaim(address _locker) private view returns (uint32, uint256) {
         Lock memory tokenLock = tokenLocks[_locker];
 
         // Check cliff was reached
@@ -488,27 +496,14 @@ contract Seed {
             return (uint32(elapsedSeconds), 0);
         }
 
-        uint256 amountVestedPerSecond = tokenLock.seedAmount.div(uint256(vestingDuration));
-
         // If over vesting duration, all tokens vested
-        if (elapsedSeconds >= vestingDuration){
-            uint256 remainingGrant = tokenLock.seedAmount.sub(tokenLock.totalClaimed);
-
-            if(_maxClaimAmount>=remainingGrant){
-
-                return (uint32(vestingDuration.sub(tokenLock.secondsClaimed)), remainingGrant);
-            }
-
-            return (uint32(_maxClaimAmount.div(amountVestedPerSecond)), _maxClaimAmount);
+        if (elapsedSeconds >= vestingDuration) {
+            return (vestingDuration, tokenLock.seedAmount.sub(tokenLock.totalClaimed));
+        } else {
+            uint256 amountVestedPerDay = tokenLock.seedAmount.div(uint256(vestingDuration));
+            uint256 amountVested = uint256(elapsedSeconds.mul(amountVestedPerDay));
+            return (uint32(elapsedSeconds), amountVested.sub(tokenLock.totalClaimed));
         }
-        
-        uint32 secondsVested = uint32(elapsedSeconds.sub(tokenLock.secondsClaimed));
-        uint32 claimseconds = uint32(_maxClaimAmount.div(amountVestedPerSecond));
-
-        if(claimseconds >= secondsVested){
-            return (secondsVested, uint256(secondsVested.mul(amountVestedPerSecond)));
-        }
-        return (claimseconds, uint256(claimseconds.mul(amountVestedPerSecond)));
         
     }
 }

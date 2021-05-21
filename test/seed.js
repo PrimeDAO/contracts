@@ -55,9 +55,11 @@ contract('Seed', (accounts) => {
     let seed;
     let metadata;
     let requiredSeedAmount;
-    let maxClaimAmount;
-    let totalClaimed;
+    let claimAmount;
+    let feeAmount;
+    let totalClaimedByBuyer1;
     let totalSecondsClaimed;
+    let feeOnClaimAmount;
 
     const ten  = 10;
     const zeroStr = '0';
@@ -205,71 +207,108 @@ contract('Seed', (accounts) => {
         context('# claimLock', () => {
             context('» generics', () => {
                 before('!! calculate maximum amount to claim', async () => {
-                    maxClaimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                    claimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                    feeAmount   = (new BN(claimAmount).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
+                    // feeOnClaimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(feeAmount).mul(twoBN)).div(new BN(vestingDuration)));
                 });
                 it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
-                    await expectRevert(setup.seed.claimLock(buyer1,maxClaimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
+                    await expectRevert(setup.seed.claimLock(buyer1,claimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
                 });
                 it('calculates correct claim', async () => {
                     // increase time
                     await time.increase(ninetyTwoDaysInSeconds);
-                    const claim = await setup.seed.calculateMaxClaim(buyer1);
+                    const claim = await setup.seed.calculateClaim(buyer1);
                     const expectedClaim = ((await time.latest()).sub(startTime)).mul((new BN(buySeedAmount).mul(new BN(2))).div(new BN(vestingDuration)));
                     expect(claim[0].toString()).to.equal(((await time.latest()).sub(startTime)).toString());
                     expect(claim[1].toString()).to.equal(expectedClaim.toString());
                 });
                 it('it cannot claim more than vested', async () => {
                     await expectRevert(setup.seed.claimLock( buyer1, new BN(buySeedAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
-                        "Seed: cannot claim more than balance"
+                        "Seed: request is greater than claimable amount"
                     );
+                });
+                it('it returns amount of seed token rewarded and the fee', async () => {
+                    let {['0']: amountClaimed,['1']: feeAmount} = await setup.seed.claimLock.call(buyer1, claimAmount, {from:buyer1});
+                    expect((await amountClaimed).toString()).to.equal(claimAmount.toString());
+                    expect((await feeAmount).toString()).to.equal(feeAmount.toString());
                 });
                 it('it withdraws tokens after time passes', async () => {
                     // claim lock
-                    let tx = await setup.seed.claimLock(buyer1, maxClaimAmount.div(twoBN), {from:buyer1});
+                    let tx = await setup.seed.claimLock(buyer1, claimAmount, {from:buyer1});
                     setup.data.tx = tx;
 
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed', {
                         recipient: buyer1
                     });
                 });
-                it('it returns amount of seed token rewarded and the fee', async () => {
-                    const prevClaimedSeconds = await setup.seed.getSecondsClaimed(buyer1);
-                    const claimableSeconds = ((await time.latest()).sub(startTime)).sub(prevClaimedSeconds);
-                    let claimAmount = claimableSeconds.mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
-                    let {['0']: amountClaimed,['1']: feeAmount} = await setup.seed.claimLock.call(buyer1, claimAmount, {from:buyer1});
-                    expect((await amountClaimed).toString()).to.equal(claimAmount.toString());
-                    expect((await feeAmount).toString()).to.equal(twoHundredFourETH);
-                });
                 it('updates claim', async () => {
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(maxClaimAmount.div(twoBN).toString());
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(claimAmount.toString());
+                });
+                it('updates fee claimed', async () => {
+                    expect((await setup.seed.getFeeClaimed(buyer1)).toString()).to.equal(feeAmount.toString());
                 });
                 it('funds dao with fee', async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
-                        .equal(twoHundredFourETH);
+                        .equal(feeAmount.toString());
                 });
-                it('updates the amount of seed claimed by the claim amount fee', async () => {
-                    const feeAmount = new BN(buySeedAmount).mul(twoBN).mul(new BN(PPM)).mul(new BN(fee)).div(new BN(PPM100));
-                    expect((await setup.seed.seedClaimed()).toString()).to.equal(((maxClaimAmount.div(twoBN)).add(feeAmount)).toString());
+                it('updates the amount of seed claimed by the claim amount and fee', async () => {
+                    totalClaimedByBuyer1 = claimAmount;
+                    expect((await setup.seed.seedClaimed()).toString()).to.equal((claimAmount.add(feeAmount)).toString());
                 });
                 it('calculates and claims exact seed amount', async () => {
-                    totalSecondsClaimed = (await time.latest()).sub(startTime);
-                    const claim = await setup.seed.calculateMaxClaim(buyer1);
+                    const claim = await setup.seed.calculateClaim(buyer1);
                     let tx = await setup.seed.claimLock(buyer1, claim[1], {from:buyer1});
                     setup.data.tx = tx;
 
+                    totalClaimedByBuyer1 = totalClaimedByBuyer1.add(claim[1]);
                     const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed');
                     expect(await receipt.args[1].toString()).to.equal(claim[1].toString());
                 });
-                it('funds dao only once per user', async () => {
-                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
-                        .equal(twoHundredFourETH);
+            });
+            context('claim after vesting duration', async () => {
+                before('!! deploy new contract + top up buyer balance',async () => {
+                    let newStartTime  = await time.latest();
+                    let newEndTime = await newStartTime.add(await time.duration.days(7));
+
+                    setup.data.seed = await Seed.new();
+
+                    await seedToken.transfer(setup.data.seed.address, requiredSeedAmount, {from:setup.root});
+                    await fundingToken.transfer(accounts[3], (await fundingToken.balanceOf(buyer2)), {from: buyer2});
+                    await fundingToken.transfer(buyer2, buyAmount, {from:setup.root});
+                    await fundingToken.approve(setup.data.seed.address, buySeedAmount, {from:buyer2});
+
+                    await setup.data.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        [seedToken.address, fundingToken.address],
+                        [softCap,hardCap,requiredSeedAmount],
+                        price,
+                        newStartTime,
+                        newEndTime,
+                        vestingDuration,
+                        vestingCliff,
+                        permissionedSeed,
+                        fee
+                    );
+
+                    await setup.data.seed.buy(buyAmount, {from:buyer2});
                 });
-                it('updates the amount of seed claimed by only the claim amount', async () => {
-                    const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'TokensClaimed');
-                    const feeAmount = new BN(buySeedAmount).mul(twoBN).mul(new BN(PPM)).mul(new BN(fee)).div(new BN(PPM100));
-                    totalClaimed =  (maxClaimAmount.div(twoBN)).add(new BN(receipt.args[1]));
-                    expect((await setup.seed.seedClaimed()).toString()).to
-                        .equal((totalClaimed.add(feeAmount)).toString());
+                it('claims all seeds after vesting duration', async () => {
+                    time.increase(time.duration.days(365));
+                    let tx = await setup.data.seed.claimLock(buyer2, buySeedAmount, {from:buyer2});
+                    setup.data.tx = tx;
+                    const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
+                    expect(await receipt.args[1].toString()).to.equal(buySeedAmount.toString());
+                });
+                it('it claims all the fee', async () => {
+                    const fee = await setup.data.seed.getFee(buyer2);
+                    const feeClaimed = await setup.data.seed.getFeeClaimed(buyer2);
+                    expect(fee.toString()).to.equal(feeClaimed.toString());
+                });
+                it('funds DAO with all the fee', async () => {
+                    const fee = await setup.data.seed.getFee(buyer2);
+                    expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to
+                        .equal(fee.add(await setup.seed.getFeeClaimed(buyer1)).toString());
                 });
             });
         });
@@ -410,14 +449,14 @@ contract('Seed', (accounts) => {
                         .equal(((new BN(buySeedAmount,ten)).mul(twoBN)).toString());
                 });
             });
-            context('» getSecondsClaimed', () => {
-                it('returns correct claimed', async () => {
-                    expect((await setup.seed.getSecondsClaimed(buyer1)).toString()).to.equal(totalSecondsClaimed.toString());
-                });
-            });
+            // context('» getSecondsClaimed', () => {
+            //     it('returns correct claimed', async () => {
+            //         expect((await setup.seed.getSecondsClaimed(buyer1)).toString()).to.equal(totalSecondsClaimed.toString());
+            //     });
+            // });
             context('» getTotalClaimed', () => {
                 it('returns correct claimed', async () => {
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(totalClaimed.toString());
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(totalClaimedByBuyer1.toString());
                 });
             });
             context('» getFee', () => {
