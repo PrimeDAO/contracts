@@ -159,6 +159,9 @@ contract('Seed', (accounts) => {
                 before('!! top up buyer1 balance', async () => {
                     await fundingToken.transfer(buyer1, toWei('102'), {from:setup.root});
                     await fundingToken.approve(setup.seed.address, toWei('102'), {from:buyer1});
+
+                    claimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
+                    feeAmount   = (new BN(claimAmount).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
                 });
                 it('it cannot buy if not funded', async () => {
                     await expectRevert(setup.seed.buy(buyAmount, {from:buyer1}),'Seed: sufficient seeds not provided');
@@ -198,6 +201,9 @@ contract('Seed', (accounts) => {
                 it('updates the amount of funding token collected', async () => {
                     expect((await setup.seed.fundingCollected()).toString()).to.equal(buyAmount.toString());
                 });
+                it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
+                    await expectRevert(setup.seed.claim(buyer1,claimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
+                });
                 it('updates lock when it buys tokens', async () => {
                     let prevSeedAmount = await setup.seed.getSeedAmount(buyer1);
                     let prevFeeAmount = await setup.seed.getFee(buyer1);
@@ -227,13 +233,6 @@ contract('Seed', (accounts) => {
         });
         context('# claim', () => {
             context('» generics', () => {
-                before('!! calculate maximum amount to claim', async () => {
-                    claimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
-                    feeAmount   = (new BN(claimAmount).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
-                });
-                it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
-                    await expectRevert(setup.seed.claim(buyer1,claimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
-                });
                 it('calculates correct claim', async () => {
                     // increase time
                     await time.increase(ninetyTwoDaysInSeconds);
@@ -736,7 +735,7 @@ contract('Seed', (accounts) => {
                     await seed.buy(toWei('102'),{from:buyer2});
                     await expectRevert(
                         seed.buy(twoHundredFourETH,{from:buyer2}),
-                        "Seed: amount exceeds contract sale hardCap"
+                        "Seed: maximum funding reached"
                     );
                 });
             });

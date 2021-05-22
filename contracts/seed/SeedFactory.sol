@@ -32,8 +32,8 @@ contract SeedFactory is CloneFactory {
     Seed      public parent;
     bool      public initialized;
 
-    uint32  public constant PPM               = 1000000;   // parts per million
-    uint256 public constant PPM100            = 100000000; // ppm * 100
+    // uint32  public constant PPM               = 1000000;   // parts per million
+    // uint256 public constant PPM100            = 100000000; // ppm * 100
 
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
 

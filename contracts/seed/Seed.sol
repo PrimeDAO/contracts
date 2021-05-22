@@ -178,7 +178,7 @@ contract Seed {
         maximumReached    = false;
 
         seedAmountRequired = (hardCap.div(_price)).mul(10**18);
-        seedForFeeRequired = (seedAmountRequired.mul(uint256(PPM))).mul(_fee).div(PPM100);
+        seedForFeeRequired = seedAmountRequired.mul(_fee).div(100);
         seedRemainder     = seedAmountRequired;
         feeSeedRemainder  = seedForFeeRequired;
     }
@@ -200,7 +200,7 @@ contract Seed {
         uint256 fundingBalance = fundingCollected;
 
         // feeAmount is an amount of fee we are going to get in seedTokens
-        uint256 feeAmount = (seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmount = seedAmount.mul(fee).div(100);
 
         // total fundingAmount should not be greater than the hardCap
         require( fundingBalance.
@@ -253,7 +253,7 @@ contract Seed {
 
         (secondsVested, amountClaimable) = _calculateClaim(_locker);
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
-        uint256 feeAmountOnClaim = (_claimAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmountOnClaim = _claimAmount.mul(fee).div(100);
 
         Lock memory tokenLock = tokenLocks[_locker];
 
