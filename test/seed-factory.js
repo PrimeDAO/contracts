@@ -91,7 +91,7 @@ contract('SeedFactory', (accounts) => {
                 tx = await seedFactory.deploySeed(
                     admin,
                     [seedToken.address, fundingToken.address],
-                    [softCap,hardCap,0],
+                    [softCap,hardCap],
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),

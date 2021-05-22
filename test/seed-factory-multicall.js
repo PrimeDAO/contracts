@@ -91,7 +91,7 @@ contract('SeedFactory', (accounts) => {
                 const calldata = helpers.encodeDeploySeed(
                     admin,
                     [seedToken.address, fundingToken.address],
-                    [softCap,hardCap,0],
+                    [softCap,hardCap],
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),
