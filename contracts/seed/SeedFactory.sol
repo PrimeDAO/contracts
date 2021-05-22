@@ -84,7 +84,7 @@ contract SeedFactory is CloneFactory {
       * @param _tokens                Array containing two params:
                                         - The address of the seed token being distributed.
       *                                 - The address of the funding token being exchanged for seed token.
-      * @param _softHardReq           Array containing two params:
+      * @param _softHardThresholds     Array containing two params:
                                         - the minimum funding token collection threshold in wei denomination.
                                         - the highest possible funding token amount to be raised in wei denomination.
                                         - var to store the amount of seed to be distributed after calculation here
@@ -100,7 +100,7 @@ contract SeedFactory is CloneFactory {
     function deploySeed(
         address          _admin,
         address[] memory _tokens,
-        uint256[] memory _softHardReq,
+        uint256[] memory _softHardThresholds,
         uint256          _price,
         uint256          _startTime,
         uint256          _endTime,
@@ -121,11 +121,11 @@ contract SeedFactory is CloneFactory {
 
         {
             // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-            uint256 reqSeedAmount = (_softHardReq[1].div(_price)).mul(10**18);
-            _softHardReq[2] = reqSeedAmount.add((reqSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
+            uint256 reqSeedAmount = (_softHardThresholds[1].div(_price)).mul(10**18);
+            _softHardThresholds[2] = reqSeedAmount.add((reqSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
             // checks for successful transfer of the Seed Tokens.
             require(
-                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _softHardReq[2]),
+                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), _softHardThresholds[2]),
                 "SeedFactory: cannot transfer seed tokens"
             );
         }
@@ -135,7 +135,7 @@ contract SeedFactory is CloneFactory {
             msg.sender,
             _admin,
             _tokens,
-            _softHardReq,
+            _softHardThresholds,
             _price,
             _startTime,
             _endTime,

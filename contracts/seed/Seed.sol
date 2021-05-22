@@ -32,7 +32,8 @@ contract Seed {
     address public admin;
     uint256 public softCap;
     uint256 public hardCap;
-    uint256 public seedAmountAtStart;   // Amount of seed at the start of distribution
+    uint256 public seedAmountAtStart;    // Amount of seed at the start of distribution
+    uint256 public seedFeeAmountAtStart; // Amount of seed at the start for fee
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -43,7 +44,7 @@ contract Seed {
     IERC20  public fundingToken;
     uint8   public fee;
 
-    bytes32 public metadata;           // IPFS URI
+    bytes32 public metadata;           // IPFS Hash
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
     uint32  public constant PPM               = 1000000;   // parts per million
@@ -51,22 +52,24 @@ contract Seed {
     uint256 constant internal SECONDS_PER_DAY = 86400;
 
     // Contract logic
-    bool      public closed;
-    bool      public paused;
-    uint256   public totalLockCount;   // Total locks that have been created. Each user can have only one lock.
-    uint256   public seedRemainder;    // Amount of seed tokens remaining to be distributed
-    uint256   public seedClaimed;      // Amount of seed token claimed by the user.
-    uint256   public fundingCollected; // Amount of funding tokens collected by the seed contract.
-    uint256   public fundingWithdrawn; // Amount of funding token withdrawn from the seed contract.
-    bool      public initialized;
-    bool      public minimumReached;
-    bool      public maximumReached;   
+    bool    public closed;
+    bool    public paused;
+    uint256 public totalLockCount;   // Total locks that have been created. Each user can have only one lock.
+    uint256 public seedRemainder;    // Amount of seed tokens remaining to be distributed
+    uint256 public seedClaimed;      // Amount of seed token claimed by the user.
+    uint256 public feeSeedRemainder; // Amount of seed tokens remaining for the fee
+    uint256 public feeSeedClaimed;   // Amount of seed tokens claimed as fee
+    uint256 public fundingCollected; // Amount of funding tokens collected by the seed contract.
+    uint256 public fundingWithdrawn; // Amount of funding token withdrawn from the seed contract.
+    bool    public initialized;
+    bool    public minimumReached;
+    bool    public maximumReached;   
 
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
 
     event SeedsPurchased(address indexed recipient, uint256 locked);
-    event TokensClaimed(address indexed recipient,uint256 amountVested,address indexed beneficiary,uint256 feeAmount);
+    event TokensClaimed(address indexed recipient,uint256 amount,address indexed beneficiary,uint256 feeAmount);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
     event MetadataUpdated(bytes32 indexed metadata);
 
@@ -132,7 +135,7 @@ contract Seed {
       * @param _tokens                Array containing two params:
                                         - The address of the seed token being distributed.
       *                                 - The address of the funding token being exchanged for seed token.
-      * @param _softHardReq           Array containing two params:
+      * @param _softHardThresholds     Array containing two params:
                                         - the minimum funding token collection threshold in wei denomination.
                                         - the highest possible funding token amount to be raised in wei denomination.
                                         - var to store the amount of seed to be distributed after calculation here
@@ -148,7 +151,7 @@ contract Seed {
         address _beneficiary,
         address _admin,
         address[] memory _tokens,
-        uint256[] memory _softHardReq,
+        uint256[] memory _softHardThresholds,
         uint256 _price,
         uint256 _startTime,
         uint256 _endTime,
@@ -159,8 +162,8 @@ contract Seed {
     ) public initializer {
         beneficiary       = _beneficiary;
         admin             = _admin;
-        softCap           = _softHardReq[0];
-        hardCap           = _softHardReq[1];
+        softCap           = _softHardThresholds[0];
+        hardCap           = _softHardThresholds[1];
         price             = _price;
         startTime         = _startTime;
         endTime           = _endTime;
@@ -173,8 +176,8 @@ contract Seed {
         closed            = false;
         minimumReached    = false;
         maximumReached    = false;
-        seedRemainder     = _softHardReq[2];
-        seedAmountAtStart = _softHardReq[2];
+        seedRemainder     = _softHardThresholds[2];
+        seedAmountAtStart = _softHardThresholds[2];
     }
 
     /**
@@ -365,7 +368,7 @@ contract Seed {
 
     /**
       * @dev                     Updates metadata.
-      * @param _metadata         Seed contract metadata, that is IPFS URI
+      * @param _metadata         Seed contract metadata, that is IPFS Hash
     */
     function updateMetadata(bytes32 _metadata) public {
         require(
