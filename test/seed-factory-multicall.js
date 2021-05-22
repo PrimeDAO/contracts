@@ -53,8 +53,6 @@ contract('SeedFactory', (accounts) => {
     let metadata;
     let receipt;
     let requiredSeedAmount;
-    const PPM    = 1000000;
-    const PPM100 = 100000000;
     const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
@@ -82,8 +80,6 @@ contract('SeedFactory', (accounts) => {
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
                 requiredSeedAmount = ((new BN(hardCap)).div(new BN(price)).mul(pct_base));
-                requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100)));
-
                 // top up admins token balance
                 await seedToken.transfer(admin, requiredSeedAmount, {from:setup.root});
                 await seedToken.approve(seedFactory.address, requiredSeedAmount, {from:admin});
@@ -111,9 +107,9 @@ contract('SeedFactory', (accounts) => {
                 setup.data.tx = tx;
                 receipt = await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
             });
-            it('sets correct seedAmountAtStart', async () => {
+            it('sets correct seedAmountRequired', async () => {
                 newSeed = await Seed.at(await receipt.args[0]);
-                expect((await newSeed.seedAmountAtStart()).toString()).to.equal(requiredSeedAmount.toString());
+                expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
             it('reverts: contract already initialized', async () => {
                 await expectRevert(

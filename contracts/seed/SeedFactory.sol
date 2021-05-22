@@ -118,16 +118,17 @@ contract SeedFactory is CloneFactory {
 
         Seed(_newSeed).updateMetadata(_metadata);
 
-        {
-            // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-            uint256 requiredSeedAmount = (_softHardThresholds[1].div(_price)).mul(10**18);
-            requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
-            // checks for successful transfer of the Seed Tokens.
-            require(
-                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), requiredSeedAmount),
-                "SeedFactory: cannot transfer seed tokens"
-            );
-        }
+        // We don't want SeedFactory to fund the Seed contract
+        // {
+        //     // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
+        //     uint256 requiredSeedAmount = (_softHardThresholds[1].div(_price)).mul(10**18);
+        //     requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
+        //     // checks for successful transfer of the Seed Tokens.
+        //     require(
+        //         IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), requiredSeedAmount),
+        //         "SeedFactory: cannot transfer seed tokens"
+        //     );
+        // }
 
         // initialize
         Seed(_newSeed).initialize(

@@ -32,8 +32,8 @@ contract Seed {
     address public admin;
     uint256 public softCap;
     uint256 public hardCap;
-    uint256 public seedAmountAtStart;    // Amount of seed at the start of distribution
-    uint256 public seedFeeAmountAtStart; // Amount of seed at the start for fee
+    uint256 public seedAmountRequired;    // Amount of seed required for distribution
+    uint256 public seedForFeeRequired;    // Amount of seed required for fee
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -54,16 +54,17 @@ contract Seed {
     // Contract logic
     bool    public closed;
     bool    public paused;
-    uint256 public totalLockCount;   // Total locks that have been created. Each user can have only one lock.
-    uint256 public seedRemainder;    // Amount of seed tokens remaining to be distributed
-    uint256 public seedClaimed;      // Amount of seed token claimed by the user.
-    uint256 public feeSeedRemainder; // Amount of seed tokens remaining for the fee
-    uint256 public feeSeedClaimed;   // Amount of seed tokens claimed as fee
-    uint256 public fundingCollected; // Amount of funding tokens collected by the seed contract.
-    uint256 public fundingWithdrawn; // Amount of funding token withdrawn from the seed contract.
+    bool    public isFunded;               // distribution can only start when required seed tokens have been funded
     bool    public initialized;
     bool    public minimumReached;
-    bool    public maximumReached;   
+    bool    public maximumReached;
+    uint256 public totalLockCount;         // Total locks that have been created. Each user can have only one lock.
+    uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
+    uint256 public seedClaimed;            // Amount of seed token claimed by the user.
+    uint256 public feeSeedRemainder;       // Amount of seed tokens remaining for the fee
+    uint256 public feeSeedClaimed;         // Amount of seed tokens claimed as fee
+    uint256 public fundingCollected;       // Amount of funding tokens collected by the seed contract.
+    uint256 public fundingWithdrawn;       // Amount of funding token withdrawn from the seed contract. 
 
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
@@ -176,19 +177,22 @@ contract Seed {
         minimumReached    = false;
         maximumReached    = false;
 
-        // Same calculation as we did at SeedFactory.deploySeed()
-        uint256 seedAmountSent = (_softHardThresholds[1].div(_price)).mul(10**18);
-        seedAmountSent = seedAmountSent.add((seedAmountSent.mul(uint256(PPM))).mul(_fee).div(PPM100));
-
-        seedRemainder     = seedAmountSent;
-        seedAmountAtStart = seedAmountSent;
+        seedAmountRequired = (_softHardThresholds[1].div(_price)).mul(10**18);
+        seedForFeeRequired = (seedAmountRequired.mul(uint256(PPM))).mul(_fee).div(PPM100);
+        seedRemainder     = seedAmountRequired;
+        feeSeedRemainder  = seedForFeeRequired;
     }
 
     /**
       * @dev                     Buy and lock seed tokens.
-      * @param _fundingAmount       The amount of seed tokens to buy.
+      * @param _fundingAmount    The amount of funding tokens to contribute.
     */
     function buy(uint256 _fundingAmount) public isActive allowedToBuy returns(uint256, uint256) {
+        if(!isFunded) {
+            require(seedToken.balanceOf(address(this)) >= seedAmountRequired.add(seedForFeeRequired),
+                "Seed: sufficient seeds not provided");
+            isFunded = true;
+        }
         // fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 seedAmount = (_fundingAmount.mul(PCT_BASE)).div(price);
 
@@ -203,13 +207,14 @@ contract Seed {
                   add(_fundingAmount) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
-        require( seedRemainder >= seedAmount.add(feeAmount),
+        require( seedRemainder >= seedAmount && feeSeedRemainder >= feeAmount,
             "Seed: seed distribution would be exceeded");
 
         fundingCollected = fundingBalance.add(_fundingAmount);
 
         // the amount of seed tokens still to be distributed
-        seedRemainder = (seedRemainder.sub(seedAmount)).sub(feeAmount);
+        seedRemainder    = seedRemainder.sub(seedAmount);
+        feeSeedRemainder = feeSeedRemainder.sub(feeAmount);
 
         // Here we are sending amount of tokens to pay for lock and fee
         require(fundingToken.transferFrom(msg.sender, address(this), _fundingAmount), "Seed: no tokens");
@@ -246,7 +251,6 @@ contract Seed {
         uint256 amountClaimable;
 
         (secondsVested, amountClaimable) = _calculateClaim(_locker);
-        require(amountClaimable > 0, "Seed: amountClaimable is 0");
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
         uint256 feeAmountOnClaim = (_claimAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
 
@@ -256,7 +260,8 @@ contract Seed {
         tokenLock.feeClaimed      = tokenLock.feeClaimed.add(feeAmountOnClaim);
         tokenLocks[_locker] = tokenLock;
         
-        seedClaimed = seedClaimed.add(_claimAmount).add(feeAmountOnClaim);
+        seedClaimed    = seedClaimed.add(_claimAmount);
+        feeSeedClaimed = feeSeedClaimed.add(feeAmountOnClaim);
         require(seedToken.transfer(beneficiary, feeAmountOnClaim), "Seed: cannot transfer to beneficiary");
         require(seedToken.transfer(_locker, _claimAmount), "Seed: no tokens");
 
@@ -273,11 +278,12 @@ contract Seed {
         require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
         Lock memory tokenLock = tokenLocks[msg.sender];
         uint256 fundingAmount = tokenLock.fundingAmount;
-        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
-        tokenLock.seedAmount = 0;
-        tokenLock.fee = 0;
+        seedRemainder    = seedRemainder.add(tokenLock.seedAmount);
+        feeSeedRemainder = feeSeedRemainder.add(tokenLock.fee);
+        tokenLock.seedAmount    = 0;
+        tokenLock.fee           = 0;
         tokenLock.fundingAmount = 0;
-        tokenLocks[msg.sender] = tokenLock;
+        tokenLocks[msg.sender]  = tokenLock;
         fundingCollected = fundingCollected.sub(fundingAmount);
         require(
             fundingToken.transfer(msg.sender, fundingAmount),
@@ -313,8 +319,8 @@ contract Seed {
     function close() public onlyAdmin isActive {
         // transfer seed tokens back to admin
         if(minimumReached){
-            // amount of seed tokens to be distributed = seedAmountAtStart - seedRemainder
-            uint256 seedToTransfer = seedAmountAtStart.sub(seedAmountAtStart.sub(seedRemainder));
+            // remaining seeds - seedRemainder + feeSeedRemainder
+            uint256 seedToTransfer = seedRemainder.add(feeSeedRemainder);
             require(
                 seedToken.transfer(admin, seedToTransfer),
                 "Seed: should transfer seed tokens to admin"
@@ -322,7 +328,7 @@ contract Seed {
             paused = false;
         } else {
             require(
-                seedToken.transfer(admin, seedAmountAtStart),
+                seedToken.transfer(admin, seedAmountRequired.add(seedForFeeRequired)),
                 "Seed: should transfer seed tokens to admin"
             );
             closed = true;
