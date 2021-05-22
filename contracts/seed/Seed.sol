@@ -177,7 +177,7 @@ contract Seed {
         minimumReached    = false;
         maximumReached    = false;
 
-        seedAmountRequired = (_softHardThresholds[1].div(_price)).mul(10**18);
+        seedAmountRequired = (hardCap.div(_price)).mul(10**18);
         seedForFeeRequired = (seedAmountRequired.mul(uint256(PPM))).mul(_fee).div(PPM100);
         seedRemainder     = seedAmountRequired;
         feeSeedRemainder  = seedForFeeRequired;
@@ -221,7 +221,8 @@ contract Seed {
 
         if (fundingCollected >= softCap) {
             minimumReached = true;
-        } else if (fundingCollected >= hardCap) {
+        }
+        if (fundingCollected >= hardCap) {
             maximumReached = true;            
         }
 
