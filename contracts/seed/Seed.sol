@@ -69,7 +69,7 @@ contract Seed {
     mapping (address => bool)    public whitelisted;
     mapping (address => Lock)    public tokenLocks; // locker to lock
 
-    event SeedsPurchased(address indexed recipient, uint256 locked);
+    event SeedsPurchased(address indexed recipient, uint256 amountPurchased);
     event TokensClaimed(address indexed recipient,uint256 amount,address indexed beneficiary,uint256 feeAmount);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
     event MetadataUpdated(bytes32 indexed metadata);
@@ -252,6 +252,7 @@ contract Seed {
         uint256 amountClaimable;
 
         (secondsVested, amountClaimable) = _calculateClaim(_locker);
+        require( amountClaimable > 0, "Seed: amount claimable is 0");
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
         uint256 feeAmountOnClaim = _claimAmount.mul(fee).div(100);
 

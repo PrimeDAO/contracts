@@ -70,7 +70,9 @@ contract('Seed', (accounts) => {
     const tenETH  = toWei('10');
     const pct_base = new BN('1000000000000000000'); // 10**18
     const twoBN = new BN(2);
-    const ninetyTwoDaysInSeconds = time.duration.days(92);
+    const ninetyTwoDaysInSeconds  = time.duration.days(92);
+    const eightyNineDaysInSeconds = time.duration.days(89);
+    const threeDaysInSeconds      = time.duration.days( 3);
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
@@ -175,12 +177,18 @@ contract('Seed', (accounts) => {
                     await expectRevert(setup.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be paused');
                     await setup.seed.unpause({from:admin});
                 });
+                it('it cannot buy 0 seeds', async () => {
+                    await expectRevert(setup.seed.buy(0, {from:buyer1}), 'Seed: amountVestedPerSecond > 0');
+                });
                 it('it buys tokens ', async () => {
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
                     setup.data.tx = tx;
                     await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, 'SeedsPurchased');
                     expect((await fundingToken.balanceOf(setup.seed.address)).toString()).to
                         .equal(((buySeedAmount*price/pct_base)).toString());
+                });
+                it('minimumReached == true', async () => {
+                    expect(await setup.seed.minimumReached()).to.equal(true);
                 });
                 it('it returns amount of seed token bought and the fee', async () => {
                     let {['0']: seedAmount,['1']: feeAmount} = await setup.seed.buy.call(buyAmount, {from:buyer1});
@@ -201,7 +209,7 @@ contract('Seed', (accounts) => {
                 it('updates the amount of funding token collected', async () => {
                     expect((await setup.seed.fundingCollected()).toString()).to.equal(buyAmount.toString());
                 });
-                it('it fails on withdrawing seed tokens if the distribution has not yet finished', async () => {
+                it('it fails on claiming seed tokens if the distribution has not yet finished', async () => {
                     await expectRevert(setup.seed.claim(buyer1,claimAmount, {from: buyer1}), 'Seed: the distribution has not yet finished');
                 });
                 it('updates lock when it buys tokens', async () => {
@@ -218,6 +226,9 @@ contract('Seed', (accounts) => {
                     expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal((prevSeedAmount.mul(twoBN)).toString());
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal((prevFeeAmount.mul(twoBN)).toString());
                 });
+                it('maximumReached == true', async () => {
+                    expect(await setup.seed.maximumReached()).to.equal(true);
+                });
                 it('updates the remaining seeds to distribution after another buy', async () => {
                     expect((await setup.seed.seedRemainder()).toString()).to
                         .equal(seedForDistribution.sub(new BN(buySeedAmount).mul(twoBN)).toString());
@@ -233,9 +244,13 @@ contract('Seed', (accounts) => {
         });
         context('# claim', () => {
             context('» generics', () => {
+                it('it cannot claim before vestingCliff', async () => {
+                    await time.increase(eightyNineDaysInSeconds);
+                    await expectRevert(setup.seed.claim(buyer1,claimAmount, {from: buyer1}), 'Seed: amount claimable is 0');
+                });
                 it('calculates correct claim', async () => {
                     // increase time
-                    await time.increase(ninetyTwoDaysInSeconds);
+                    await time.increase(threeDaysInSeconds);
                     const claim = await setup.seed.calculateClaim(buyer1);
                     const expectedClaim = ((await time.latest()).sub(startTime)).mul((new BN(buySeedAmount).mul(new BN(2))).div(new BN(vestingDuration)));
                     expect(claim[0].toString()).to.equal(((await time.latest()).sub(startTime)).toString());
@@ -243,7 +258,7 @@ contract('Seed', (accounts) => {
                 });
                 it('it cannot claim if not vested', async () => {
                     await expectRevert(setup.seed.claim(buyer2, new BN(buySeedAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
-                        "Seed: request is greater than claimable amount"
+                        "Seed: amount claimable is 0"
                     );
                 });
                 it('it cannot claim more than claimable amount', async () => {
@@ -292,7 +307,7 @@ contract('Seed', (accounts) => {
                     expect(await receipt.args[1].toString()).to.equal(claim[1].toString());
                 });
             });
-            context('claim after vesting duration', async () => {
+            context('» claim after vesting duration', async () => {
                 before('!! deploy new contract + top up buyer balance',async () => {
                     let newStartTime  = await time.latest();
                     let newEndTime = await newStartTime.add(await time.duration.days(7));
@@ -456,6 +471,9 @@ contract('Seed', (accounts) => {
                     await setup.data.seed.close({from:admin});
                     expect((await seedToken.balanceOf(admin)).toString()).to.equal(stBalance.toString());
                 });
+                it('paused == false', async () => {
+                    expect(await setup.data.seed.paused()).to.equal(false);
+                });
                 it('it cannot buy when closed', async () => {
                     await expectRevert(setup.data.seed.buy(buyAmount, {from:buyer1}), 'Seed: should not be closed');
                 });
@@ -474,6 +492,43 @@ contract('Seed', (accounts) => {
 
                     expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'FundingReclaimed');
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(smallBuyAmount.toString());
+                });
+            });
+            context('» close after minimum reached', () => {
+                before('!! deploy new contract + top up buyer balance', async () => {
+                    let newStartTime  = await time.latest();
+                    let newEndTime = await newStartTime.add(await time.duration.days(7));
+
+                    setup.data.seed = await Seed.new();
+
+                    await fundingToken.transfer(buyer2, buyAmount, {from:setup.root});
+                    await seedToken.transfer(setup.data.seed.address, requiredSeedAmount, {from:setup.root});
+
+                    setup.data.seed.initialize(
+                        setup.organization.avatar.address,
+                        admin,
+                        [seedToken.address, fundingToken.address],
+                        [softCap,hardCap],
+                        price,
+                        newStartTime,
+                        newEndTime,
+                        vestingDuration,
+                        vestingCliff,
+                        permissionedSeed,
+                        fee
+                    );
+
+                    await fundingToken.approve(setup.data.seed.address, buyAmount, {from:buyer2});
+                    await setup.data.seed.buy(buyAmount, {from:buyer2});
+                });
+                it('it refunds only seed amount that are not bought', async () => {
+                    const buyFee = (new BN(buySeedAmount).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
+                    const prevBal = await seedToken.balanceOf(admin);
+                    await setup.data.seed.close({from: admin});
+                    expect((await seedToken.balanceOf(admin)).toString()).to.equal((requiredSeedAmount.add(prevBal).sub(new BN(buySeedAmount)).sub(buyFee)).toString());
+                });
+                it('paused == false', async () => {
+                    expect(await setup.data.seed.paused()).to.equal(false);
                 });
             });
         });
