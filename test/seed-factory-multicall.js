@@ -51,6 +51,10 @@ contract('SeedFactory', (accounts) => {
     let seedFactory;
     let newSeed;
     let metadata;
+    let receipt;
+    let requiredSeedAmount;
+    const PPM    = 1000000;
+    const PPM100 = 100000000;
     const pct_base = new BN('1000000000000000000'); // 10**18
 
     context('» creator is avatar', () => {
@@ -64,8 +68,8 @@ contract('SeedFactory', (accounts) => {
             softCap = toWei('100');
             startTime  = await time.latest();
             endTime = await startTime.add(await time.duration.days(7));
-            vestingDuration = 365; // 1 year
-            vestingCliff = 90; // 3 months
+            vestingDuration = await time.duration.days(365); // 1 year
+            vestingCliff = await time.duration.days(90); // 3 months
             isWhitelisted = false;
             fee = 2;
             metadata = `0x`;
@@ -77,11 +81,12 @@ contract('SeedFactory', (accounts) => {
 
         context('» parameters are valid', () => {
             it('it creates new seed contract', async () => {
-                const reqSeedAmount = ((new BN(softCap)).div(new BN(price)).mul(pct_base));
+                requiredSeedAmount = ((new BN(hardCap)).div(new BN(price)).mul(pct_base));
+                requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100)));
 
                 // top up admins token balance
-                await seedToken.transfer(admin, reqSeedAmount, {from:setup.root});
-                await seedToken.approve(seedFactory.address, reqSeedAmount, {from:admin});
+                await seedToken.transfer(admin, requiredSeedAmount, {from:setup.root});
+                await seedToken.approve(seedFactory.address, requiredSeedAmount, {from:admin});
 
                 const calldata = helpers.encodeDeploySeed(
                     admin,
@@ -90,8 +95,8 @@ contract('SeedFactory', (accounts) => {
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),
-                    vestingDuration,
-                    vestingCliff,
+                    vestingDuration.toNumber(),
+                    vestingCliff.toNumber(),
                     isWhitelisted,
                     fee,
                     metadata
@@ -102,10 +107,13 @@ contract('SeedFactory', (accounts) => {
                 await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
                 const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
 
-
                 // store data
                 setup.data.tx = tx;
-                await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
+                receipt = await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
+            });
+            it('sets correct seedAmountAtStart', async () => {
+                newSeed = await Seed.at(await receipt.args[0]);
+                expect((await newSeed.seedAmountAtStart()).toString()).to.equal(requiredSeedAmount.toString());
             });
             it('reverts: contract already initialized', async () => {
                 await expectRevert(

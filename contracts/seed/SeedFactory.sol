@@ -32,6 +32,9 @@ contract SeedFactory is CloneFactory {
     Seed      public parent;
     bool      public initialized;
 
+    uint32  public constant PPM               = 1000000;   // parts per million
+    uint256 public constant PPM100            = 100000000; // ppm * 100
+
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
     modifier initializer() {
@@ -42,7 +45,7 @@ contract SeedFactory is CloneFactory {
 
     modifier protected() {
         require(initialized,                    "SeedFactory: contract not initialized");
-        require(msg.sender == address(avatar),	"SeedFactory: protected operation");
+        require(msg.sender == address(avatar),  "SeedFactory: protected operation");
         _;
     }
 
@@ -81,7 +84,7 @@ contract SeedFactory is CloneFactory {
       * @param _tokens                Array containing two params:
                                         - The address of the seed token being distributed.
       *                                 - The address of the funding token being exchanged for seed token.
-      * @param _softAndHardCap        Array containing two params:
+      * @param _softHardThresholds     Array containing two params:
                                         - the minimum funding token collection threshold in wei denomination.
                                         - the highest possible funding token amount to be raised in wei denomination.
       * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
@@ -96,13 +99,13 @@ contract SeedFactory is CloneFactory {
     function deploySeed(
         address          _admin,
         address[] memory _tokens,
-        uint256[] memory _softAndHardCap,
+        uint256[] memory _softHardThresholds,
         uint256          _price,
         uint256          _startTime,
         uint256          _endTime,
-        uint16 	         _vestingDuration,
-        uint16 	         _vestingCliff,
-        bool 	         _isWhitelisted,
+        uint32           _vestingDuration,
+        uint32           _vestingCliff,
+        bool             _isWhitelisted,
         uint8            _fee,
         bytes32          _metadata
     )
@@ -117,10 +120,11 @@ contract SeedFactory is CloneFactory {
 
         {
             // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-            uint256 reqSeedAmount = (_softAndHardCap[1].div(_price)).mul(10**18);
+            uint256 requiredSeedAmount = (_softHardThresholds[1].div(_price)).mul(10**18);
+            requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
             // checks for successful transfer of the Seed Tokens.
             require(
-                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), reqSeedAmount),
+                IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), requiredSeedAmount),
                 "SeedFactory: cannot transfer seed tokens"
             );
         }
@@ -130,7 +134,7 @@ contract SeedFactory is CloneFactory {
             msg.sender,
             _admin,
             _tokens,
-            _softAndHardCap,
+            _softHardThresholds,
             _price,
             _startTime,
             _endTime,
