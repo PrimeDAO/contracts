@@ -321,7 +321,7 @@ contract Seed {
     function close() public onlyAdmin isActive {
         // transfer seed tokens back to admin
         if(minimumReached){
-            // remaining seeds - seedRemainder + feeSeedRemainder
+            // remaining seeds = seedRemainder + feeSeedRemainder
             uint256 seedToTransfer = seedRemainder.add(feeSeedRemainder);
             require(
                 seedToken.transfer(admin, seedToTransfer),

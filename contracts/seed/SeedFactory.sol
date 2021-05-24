@@ -28,11 +28,8 @@ contract SeedFactory is CloneFactory {
     using SafeMath for uint256;
 
     Avatar public avatar;
-    Seed public parent;
+    Seed public masterCopy;
     bool public initialized;
-
-    // uint32  public constant PPM               = 1000000;   // parts per million
-    // uint256 public constant PPM100            = 100000000; // ppm * 100
 
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
@@ -52,23 +49,23 @@ contract SeedFactory is CloneFactory {
     }
 
     /**
-     * @dev           Initialize proxy.
-     * @param _avatar The address of the Avatar controlling this contract.
-     * @param _parent The address of the Seed contract which will be a parent for all of the clones.
+     * @dev               Initialize proxy.
+     * @param _avatar     The address of the Avatar controlling this contract.
+     * @param _masterCopy The address of the Seed contract which will be a masterCopy for all of the clones.
      */
-    function initialize(Avatar _avatar, Seed _parent) external initializer {
-        require(_avatar != Avatar(0), "SeedFactory: avatar cannot be null");
-        require(_parent != Seed(0), "SeedFactory: parent cannot be null");
+    function initialize(Avatar _avatar, Seed _masterCopy) external initializer {
+        require(_avatar     != Avatar(0), "SeedFactory: avatar cannot be null");
+        require(_masterCopy != Seed(0),   "SeedFactory: masterCopy cannot be null");
         avatar = _avatar;
-        parent = _parent;
+        masterCopy = _masterCopy;
     }
 
     /**
      * @dev             Update Seed contract which works as a base for clones.
-     * @param newParent The address of the new Seed basis.
+     * @param newMasterCopy The address of the new Seed basis.
      */
-    function changeParent(Seed newParent) public protected {
-        parent = newParent;
+    function changeMasterCopy(Seed newMasterCopy) public protected {
+        masterCopy = newMasterCopy;
     }
 
     /**
@@ -112,22 +109,9 @@ contract SeedFactory is CloneFactory {
         bytes32 _metadata
     ) public protected returns (address) {
         // deploy clone
-        address _newSeed = createClone(address(parent));
+        address _newSeed = createClone(address(masterCopy));
 
         Seed(_newSeed).updateMetadata(_metadata);
-
-        // We don't want SeedFactory to fund the Seed contract
-        // {
-        //     // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
-        //     uint256 requiredSeedAmount = (_softHardThresholds[1].div(_price)).mul(10**18);
-        //     requiredSeedAmount = requiredSeedAmount
-        //.add((requiredSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
-        //     // checks for successful transfer of the Seed Tokens.
-        //     require(
-        //         IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), requiredSeedAmount),
-        //         "SeedFactory: cannot transfer seed tokens"
-        //     );
-        // }
 
         // initialize
         Seed(_newSeed).initialize(

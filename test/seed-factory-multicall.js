@@ -130,19 +130,19 @@ contract("SeedFactory", (accounts) => {
                 );
             });
         });
-        context("» changeParent", () => {
+        context("» changeMasterCopy", () => {
             before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
-            it("only Avatar can change parent", async () => {
+            it("only Avatar can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.changeParent(newSeed.address, { from: accounts[1] }),
+                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
                     "SeedFactory: protected operation"
                 );
             });
-            it("changes parent", async () => {
+            it("changes master copy", async () => {
                 let newSeed = await Seed.new();
-                const calldata = helpers.encodeChangeParentSeed(newSeed.address);
+                const calldata = helpers.encodeChangeMasterCopySeed(newSeed.address);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
@@ -157,7 +157,7 @@ contract("SeedFactory", (accounts) => {
                     constants.ZERO_ADDRESS
                 );
                 await setup.primeDAO.multicallScheme.execute(proposalId);
-                expect(await seedFactory.parent()).to.equal(newSeed.address);
+                expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });
         context("» changeAvatar", () => {
