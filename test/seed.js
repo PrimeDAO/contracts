@@ -46,13 +46,7 @@ contract("Seed", (accounts) => {
     let buyAmount;
     let smallBuyAmount;
     let buySeedAmount;
-    let seedForDistribution;
-    let seedForFee;
-    let requiredSeedAmount;
-    let claimAmount;
-    let feeAmount;
     let buySeedFee;
-    let totalClaimedByBuyer1;
     let startTime;
     let endTime;
     let vestingDuration;
@@ -61,6 +55,12 @@ contract("Seed", (accounts) => {
     let fee;
     let seed;
     let metadata;
+    let seedForDistribution;
+    let seedForFee;
+    let requiredSeedAmount;
+    let claimAmount;
+    let feeAmount;
+    let totalClaimedByBuyer1;
 
     // constants
     const zero    = 0;
