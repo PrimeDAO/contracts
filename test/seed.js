@@ -46,7 +46,13 @@ contract('Seed', (accounts) => {
     let buyAmount;
     let smallBuyAmount;
     let buySeedAmount;
+    let seedForDistribution;
+    let seedForFee;
+    let requiredSeedAmount;
+    let claimAmount;
+    let feeAmount;
     let buySeedFee;
+    let totalClaimedByBuyer1;
     let startTime;
     let endTime;
     let vestingDuration;
@@ -55,21 +61,18 @@ contract('Seed', (accounts) => {
     let fee;
     let seed;
     let metadata;
-    let seedForDistribution;
-    let seedForFee;
-    let requiredSeedAmount;
-    let claimAmount;
-    let feeAmount;
-    let totalClaimedByBuyer1;
 
-    const zeroStr = '0';
-    const PPM    = 1000000;
-    const PPM100 = 100000000;
-    const hundredTwoETH     = toWei('102');
+    // constants
+    const zero    = 0;
+    const one     = 1;
+    const hundred = 100;
+    const PPM     = 1000000;
+    const PPM100  = 100000000;
+    const tenETH             = toWei('10');
+    const hundredTwoETH      = toWei('102');
     const twoHundredFourETH  = toWei('204');
-    const tenETH  = toWei('10');
+    const twoBN    = new BN(2);
     const pct_base = new BN('1000000000000000000'); // 10**18
-    const twoBN = new BN(2);
     const ninetyTwoDaysInSeconds  = time.duration.days(92);
     const eightyNineDaysInSeconds = time.duration.days(89);
     const threeDaysInSeconds      = time.duration.days( 3);
@@ -159,8 +162,8 @@ contract('Seed', (accounts) => {
         context('# buy', () => {
             context('» generics', () => {
                 before('!! top up buyer1 balance', async () => {
-                    await fundingToken.transfer(buyer1, toWei('102'), {from:setup.root});
-                    await fundingToken.approve(setup.seed.address, toWei('102'), {from:buyer1});
+                    await fundingToken.transfer(buyer1, hundredTwoETH, {from:setup.root});
+                    await fundingToken.approve(setup.seed.address, hundredTwoETH, {from:buyer1});
 
                     claimAmount = (new BN(ninetyTwoDaysInSeconds)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
                     feeAmount   = (new BN(claimAmount).mul(new BN(PPM))).mul(new BN(fee)).div(new BN(PPM100));
@@ -178,7 +181,7 @@ contract('Seed', (accounts) => {
                     await setup.seed.unpause({from:admin});
                 });
                 it('it cannot buy 0 seeds', async () => {
-                    await expectRevert(setup.seed.buy(0, {from:buyer1}), 'Seed: amountVestedPerSecond > 0');
+                    await expectRevert(setup.seed.buy(zero.toString(), {from:buyer1}), 'Seed: amountVestedPerSecond > 0');
                 });
                 it('it buys tokens ', async () => {
                     let tx = await setup.seed.buy(buyAmount, {from:buyer1});
@@ -238,7 +241,7 @@ contract('Seed', (accounts) => {
                         .equal(seedForFee.sub(new BN(buySeedFee).mul(twoBN)).toString());
                 });
                 it('return totalClaimed == 0', async () => {
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(zeroStr);
+                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(zero.toString());
                 });
             });
         });
@@ -252,17 +255,17 @@ contract('Seed', (accounts) => {
                     // increase time
                     await time.increase(threeDaysInSeconds);
                     const claim = await setup.seed.calculateClaim(buyer1);
-                    const expectedClaim = ((await time.latest()).sub(startTime)).mul((new BN(buySeedAmount).mul(new BN(2))).div(new BN(vestingDuration)));
+                    const expectedClaim = ((await time.latest()).sub(startTime)).mul((new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration)));
                     expect(claim[0].toString()).to.equal(((await time.latest()).sub(startTime)).toString());
                     expect(claim[1].toString()).to.equal(expectedClaim.toString());
                 });
                 it('it cannot claim if not vested', async () => {
-                    await expectRevert(setup.seed.claim(buyer2, new BN(buySeedAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
+                    await expectRevert(setup.seed.claim(buyer2, new BN(buySeedAmount).mul(twoBN).add(new BN(one)), {from:buyer1}),
                         "Seed: amount claimable is 0"
                     );
                 });
                 it('it cannot claim more than claimable amount', async () => {
-                    await expectRevert(setup.seed.claim( buyer1, new BN(buySeedAmount).mul(twoBN).add(new BN(1)), {from:buyer1}),
+                    await expectRevert(setup.seed.claim( buyer1, new BN(buySeedAmount).mul(twoBN).add(new BN(one)), {from:buyer1}),
                         "Seed: request is greater than claimable amount"
                     );
                 });
@@ -336,7 +339,7 @@ contract('Seed', (accounts) => {
                     await setup.data.seed.buy(new BN(buyAmount).mul(twoBN), {from:buyer2});
                 });
                 it('claims all seeds after vesting duration', async () => {
-                    time.increase(time.duration.days(365));
+                    time.increase(vestingDuration);
                     let tx = await setup.data.seed.claim(buyer2, new BN(buySeedAmount).mul(twoBN), {from:buyer2});
                     setup.data.tx = tx;
                     const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.data.seed, 'TokensClaimed');
@@ -397,7 +400,7 @@ contract('Seed', (accounts) => {
                     expect((await fundingAmount).toString()).to.equal(smallBuyAmount);
                 });
                 it('returns funding tokens to buyer', async () => {
-                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(zeroStr);
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(zero.toString());
 
                     let tx = await setup.data.seed.retrieveFundingTokens({from:buyer2});
                     setup.data.tx = tx;
@@ -406,10 +409,10 @@ contract('Seed', (accounts) => {
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal((smallBuyAmount).toString());
                 });
                 it('clears `fee` mapping', async () => {
-                    expect((await setup.data.seed.getFee(buyer2)).toString()).to.equal(zeroStr);
+                    expect((await setup.data.seed.getFee(buyer2)).toString()).to.equal(zero.toString());
                 });
                 it('clears `tokenLock.amount`', async () => {
-                    expect((await setup.data.seed.getSeedAmount(buyer2)).toString()).to.equal(zeroStr);
+                    expect((await setup.data.seed.getSeedAmount(buyer2)).toString()).to.equal(zero.toString());
                 });
                 it('updates `feeSeedRemainder` ', async () => {
                     expect((await setup.data.seed.feeSeedRemainder()).toString()).to
@@ -485,7 +488,7 @@ contract('Seed', (accounts) => {
                     expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(ftBalance.toString());
                 });
                 it('returns funding tokens to buyer', async () => {
-                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(zeroStr);
+                    expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(zero.toString());
 
                     let tx = await setup.data.seed.retrieveFundingTokens({from:buyer2});
                     setup.data.tx = tx;
@@ -553,8 +556,7 @@ contract('Seed', (accounts) => {
             context('» getFee', () => {
                 it('returns correct fee', async () => {
                     let amount = new BN(buySeedAmount);
-                    let fee = new BN(2);
-                    let amountMinusFee = new BN(amount.mul(fee).div(new BN(100)));
+                    let amountMinusFee = new BN(amount.mul(twoBN).div(new BN(hundred)));
                     expect((await setup.seed.getFee(buyer1)).toString()).to.equal((amountMinusFee.mul(twoBN)).toString());
                 });
             });
@@ -653,7 +655,7 @@ contract('Seed', (accounts) => {
                 it('can withdraw after minimum funding amount is met', async () => {
                     await setup.data.seed.buy(buyAmount, {from:buyer2});
                     await setup.data.seed.withdraw({from:admin});
-                    expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(zeroStr);
+                    expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(zero.toString());
                     expect((await fundingToken.balanceOf(admin)).toString()).to.equal(buyAmount);
                 });
                 it('updates the amount of funding token withdrawn', async () => {
@@ -784,10 +786,10 @@ contract('Seed', (accounts) => {
         context('# hardCap', () => {
             context('» check hardCap', () => {
                 it('cannot buy more than hardCap', async () => {
-                    await fundingToken.transfer(buyer2, toWei('102'), {from:setup.root});
-                    await fundingToken.approve(seed.address, toWei('102'), {from:buyer2});
+                    await fundingToken.transfer(buyer2, hundredTwoETH, {from:setup.root});
+                    await fundingToken.approve(seed.address, hundredTwoETH, {from:buyer2});
                     await seed.whitelist(buyer2,{from:admin});
-                    await seed.buy(toWei('102'),{from:buyer2});
+                    await seed.buy(hundredTwoETH,{from:buyer2});
                     await expectRevert(
                         seed.buy(twoHundredFourETH,{from:buyer2}),
                         "Seed: maximum funding reached"

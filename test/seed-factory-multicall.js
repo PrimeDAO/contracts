@@ -54,20 +54,22 @@ contract('SeedFactory', (accounts) => {
     let receipt;
     let requiredSeedAmount;
     const pct_base = new BN('1000000000000000000'); // 10**18
+    const zero = 0;
+    const one  = 1;
 
     context('» creator is avatar', () => {
         before('!! deploy setup', async () => {
             setup = await deploy(accounts);
             admin = accounts[1];
-            seedToken = setup.tokens.primeToken;
+            seedToken    = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             hardCap = toWei('100');
-            price = toWei('0.01');
+            price   = toWei('0.01');
             softCap = toWei('100');
-            startTime  = await time.latest();
-            endTime = await startTime.add(await time.duration.days(7));
+            startTime       = await time.latest();
+            endTime         = await startTime.add(await time.duration.days(7));
             vestingDuration = await time.duration.days(365); // 1 year
-            vestingCliff = await time.duration.days(90); // 3 months
+            vestingCliff    = await time.duration.days(90); // 3 months
             isWhitelisted = false;
             fee = 2;
             metadata = `0x`;
@@ -100,7 +102,7 @@ contract('SeedFactory', (accounts) => {
 
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls([seedFactory.address],[calldata], [0], metadata);
                 const proposalId = helpers.getNewProposalId(_tx);
-                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, one, zero, constants.ZERO_ADDRESS);
                 const tx = await setup.primeDAO.multicallScheme.execute(proposalId);
 
                 // store data
@@ -133,7 +135,7 @@ contract('SeedFactory', (accounts) => {
                 const calldata = helpers.encodeChangeParentSeed(newSeed.address);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls([seedFactory.address],[calldata], [0], metadata);
                 const proposalId = helpers.getNewProposalId(_tx);
-                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, one, zero, constants.ZERO_ADDRESS);
                 await setup.primeDAO.multicallScheme.execute(proposalId);
                 expect(await seedFactory.parent()).to.equal(newSeed.address);
             });
@@ -149,7 +151,7 @@ contract('SeedFactory', (accounts) => {
                 const calldata = helpers.encodeChangeAvatar(accounts[0]);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls([seedFactory.address],[calldata], [0], metadata);
                 const proposalId = helpers.getNewProposalId(_tx);
-                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, 1, 0, constants.ZERO_ADDRESS);
+                await  setup.primeDAO.multicallScheme.voting.absoluteVote.vote(proposalId, one, zero, constants.ZERO_ADDRESS);
                 await setup.primeDAO.multicallScheme.execute(proposalId);
                 expect(await seedFactory.avatar()).to.equal(accounts[0]);
             });
