@@ -1,12 +1,12 @@
 /*global web3, artifacts, contract, before, it, context*/
 /*eslint no-undef: "error"*/
 
-const { expect } = require('chai');
-const { /*constants,*/ time, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
-const helpers = require('./helpers');
-const { BN } = require('@openzeppelin/test-helpers/src/setup');
-const SeedFactory = artifacts.require('SeedFactory');
-const Seed = artifacts.require('Seed');
+const { expect } = require("chai");
+const { /*constants,*/ time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
+const helpers = require("./helpers");
+const { BN } = require("@openzeppelin/test-helpers/src/setup");
+const SeedFactory = artifacts.require("SeedFactory");
+const Seed = artifacts.require("Seed");
 const { toWei } = web3.utils;
 
 const deploy = async (accounts) => {
@@ -34,7 +34,7 @@ const deploy = async (accounts) => {
     return setup;
 };
 
-contract('SeedFactory', (accounts) => {
+contract("SeedFactory", (accounts) => {
     let tx;
     let setup;
     let admin;
@@ -54,21 +54,21 @@ contract('SeedFactory', (accounts) => {
     let metadata;
     let receipt;
     let requiredSeedAmount;
-    const pct_base = new BN('1000000000000000000'); // 10**18
+    const pct_base = new BN("1000000000000000000"); // 10**18
 
-    context('» creator is avatar', () => {
-        before('!! deploy setup', async () => {
+    context("» creator is avatar", () => {
+        before("!! deploy setup", async () => {
             setup = await deploy(accounts);
             admin = accounts[1];
-            seedToken    = setup.tokens.primeToken;
+            seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
-            hardCap = toWei('100');
-            price   = toWei('0.01');
-            softCap = toWei('100');
-            startTime       = await time.latest();
-            endTime         = await startTime.add(await time.duration.days(7));
+            hardCap = toWei("100");
+            price = toWei("0.01");
+            softCap = toWei("100");
+            startTime = await time.latest();
+            endTime = await startTime.add(await time.duration.days(7));
             vestingDuration = await time.duration.days(365); // 1 year
-            vestingCliff    = await time.duration.days(90); // 3 months
+            vestingCliff = await time.duration.days(90); // 3 months
             isWhitelisted = false;
             fee = 2;
             metadata = `0x`;
@@ -77,14 +77,14 @@ contract('SeedFactory', (accounts) => {
             await seedFactory.initialize(accounts[0], setup.seed.address);
         });
 
-        context('» parameters are valid', () => {
-            it('it creates new seed contract', async () => {
-                requiredSeedAmount = ((new BN(hardCap)).div(new BN(price)).mul(pct_base));
-                
+        context("» parameters are valid", () => {
+            it("it creates new seed contract", async () => {
+                requiredSeedAmount = new BN(hardCap).div(new BN(price)).mul(pct_base);
+
                 tx = await seedFactory.deploySeed(
                     admin,
                     [seedToken.address, fundingToken.address],
-                    [softCap,hardCap],
+                    [softCap, hardCap],
                     price,
                     startTime.toNumber(),
                     endTime.toNumber(),
@@ -97,43 +97,43 @@ contract('SeedFactory', (accounts) => {
 
                 // store data
                 setup.data.tx = tx;
-                receipt = await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, 'SeedCreated');
+                receipt = await expectEvent.inTransaction(setup.data.tx.tx, seedFactory, "SeedCreated");
             });
-            it('sets correct seedAmountRequired', async () => {
+            it("sets correct seedAmountRequired", async () => {
                 newSeed = await Seed.at(await receipt.args[0]);
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
-            it('reverts: contract already initialized', async () => {
+            it("reverts: contract already initialized", async () => {
                 await expectRevert(
                     seedFactory.initialize(accounts[0], setup.seed.address),
                     "SeedFactory: contract already initialized"
                 );
             });
         });
-        context('» changeParent', () => {
-            before('!! deploy new seed', async () => {
+        context("» changeParent", () => {
+            before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
-            it('only Avatar can change parent', async () => {
+            it("only Avatar can change parent", async () => {
                 await expectRevert(
-                    seedFactory.changeParent(newSeed.address,{from:accounts[1]}),
+                    seedFactory.changeParent(newSeed.address, { from: accounts[1] }),
                     "SeedFactory: protected operation"
                 );
             });
-            it('changes parent', async () => {
-                await seedFactory.changeParent(newSeed.address,{from:accounts[0]});
+            it("changes parent", async () => {
+                await seedFactory.changeParent(newSeed.address, { from: accounts[0] });
                 expect(await seedFactory.parent()).to.equal(newSeed.address);
             });
         });
-        context('» changeAvatar', () => {
-            it('only Avatar can change avatar', async () => {
+        context("» changeAvatar", () => {
+            it("only Avatar can change avatar", async () => {
                 await expectRevert(
-                    seedFactory.changeAvatar(accounts[2],{from:accounts[1]}),
+                    seedFactory.changeAvatar(accounts[2], { from: accounts[1] }),
                     "SeedFactory: protected operation"
                 );
             });
-            it('changes avatar', async () => {
-                await seedFactory.changeAvatar(accounts[2],{from:accounts[0]});
+            it("changes avatar", async () => {
+                await seedFactory.changeAvatar(accounts[2], { from: accounts[0] });
                 expect(await seedFactory.avatar()).to.equal(accounts[2]);
             });
         });
