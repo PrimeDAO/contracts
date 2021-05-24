@@ -20,7 +20,6 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./Seed.sol";
 import "../utils/CloneFactory.sol";
 
-
 /**
  * @title primeDAO Seed Factory
  * @dev   Enable primeDAO governance to create new Seed contracts.
@@ -28,9 +27,9 @@ import "../utils/CloneFactory.sol";
 contract SeedFactory is CloneFactory {
     using SafeMath for uint256;
 
-    Avatar    public avatar;
-    Seed      public parent;
-    bool      public initialized;
+    Avatar public avatar;
+    Seed public parent;
+    bool public initialized;
 
     // uint32  public constant PPM               = 1000000;   // parts per million
     // uint256 public constant PPM100            = 100000000; // ppm * 100
@@ -44,35 +43,38 @@ contract SeedFactory is CloneFactory {
     }
 
     modifier protected() {
-        require(initialized,                    "SeedFactory: contract not initialized");
-        require(msg.sender == address(avatar),  "SeedFactory: protected operation");
+        require(initialized, "SeedFactory: contract not initialized");
+        require(
+            msg.sender == address(avatar),
+            "SeedFactory: protected operation"
+        );
         _;
     }
 
     /**
-      * @dev           Initialize proxy.
-      * @param _avatar The address of the Avatar controlling this contract.
-      * @param _parent The address of the Seed contract which will be a parent for all of the clones.
-      */
+     * @dev           Initialize proxy.
+     * @param _avatar The address of the Avatar controlling this contract.
+     * @param _parent The address of the Seed contract which will be a parent for all of the clones.
+     */
     function initialize(Avatar _avatar, Seed _parent) external initializer {
         require(_avatar != Avatar(0), "SeedFactory: avatar cannot be null");
-        require(_parent != Seed(0),   "SeedFactory: parent cannot be null");
+        require(_parent != Seed(0), "SeedFactory: parent cannot be null");
         avatar = _avatar;
         parent = _parent;
     }
 
     /**
-    * @dev             Update Seed contract which works as a base for clones.
-    * @param newParent The address of the new Seed basis.
-    */
+     * @dev             Update Seed contract which works as a base for clones.
+     * @param newParent The address of the new Seed basis.
+     */
     function changeParent(Seed newParent) public protected {
         parent = newParent;
     }
 
     /**
-    * @dev             Update Avatar.
-    * @param _newAvatar The address of the new Avatar.
-    */
+     * @dev             Update Avatar.
+     * @param _newAvatar The address of the new Avatar.
+     */
     function changeAvatar(Avatar _newAvatar) public protected {
         avatar = _newAvatar;
     }
@@ -97,22 +99,18 @@ contract SeedFactory is CloneFactory {
       * @param _metadata              Seed contract metadata, that is IPFS URI
     */
     function deploySeed(
-        address          _admin,
+        address _admin,
         address[] memory _tokens,
         uint256[] memory _softHardThresholds,
-        uint256          _price,
-        uint256          _startTime,
-        uint256          _endTime,
-        uint32           _vestingDuration,
-        uint32           _vestingCliff,
-        bool             _isWhitelisted,
-        uint8            _fee,
-        bytes32          _metadata
-    )
-    public
-    protected
-    returns(address)
-    {
+        uint256 _price,
+        uint256 _startTime,
+        uint256 _endTime,
+        uint32 _vestingDuration,
+        uint32 _vestingCliff,
+        bool _isWhitelisted,
+        uint8 _fee,
+        bytes32 _metadata
+    ) public protected returns (address) {
         // deploy clone
         address _newSeed = createClone(address(parent));
 
@@ -122,7 +120,8 @@ contract SeedFactory is CloneFactory {
         // {
         //     // Calculating amount of Seed Token required to be transfered to deployed Seed Contract
         //     uint256 requiredSeedAmount = (_softHardThresholds[1].div(_price)).mul(10**18);
-        //     requiredSeedAmount = requiredSeedAmount.add((requiredSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
+        //     requiredSeedAmount = requiredSeedAmount
+        //.add((requiredSeedAmount.mul(uint256(PPM))).mul(_fee).div(PPM100));
         //     // checks for successful transfer of the Seed Tokens.
         //     require(
         //         IERC20(_tokens[0]).transferFrom(_admin, address(_newSeed), requiredSeedAmount),
