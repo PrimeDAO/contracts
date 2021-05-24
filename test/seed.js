@@ -80,9 +80,7 @@ contract("Seed", (accounts) => {
     context("» creator is avatar", () => {
         before("!! deploy setup", async () => {
             setup = await deploy(accounts);
-            admin  = accounts[1];
-            buyer1 = accounts[2];
-            buyer2 = accounts[3];
+            [, admin, buyer1, buyer2] = accounts;
             seedToken    = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
             softCap        = toWei("10");
@@ -129,16 +127,16 @@ contract("Seed", (accounts) => {
                         fee
                     );
 
-                    expect( await setup.seed.initialized()).to.equal(true);
-                    expect( await setup.seed.beneficiary()).to.equal(setup.organization.avatar.address);
-                    expect( await setup.seed.admin()).to.equal(admin);
-                    expect( await setup.seed.seedToken()).to.equal(seedToken.address);
-                    expect( await setup.seed.fundingToken()).to.equal(fundingToken.address);
+                    expect(await setup.seed.initialized()).to.equal(true);
+                    expect(await setup.seed.beneficiary()).to.equal(setup.organization.avatar.address);
+                    expect(await setup.seed.admin()).to.equal(admin);
+                    expect(await setup.seed.seedToken()).to.equal(seedToken.address);
+                    expect(await setup.seed.fundingToken()).to.equal(fundingToken.address);
                     expect((await setup.seed.softCap()).toString()).to.equal(softCap);
                     expect((await setup.seed.price()).toString()).to.equal(price);
-                    expect( await setup.seed.permissionedSeed()).to.equal(permissionedSeed);
+                    expect(await setup.seed.permissionedSeed()).to.equal(permissionedSeed);
                     expect((await setup.seed.fee()).toString()).to.equal(fee.toString());
-                    expect( await setup.seed.closed()).to.equal(false);
+                    expect(await setup.seed.closed()).to.equal(false);
                     expect((await setup.seed.seedAmountRequired()).toString()).to.equal(seedForDistribution.toString());
                     expect((await setup.seed.seedForFeeRequired()).toString()).to.equal(seedForFee.toString());
                     expect((await setup.seed.seedRemainder()).toString()).to.equal(seedForDistribution.toString());
