@@ -612,7 +612,7 @@ contract("Seed", (accounts) => {
             });
             context("» getStartTime", () => {
                 it("returns correct startTime", async () => {
-                    expect((await setup.seed.getStartTime()).toString()).to.equal(startTime.toString());
+                    expect((await setup.seed.startTime()).toString()).to.equal(startTime.toString());
                 });
             });
         });

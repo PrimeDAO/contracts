@@ -391,7 +391,6 @@ contract Seed {
       * @param _funder           Address of funder to find the maximum claim
     */
     function calculateClaim(address _funder) public view returns(uint256) {
-        // EXP - Second argument - ( seed amount bought by User ).sub( seed amount user have claimed )
         return _calculateClaim(_funder);
     }
 
@@ -401,13 +400,6 @@ contract Seed {
     */
     function checkWhitelisted(address _buyer) public view returns(bool) {
         return whitelisted[_buyer];
-    }
-
-    /**
-      * @dev                      get start time of seed distribution
-    */
-    function getStartTime() public view returns(uint256) {
-        return startTime;  
     }
 
     // INTERNAL FUNCTIONS
