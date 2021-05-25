@@ -410,38 +410,6 @@ contract Seed {
         return startTime;  
     }
 
-    /**
-      * @dev                      get the total seed amount bought
-      * @param _funder            Address of funder to find the total seed amount bought
-    */
-    function getSeedAmount(address _funder) public view returns(uint256) {
-        return funders[_funder].seedAmount;
-    }
-
-    /**
-      * @dev                      get the total seed amount claimed
-      * @param _funder            Address of funder to find the total seed amount claimed
-    */
-    function getTotalClaimed(address _funder) public view returns(uint256) {
-        return funders[_funder].totalClaimed;
-    }
-
-    /**
-      * @dev                      get the fee for funder in seed token
-      * @param _funder            Address of funder to find the fee
-    */
-    function getFee(address _funder) public view returns(uint256) {
-        return funders[_funder].fee;
-    }
-
-    /**
-      * @dev                      get the fee claimed for a funder in seed token
-      * @param _funder            Address of funder to find the fee
-    */
-    function getFeeClaimed(address _funder) public view returns(uint256) {
-        return funders[_funder].feeClaimed;
-    }
-
     // INTERNAL FUNCTIONS
     /**
       * @dev                      get current time or block.timestamp

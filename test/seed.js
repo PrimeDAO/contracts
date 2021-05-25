@@ -219,7 +219,7 @@ contract("Seed", (accounts) => {
                     expect((await feeAmount).toString()).to.equal(hundredTwoETH);
                 });
                 it("updates fee mapping for locker", async () => {
-                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(hundredTwoETH);
+                    expect((await setup.seed.funders(buyer1)).fee.toString()).to.equal(hundredTwoETH);
                 });
                 it("updates the remaining seeds to distribution", async () => {
                     expect((await setup.seed.seedRemainder()).toString()).to.equal(
@@ -241,8 +241,8 @@ contract("Seed", (accounts) => {
                     );
                 });
                 it("updates lock when it buys tokens", async () => {
-                    let prevSeedAmount = await setup.seed.getSeedAmount(buyer1);
-                    let prevFeeAmount = await setup.seed.getFee(buyer1);
+                    let prevSeedAmount = (await setup.seed.funders(buyer1)).seedAmount;
+                    let prevFeeAmount = (await setup.seed.funders(buyer1)).fee;
 
                     let tx = await setup.seed.buy(buyAmount, { from: buyer1 });
                     setup.data.tx = tx;
@@ -252,10 +252,10 @@ contract("Seed", (accounts) => {
                         (2 * buyAmount).toString()
                     );
 
-                    expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal(
+                    expect((await setup.seed.funders(buyer1)).seedAmount.toString()).to.equal(
                         prevSeedAmount.mul(twoBN).toString()
                     );
-                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(prevFeeAmount.mul(twoBN).toString());
+                    expect((await setup.seed.funders(buyer1)).fee.toString()).to.equal(prevFeeAmount.mul(twoBN).toString());
                 });
                 it("maximumReached == true", async () => {
                     expect(await setup.seed.maximumReached()).to.equal(true);
@@ -271,7 +271,7 @@ contract("Seed", (accounts) => {
                     );
                 });
                 it("return totalClaimed == 0", async () => {
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(zero.toString());
+                    expect((await setup.seed.funders(buyer1)).totalClaimed.toString()).to.equal(zero.toString());
                 });
             });
         });
@@ -322,10 +322,10 @@ contract("Seed", (accounts) => {
                     });
                 });
                 it("updates claim", async () => {
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(claimAmount.toString());
+                    expect((await setup.seed.funders(buyer1)).totalClaimed.toString()).to.equal(claimAmount.toString());
                 });
                 it("updates fee claimed", async () => {
-                    expect((await setup.seed.getFeeClaimed(buyer1)).toString()).to.equal(feeAmount.toString());
+                    expect((await setup.seed.funders(buyer1)).feeClaimed.toString()).to.equal(feeAmount.toString());
                 });
                 it("funds dao with fee", async () => {
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to.equal(
@@ -385,8 +385,8 @@ contract("Seed", (accounts) => {
                     expect(await receipt.args[1].toString()).to.equal(new BN(buySeedAmount).mul(twoBN).toString());
                 });
                 it("it claims all the fee for a buyer's claim", async () => {
-                    const fee = await setup.data.seed.getFee(buyer2);
-                    const feeClaimed = await setup.data.seed.getFeeClaimed(buyer2);
+                    const fee = (await setup.data.seed.funders(buyer2)).fee;
+                    const feeClaimed = (await setup.data.seed.funders(buyer2)).feeClaimed;
                     expect(fee.toString()).to.equal(feeClaimed.toString());
                 });
                 it("it claims all the fee", async () => {
@@ -395,9 +395,9 @@ contract("Seed", (accounts) => {
                     expect(seedForFeeRequired.toString()).to.equal(feeSeedClaimed.toString());
                 });
                 it("funds DAO with all the fee", async () => {
-                    const fee = await setup.data.seed.getFee(buyer2);
+                    const fee = (await setup.data.seed.funders(buyer2)).fee;
                     expect((await seedToken.balanceOf(setup.organization.avatar.address)).toString()).to.equal(
-                        fee.add(await setup.seed.getFeeClaimed(buyer1)).toString()
+                        fee.add((await setup.seed.funders(buyer1)).feeClaimed).toString()
                     );
                 });
             });
@@ -450,10 +450,10 @@ contract("Seed", (accounts) => {
                     expect((await fundingToken.balanceOf(buyer2)).toString()).to.equal(smallBuyAmount.toString());
                 });
                 it("clears `fee` mapping", async () => {
-                    expect((await setup.data.seed.getFee(buyer2)).toString()).to.equal(zero.toString());
+                    expect((await setup.seed.funders(buyer2)).fee.toString()).to.equal(zero.toString());
                 });
                 it("clears `tokenLock.amount`", async () => {
-                    expect((await setup.data.seed.getSeedAmount(buyer2)).toString()).to.equal(zero.toString());
+                    expect((await setup.seed.funders(buyer2)).seedAmount.toString()).to.equal(zero.toString());
                 });
                 it("updates `feeSeedRemainder` ", async () => {
                     expect((await setup.data.seed.feeSeedRemainder()).toString()).to.equal(seedForFee.toString());
@@ -591,14 +591,14 @@ contract("Seed", (accounts) => {
             });
             context("» getAmount", () => {
                 it("returns correct amount", async () => {
-                    expect((await setup.seed.getSeedAmount(buyer1)).toString()).to.equal(
+                    expect((await setup.seed.funders(buyer1)).seedAmount.toString()).to.equal(
                         new BN(buySeedAmount).mul(twoBN).toString()
                     );
                 });
             });
             context("» getTotalClaimed", () => {
                 it("returns correct claimed", async () => {
-                    expect((await setup.seed.getTotalClaimed(buyer1)).toString()).to.equal(
+                    expect((await setup.seed.funders(buyer1)).totalClaimed.toString()).to.equal(
                         totalClaimedByBuyer1.toString()
                     );
                 });
@@ -607,7 +607,7 @@ contract("Seed", (accounts) => {
                 it("returns correct fee", async () => {
                     let amount = new BN(buySeedAmount);
                     let amountMinusFee = new BN(amount.mul(twoBN).div(new BN(hundred)));
-                    expect((await setup.seed.getFee(buyer1)).toString()).to.equal(amountMinusFee.mul(twoBN).toString());
+                    expect((await setup.seed.funders(buyer1)).fee.toString()).to.equal(amountMinusFee.mul(twoBN).toString());
                 });
             });
             context("» getStartTime", () => {
