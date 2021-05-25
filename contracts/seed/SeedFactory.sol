@@ -27,7 +27,7 @@ import "../utils/CloneFactory.sol";
 contract SeedFactory is CloneFactory {
     using SafeMath for uint256;
 
-    Avatar public avatar;
+    Avatar public owner;
     Seed public masterCopy;
     bool public initialized;
 
@@ -44,9 +44,9 @@ contract SeedFactory is CloneFactory {
         _;
     }
 
-    modifier onlyDao() {
+    modifier onlyOwner() {
         require(
-            msg.sender == address(avatar),
+            msg.sender == address(owner),
             "SeedFactory: protected operation"
         );
         _;
@@ -54,13 +54,13 @@ contract SeedFactory is CloneFactory {
 
     /**
      * @dev               Initialize proxy.
-     * @param _avatar     The address of the Avatar controlling this contract.
+     * @param _owner     The address of the owner controlling this contract.
      * @param _masterCopy The address of the Seed contract which will be a masterCopy for all of the clones.
      */
-    function initialize(Avatar _avatar, Seed _masterCopy) external initializer {
-        require(_avatar     != Avatar(0), "SeedFactory: avatar cannot be null");
+    function initialize(Avatar _owner, Seed _masterCopy) external initializer {
+        require(_owner     != Avatar(0), "SeedFactory: owner cannot be null");
         require(_masterCopy != Seed(0),   "SeedFactory: masterCopy cannot be null");
-        avatar = _avatar;
+        owner = _owner;
         masterCopy = _masterCopy;
     }
 
@@ -68,16 +68,16 @@ contract SeedFactory is CloneFactory {
      * @dev             Update Seed contract which works as a base for clones.
      * @param newMasterCopy The address of the new Seed basis.
      */
-    function changeMasterCopy(Seed newMasterCopy) public onlyDao beInitialised {
+    function changeMasterCopy(Seed newMasterCopy) public onlyOwner beInitialised {
         masterCopy = newMasterCopy;
     }
 
     /**
-     * @dev             Update Avatar.
-     * @param _newAvatar The address of the new Avatar.
+     * @dev             Update Owner.
+     * @param _newOwner The address of the new Owner.
      */
-    function changeAvatar(Avatar _newAvatar) public onlyDao beInitialised {
-        avatar = _newAvatar;
+    function changeOwner(Avatar _newOwner) public onlyOwner beInitialised {
+        owner = _newOwner;
     }
 
     /**
@@ -113,7 +113,7 @@ contract SeedFactory is CloneFactory {
         bool _isWhitelisted,
         uint8 _fee,
         bytes32 _metadata
-    ) public onlyDao beInitialised returns (address) {
+    ) public onlyOwner beInitialised returns (address) {
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 

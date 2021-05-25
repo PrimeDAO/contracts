@@ -245,7 +245,7 @@ contract Seed {
     function claim(address _funder, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
         uint256 amountClaimable;
 
-        amountClaimable = _calculateClaim(_funder);
+        amountClaimable = calculateClaim(_funder);
         require( amountClaimable > 0, "Seed: amount claimable is 0");
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
         uint256 feeAmountOnClaim = _claimAmount.mul(fee).div(100);
@@ -391,7 +391,23 @@ contract Seed {
       * @param _funder           Address of funder to find the maximum claim
     */
     function calculateClaim(address _funder) public view returns(uint256) {
-        return _calculateClaim(_funder);
+        FunderPortfolio memory tokenFunder = funders[_funder];
+
+        // Check cliff was reached
+        uint256 elapsedSeconds = _currentTime().sub(startTime);
+
+        if (elapsedSeconds < vestingCliff) {
+            return 0;
+        }
+
+        // If over vesting duration, all tokens vested
+        if (elapsedSeconds >= vestingDuration) {
+            return tokenFunder.seedAmount.sub(tokenFunder.totalClaimed);
+        } else {
+            uint256 amountVestedPerDay = tokenFunder.seedAmount.div(uint256(vestingDuration));
+            uint256 amountVested = uint256(elapsedSeconds.mul(amountVestedPerDay));
+            return amountVested.sub(tokenFunder.totalClaimed);
+        }
     }
 
     /**
@@ -440,30 +456,5 @@ contract Seed {
             feeClaimed: _feeClaimed
             });
         totalFunderCount++;
-    }
-
-    /**
-      * @dev                     calculates claim for a funder
-      * @param _funder           Address of funder to calculate days and amount claimable
-    */
-    function _calculateClaim(address _funder) private view returns (uint256) {
-        FunderPortfolio memory tokenFunder = funders[_funder];
-
-        // Check cliff was reached
-        uint256 elapsedSeconds = _currentTime().sub(startTime);
-
-        if (elapsedSeconds < vestingCliff) {
-            return 0;
-        }
-
-        // If over vesting duration, all tokens vested
-        if (elapsedSeconds >= vestingDuration) {
-            return tokenFunder.seedAmount.sub(tokenFunder.totalClaimed);
-        } else {
-            uint256 amountVestedPerDay = tokenFunder.seedAmount.div(uint256(vestingDuration));
-            uint256 amountVested = uint256(elapsedSeconds.mul(amountVestedPerDay));
-            return amountVested.sub(tokenFunder.totalClaimed);
-        }
-        
     }
 }

@@ -57,7 +57,7 @@ contract("SeedFactory", (accounts) => {
     let requiredSeedAmount;
     const pct_base = new BN("1000000000000000000"); // 10**18
 
-    context("» creator is avatar", () => {
+    context("» creator is owner", () => {
         before("!! deploy setup", async () => {
             setup = await deploy(accounts);
             dao = accounts[0];
@@ -117,7 +117,7 @@ contract("SeedFactory", (accounts) => {
             before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
-            it("only Avatar can change master copy", async () => {
+            it("only Owner can change master copy", async () => {
                 await expectRevert(
                     seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
                     "SeedFactory: protected operation"
@@ -128,16 +128,16 @@ contract("SeedFactory", (accounts) => {
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });
-        context("» changeAvatar", () => {
-            it("only Avatar can change avatar", async () => {
+        context("» changeOwner", () => {
+            it("only Owner can change owner", async () => {
                 await expectRevert(
-                    seedFactory.changeAvatar(accounts[2], { from: accounts[1] }),
+                    seedFactory.changeOwner(accounts[2], { from: accounts[1] }),
                     "SeedFactory: protected operation"
                 );
             });
-            it("changes avatar", async () => {
-                await seedFactory.changeAvatar(accounts[2], { from: accounts[0] });
-                expect(await seedFactory.avatar()).to.equal(accounts[2]);
+            it("changes owner", async () => {
+                await seedFactory.changeOwner(accounts[2], { from: accounts[0] });
+                expect(await seedFactory.owner()).to.equal(accounts[2]);
             });
         });
     });

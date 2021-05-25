@@ -60,8 +60,8 @@ const encodeDeploySeed = (dao, admin, tokens, softAndHardCap, price, startTime, 
 const encodeChangeMasterCopySeed = (newParent) => {
   return new web3.eth.Contract(SeedFactory.abi).methods.changeMasterCopy(newParent).encodeABI();
 };
-const encodeChangeAvatar = (newAvatar) => {
-  return new web3.eth.Contract(SeedFactory.abi).methods.changeAvatar(newAvatar).encodeABI();
+const encodeChangeOwner = (newOwner) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.changeOwner(newOwner).encodeABI();
 };
 
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
@@ -130,7 +130,7 @@ module.exports = {
   encodeApprove,
   encodeDeploySeed,
   encodeChangeMasterCopySeed,
-  encodeChangeAvatar,
+  encodeChangeOwner,
   values: {
     AMOUNT,
     EXPECTED,

@@ -77,7 +77,7 @@ contract("SeedFactory", (accounts) => {
             metadata = `0x`;
 
             seedFactory = await SeedFactory.new();
-            // change to avatar as avatar
+            // change to owner as owner
             await seedFactory.initialize(setup.organization.avatar.address, setup.seed.address);
         });
 
@@ -137,7 +137,7 @@ contract("SeedFactory", (accounts) => {
             before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
-            it("only Avatar can change master copy", async () => {
+            it("only Owner can change master copy", async () => {
                 await expectRevert(
                     seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
                     "SeedFactory: protected operation"
@@ -163,15 +163,15 @@ contract("SeedFactory", (accounts) => {
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });
-        context("» changeAvatar", () => {
-            it("only Avatar can change avatar", async () => {
+        context("» changeOwner", () => {
+            it("only Owner can change owner", async () => {
                 await expectRevert(
-                    seedFactory.changeAvatar(accounts[2], { from: accounts[1] }),
+                    seedFactory.changeOwner(accounts[2], { from: accounts[1] }),
                     "SeedFactory: protected operation"
                 );
             });
-            it("changes avatar", async () => {
-                const calldata = helpers.encodeChangeAvatar(accounts[0]);
+            it("changes owner", async () => {
+                const calldata = helpers.encodeChangeOwner(accounts[0]);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
@@ -186,7 +186,7 @@ contract("SeedFactory", (accounts) => {
                     constants.ZERO_ADDRESS
                 );
                 await setup.primeDAO.multicallScheme.execute(proposalId);
-                expect(await seedFactory.avatar()).to.equal(accounts[0]);
+                expect(await seedFactory.owner()).to.equal(accounts[0]);
             });
         });
     });
