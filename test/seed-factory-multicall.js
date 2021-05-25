@@ -36,6 +36,7 @@ const deploy = async (accounts) => {
 
 contract("SeedFactory", (accounts) => {
     let setup;
+    let dao;
     let admin;
     let seedToken;
     let fundingToken;
@@ -60,6 +61,7 @@ contract("SeedFactory", (accounts) => {
     context("» creator is avatar", () => {
         before("!! deploy setup", async () => {
             setup = await deploy(accounts);
+            dao = accounts[0];
             admin = accounts[1];
             seedToken = setup.tokens.primeToken;
             fundingToken = setup.tokens.erc20s[0];
@@ -87,6 +89,7 @@ contract("SeedFactory", (accounts) => {
                 await seedToken.approve(seedFactory.address, requiredSeedAmount, { from: admin });
 
                 const calldata = helpers.encodeDeploySeed(
+                    dao,
                     admin,
                     [seedToken.address, fundingToken.address],
                     [softCap, hardCap],

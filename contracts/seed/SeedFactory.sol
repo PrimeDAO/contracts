@@ -39,8 +39,12 @@ contract SeedFactory is CloneFactory {
         _;
     }
 
-    modifier protected() {
+    modifier beInitialised() {
         require(initialized, "SeedFactory: contract not initialized");
+        _;
+    }
+
+    modifier onlyDao() {
         require(
             msg.sender == address(avatar),
             "SeedFactory: protected operation"
@@ -64,7 +68,7 @@ contract SeedFactory is CloneFactory {
      * @dev             Update Seed contract which works as a base for clones.
      * @param newMasterCopy The address of the new Seed basis.
      */
-    function changeMasterCopy(Seed newMasterCopy) public protected {
+    function changeMasterCopy(Seed newMasterCopy) public onlyDao beInitialised {
         masterCopy = newMasterCopy;
     }
 
@@ -72,12 +76,13 @@ contract SeedFactory is CloneFactory {
      * @dev             Update Avatar.
      * @param _newAvatar The address of the new Avatar.
      */
-    function changeAvatar(Avatar _newAvatar) public protected {
+    function changeAvatar(Avatar _newAvatar) public onlyDao beInitialised {
         avatar = _newAvatar;
     }
 
     /**
       * @dev                          Deploys Seed contract.
+      * @param _beneficiary           The address that recieves fees.
       * @param _admin                 The address of the admin of this contract. Funds contract
                                       and has permissions to whitelist users, pause and close contract.
       * @param _tokens                Array containing two params:
@@ -96,6 +101,7 @@ contract SeedFactory is CloneFactory {
       * @param _metadata              Seed contract metadata, that is IPFS URI
     */
     function deploySeed(
+        address _beneficiary,
         address _admin,
         address[] memory _tokens,
         uint256[] memory _softHardThresholds,
@@ -107,7 +113,7 @@ contract SeedFactory is CloneFactory {
         bool _isWhitelisted,
         uint8 _fee,
         bytes32 _metadata
-    ) public protected returns (address) {
+    ) public onlyDao beInitialised returns (address) {
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 
@@ -115,7 +121,7 @@ contract SeedFactory is CloneFactory {
 
         // initialize
         Seed(_newSeed).initialize(
-            msg.sender,
+            _beneficiary,
             _admin,
             _tokens,
             _softHardThresholds,

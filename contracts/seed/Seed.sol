@@ -47,18 +47,15 @@ contract Seed {
     bytes32 public metadata;           // IPFS Hash
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
-    uint32  public constant PPM               = 1000000;   // parts per million
-    uint256 public constant PPM100            = 100000000; // ppm * 100
-    uint256 constant internal SECONDS_PER_DAY = 86400;
 
     // Contract logic
-    bool    public closed;
-    bool    public paused;
+    bool    public closed;                 // is the distribution closed
+    bool    public paused;                 // is the distribution paused
     bool    public isFunded;               // distribution can only start when required seed tokens have been funded
-    bool    public initialized;
-    bool    public minimumReached;
-    bool    public maximumReached;
-    uint256 public totalFunderCount;       // Total funders that have vested.
+    bool    public initialized;            // is this contract initialized [not necessary that it is funded]
+    bool    public minimumReached;         // // if the softCap[minimum limit of funding token] is reached
+    bool    public maximumReached;         // if the hardCap[maximum limit of funding token] is reached
+    uint256 public totalFunderCount;       // Total funders that have contributed.
     uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
     uint256 public seedClaimed;            // Amount of seed token claimed by the user.
     uint256 public feeSeedRemainder;       // Amount of seed tokens remaining for the fee
@@ -66,8 +63,8 @@ contract Seed {
     uint256 public fundingCollected;       // Amount of funding tokens collected by the seed contract.
     uint256 public fundingWithdrawn;       // Amount of funding token withdrawn from the seed contract. 
 
-    mapping (address => bool)    public whitelisted;
-    mapping (address => FunderPortfolio)    public funders; // funder address to funder portfolio
+    mapping (address => bool) public whitelisted;        // funders that are whitelisted and allowed to contribute
+    mapping (address => FunderPortfolio) public funders; // funder address to funder portfolio
 
     event SeedsPurchased(address indexed recipient, uint256 amountPurchased);
     event TokensClaimed(address indexed recipient,uint256 amount,address indexed beneficiary,uint256 feeAmount);
@@ -76,7 +73,6 @@ contract Seed {
 
     struct FunderPortfolio { 
         uint256 seedAmount;
-        uint32  secondsClaimed;
         uint256 totalClaimed;
         uint256 fundingAmount;
         uint256 fee;
@@ -177,7 +173,7 @@ contract Seed {
         minimumReached    = false;
         maximumReached    = false;
 
-        seedAmountRequired = (hardCap.div(_price)).mul(10**18);
+        seedAmountRequired = (hardCap.div(_price)).mul(PCT_BASE);
         seedForFeeRequired = seedAmountRequired.mul(_fee).div(100);
         seedRemainder     = seedAmountRequired;
         feeSeedRemainder  = seedForFeeRequired;
@@ -230,7 +226,6 @@ contract Seed {
             msg.sender,
             (funders[msg.sender].seedAmount.add(seedAmount)),         // Previous Seed Amount + new seed amount
             (funders[msg.sender].fundingAmount.add(_fundingAmount)),  // Previous Funding Amount + new funding amount
-             funders[msg.sender].secondsClaimed,
              funders[msg.sender].totalClaimed,
             (funders[msg.sender].fee.add(feeAmount)),                  // Previous Fee + new fee
              funders[msg.sender].feeClaimed
@@ -248,10 +243,9 @@ contract Seed {
       * @param _claimAmount      The amount of seed token a users wants to claim.
     */
     function claim(address _funder, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
-        uint32 secondsVested;
         uint256 amountClaimable;
 
-        (secondsVested, amountClaimable) = _calculateClaim(_funder);
+        amountClaimable = _calculateClaim(_funder);
         require( amountClaimable > 0, "Seed: amount claimable is 0");
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
         uint256 feeAmountOnClaim = _claimAmount.mul(fee).div(100);
@@ -396,7 +390,7 @@ contract Seed {
       * @dev                     Calculates the maximum claim
       * @param _funder           Address of funder to find the maximum claim
     */
-    function calculateClaim(address _funder) public view returns(uint32, uint256) {
+    function calculateClaim(address _funder) public view returns(uint256) {
         // EXP - Second argument - ( seed amount bought by User ).sub( seed amount user have claimed )
         return _calculateClaim(_funder);
     }
@@ -423,14 +417,6 @@ contract Seed {
     function getSeedAmount(address _funder) public view returns(uint256) {
         return funders[_funder].seedAmount;
     }
-
-    // /**
-    //   * @dev                      get the total seconds claimed
-    //   * @param _funder            Address of funder to find the total seconds claimed
-    // */
-    // function getSecondsClaimed(address _funder) public view returns(uint32) {
-    //     return funders[_funder].secondsClaimed;
-    // }
 
     /**
       * @dev                      get the total seed amount claimed
@@ -469,7 +455,6 @@ contract Seed {
       * @param _recipient         Address of funder recipient
       * @param _seedAmount        seed amount of the funder
       * @param _fundingAmount     funding amount contributed
-      * @param _secondsClaimed    total seconds claimed
       * @param _totalClaimed      total seed token amount claimed
       * @param _fee               fee on seed amount bought
     */
@@ -477,7 +462,6 @@ contract Seed {
         address _recipient,
         uint256 _seedAmount,
         uint256 _fundingAmount,
-        uint32  _secondsClaimed,
         uint256 _totalClaimed,
         uint256 _fee,
         uint256 _feeClaimed
@@ -490,7 +474,6 @@ contract Seed {
 
         funders[_recipient] = FunderPortfolio({
             seedAmount: _seedAmount,
-            secondsClaimed: _secondsClaimed,
             totalClaimed: _totalClaimed,
             fundingAmount: _fundingAmount,
             fee: _fee,
@@ -503,23 +486,23 @@ contract Seed {
       * @dev                     calculates claim for a funder
       * @param _funder           Address of funder to calculate days and amount claimable
     */
-    function _calculateClaim(address _funder) private view returns (uint32, uint256) {
+    function _calculateClaim(address _funder) private view returns (uint256) {
         FunderPortfolio memory tokenFunder = funders[_funder];
 
         // Check cliff was reached
         uint256 elapsedSeconds = _currentTime().sub(startTime);
 
         if (elapsedSeconds < vestingCliff) {
-            return (uint32(elapsedSeconds), 0);
+            return 0;
         }
 
         // If over vesting duration, all tokens vested
         if (elapsedSeconds >= vestingDuration) {
-            return (vestingDuration, tokenFunder.seedAmount.sub(tokenFunder.totalClaimed));
+            return tokenFunder.seedAmount.sub(tokenFunder.totalClaimed);
         } else {
             uint256 amountVestedPerDay = tokenFunder.seedAmount.div(uint256(vestingDuration));
             uint256 amountVested = uint256(elapsedSeconds.mul(amountVestedPerDay));
-            return (uint32(elapsedSeconds), amountVested.sub(tokenFunder.totalClaimed));
+            return amountVested.sub(tokenFunder.totalClaimed);
         }
         
     }

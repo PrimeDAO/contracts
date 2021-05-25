@@ -291,8 +291,7 @@ contract("Seed", (accounts) => {
                     const expectedClaim = (await time.latest())
                         .sub(startTime)
                         .mul(new BN(buySeedAmount).mul(twoBN).div(new BN(vestingDuration)));
-                    expect(claim[0].toString()).to.equal((await time.latest()).sub(startTime).toString());
-                    expect(claim[1].toString()).to.equal(expectedClaim.toString());
+                    expect(claim.toString()).to.equal(expectedClaim.toString());
                 });
                 it("it cannot claim if not vested", async () => {
                     await expectRevert(
@@ -342,12 +341,12 @@ contract("Seed", (accounts) => {
                 });
                 it("calculates and claims exact seed amount", async () => {
                     const claim = await setup.seed.calculateClaim(buyer1);
-                    let tx = await setup.seed.claim(buyer1, claim[1], { from: buyer1 });
+                    let tx = await setup.seed.claim(buyer1, claim, { from: buyer1 });
                     setup.data.tx = tx;
 
-                    totalClaimedByBuyer1 = totalClaimedByBuyer1.add(claim[1]);
+                    totalClaimedByBuyer1 = totalClaimedByBuyer1.add(claim);
                     const receipt = await expectEvent.inTransaction(setup.data.tx.tx, setup.seed, "TokensClaimed");
-                    expect(await receipt.args[1].toString()).to.equal(claim[1].toString());
+                    expect(await receipt.args[1].toString()).to.equal(claim.toString());
                 });
             });
             context("» claim after vesting duration", async () => {
