@@ -33,7 +33,7 @@ contract Seed {
     uint256 public softCap;
     uint256 public hardCap;
     uint256 public seedAmountRequired;    // Amount of seed required for distribution
-    uint256 public seedForFeeRequired;    // Amount of seed required for fee
+    uint256 public feeAmountRequired;    // Amount of seed required for fee
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -58,8 +58,8 @@ contract Seed {
     uint256 public totalFunderCount;       // Total funders that have contributed.
     uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
     uint256 public seedClaimed;            // Amount of seed token claimed by the user.
-    uint256 public feeSeedRemainder;       // Amount of seed tokens remaining for the fee
-    uint256 public feeSeedClaimed;         // Amount of seed tokens claimed as fee
+    uint256 public feeRemainder;       // Amount of seed tokens remaining for the fee
+    uint256 public feeClaimed;         // Amount of seed tokens claimed as fee
     uint256 public fundingCollected;       // Amount of funding tokens collected by the seed contract.
     uint256 public fundingWithdrawn;       // Amount of funding token withdrawn from the seed contract. 
 
@@ -174,9 +174,9 @@ contract Seed {
         maximumReached    = false;
 
         seedAmountRequired = (hardCap.div(_price)).mul(PCT_BASE);
-        seedForFeeRequired = seedAmountRequired.mul(_fee).div(100);
+        feeAmountRequired = seedAmountRequired.mul(_fee).div(100);
         seedRemainder     = seedAmountRequired;
-        feeSeedRemainder  = seedForFeeRequired;
+        feeRemainder  = feeAmountRequired;
     }
 
     /**
@@ -185,7 +185,7 @@ contract Seed {
     */
     function buy(uint256 _fundingAmount) public isActive allowedToBuy returns(uint256, uint256) {
         if(!isFunded) {
-            require(seedToken.balanceOf(address(this)) >= seedAmountRequired.add(seedForFeeRequired),
+            require(seedToken.balanceOf(address(this)) >= seedAmountRequired.add(feeAmountRequired),
                 "Seed: sufficient seeds not provided");
             isFunded = true;
         }
@@ -203,14 +203,14 @@ contract Seed {
                   add(_fundingAmount) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
-        require( seedRemainder >= seedAmount && feeSeedRemainder >= feeAmount,
+        require( seedRemainder >= seedAmount && feeRemainder >= feeAmount,
             "Seed: seed distribution would be exceeded");
 
         fundingCollected = fundingBalance.add(_fundingAmount);
 
         // the amount of seed tokens still to be distributed
         seedRemainder    = seedRemainder.sub(seedAmount);
-        feeSeedRemainder = feeSeedRemainder.sub(feeAmount);
+        feeRemainder = feeRemainder.sub(feeAmount);
 
         // Here we are sending amount of tokens to pay for seed tokens to purchase
         require(fundingToken.transferFrom(msg.sender, address(this), _fundingAmount), "Seed: no tokens");
@@ -257,7 +257,7 @@ contract Seed {
         funders[_funder] = tokenFunder;
         
         seedClaimed    = seedClaimed.add(_claimAmount);
-        feeSeedClaimed = feeSeedClaimed.add(feeAmountOnClaim);
+        feeClaimed = feeClaimed.add(feeAmountOnClaim);
         require(seedToken.transfer(beneficiary, feeAmountOnClaim), "Seed: cannot transfer to beneficiary");
         require(seedToken.transfer(_funder, _claimAmount), "Seed: no tokens");
 
@@ -275,7 +275,7 @@ contract Seed {
         FunderPortfolio memory tokenFunder = funders[msg.sender];
         uint256 fundingAmount = tokenFunder.fundingAmount;
         seedRemainder    = seedRemainder.add(tokenFunder.seedAmount);
-        feeSeedRemainder = feeSeedRemainder.add(tokenFunder.fee);
+        feeRemainder = feeRemainder.add(tokenFunder.fee);
         tokenFunder.seedAmount    = 0;
         tokenFunder.fee           = 0;
         tokenFunder.fundingAmount = 0;
@@ -315,8 +315,8 @@ contract Seed {
     function close() public onlyAdmin isActive {
         // transfer seed tokens back to admin
         if(minimumReached){
-            // remaining seeds = seedRemainder + feeSeedRemainder
-            uint256 seedToTransfer = seedRemainder.add(feeSeedRemainder);
+            // remaining seeds = seedRemainder + feeRemainder
+            uint256 seedToTransfer = seedRemainder.add(feeRemainder);
             require(
                 seedToken.transfer(admin, seedToTransfer),
                 "Seed: should transfer seed tokens to admin"
@@ -324,7 +324,7 @@ contract Seed {
             paused = false;
         } else {
             require(
-                seedToken.transfer(admin, seedAmountRequired.add(seedForFeeRequired)),
+                seedToken.transfer(admin, seedAmountRequired.add(feeAmountRequired)),
                 "Seed: should transfer seed tokens to admin"
             );
             closed = true;
