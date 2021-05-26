@@ -105,7 +105,9 @@ const farmFactory = async (setup) => {
 const seedFactory = async (setup) => {
     const seed = await Seed.new();
     const seedFactory = await SeedFactory.new();
-    await seedFactory.initialize(setup.organization.avatar.address, seed.address);
+    // commented below line so that other tests can run, as SeedFactory.initialise have been removed
+    // await seedFactory.initialize(setup.organization.avatar.address, seed.address);
+    await seedFactory.changeMasterCopy(seed.address);
 
     return seedFactory;
 };

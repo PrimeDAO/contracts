@@ -68,12 +68,12 @@ contract SeedFactory is CloneFactory, Ownable {
      * @dev             Update Seed contract which works as a base for clones.
      * @param newMasterCopy The address of the new Seed basis.
      */
-    function changeMasterCopy(Seed newMasterCopy) public onlyOwner beInitialised {
+    function changeMasterCopy(Seed newMasterCopy) public onlyOwner {
         masterCopy = newMasterCopy;
         initialized = true;
     }
 
-    // use transferOwnership(address _newOwner)
+    // use transferOwnership(address _newOwner) by Ownable
     // /**
     //  * @dev             Update Owner.
     //  * @param _newOwner The address of the new Owner.

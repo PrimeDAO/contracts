@@ -130,7 +130,7 @@ module.exports = {
   encodeApprove,
   encodeDeploySeed,
   encodeChangeMasterCopySeed,
-  encodeChangeOwner,
+  encodeTransferOwnership,
   values: {
     AMOUNT,
     EXPECTED,
