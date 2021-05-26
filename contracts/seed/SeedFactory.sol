@@ -39,7 +39,7 @@ contract SeedFactory is CloneFactory {
         _;
     }
 
-    modifier beInitialised() {
+    modifier isInitialised() {
         require(initialized, "SeedFactory: contract not initialized");
         _;
     }
@@ -68,7 +68,7 @@ contract SeedFactory is CloneFactory {
      * @dev             Update Seed contract which works as a base for clones.
      * @param newMasterCopy The address of the new Seed basis.
      */
-    function changeMasterCopy(Seed newMasterCopy) public onlyOwner beInitialised {
+    function changeMasterCopy(Seed newMasterCopy) public onlyOwner isInitialised {
         masterCopy = newMasterCopy;
     }
 
@@ -76,7 +76,7 @@ contract SeedFactory is CloneFactory {
      * @dev             Update Owner.
      * @param _newOwner The address of the new Owner.
      */
-    function changeOwner(Avatar _newOwner) public onlyOwner beInitialised {
+    function changeOwner(Avatar _newOwner) public onlyOwner isInitialised {
         owner = _newOwner;
     }
 
@@ -113,7 +113,7 @@ contract SeedFactory is CloneFactory {
         bool _isWhitelisted,
         uint8 _fee,
         bytes32 _metadata
-    ) public onlyOwner beInitialised returns (address) {
+    ) public onlyOwner isInitialised returns (address) {
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 
