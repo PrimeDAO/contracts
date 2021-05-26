@@ -32,8 +32,8 @@ contract Seed {
     address public admin;
     uint256 public softCap;
     uint256 public hardCap;
-    uint256 public seedAmountAtStart;    // Amount of seed at the start of distribution
-    uint256 public seedFeeAmountAtStart; // Amount of seed at the start for fee
+    uint256 public seedAmountRequired;    // Amount of seed required for distribution
+    uint256 public feeAmountRequired;    // Amount of seed required for fee
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -47,35 +47,32 @@ contract Seed {
     bytes32 public metadata;           // IPFS Hash
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
-    uint32  public constant PPM               = 1000000;   // parts per million
-    uint256 public constant PPM100            = 100000000; // ppm * 100
-    uint256 constant internal SECONDS_PER_DAY = 86400;
 
     // Contract logic
-    bool    public closed;
-    bool    public paused;
-    uint256 public totalLockCount;   // Total locks that have been created. Each user can have only one lock.
-    uint256 public seedRemainder;    // Amount of seed tokens remaining to be distributed
-    uint256 public seedClaimed;      // Amount of seed token claimed by the user.
-    uint256 public feeSeedRemainder; // Amount of seed tokens remaining for the fee
-    uint256 public feeSeedClaimed;   // Amount of seed tokens claimed as fee
-    uint256 public fundingCollected; // Amount of funding tokens collected by the seed contract.
-    uint256 public fundingWithdrawn; // Amount of funding token withdrawn from the seed contract.
-    bool    public initialized;
-    bool    public minimumReached;
-    bool    public maximumReached;   
+    bool    public closed;                 // is the distribution closed
+    bool    public paused;                 // is the distribution paused
+    bool    public isFunded;               // distribution can only start when required seed tokens have been funded
+    bool    public initialized;            // is this contract initialized [not necessary that it is funded]
+    bool    public minimumReached;         // // if the softCap[minimum limit of funding token] is reached
+    bool    public maximumReached;         // if the hardCap[maximum limit of funding token] is reached
+    uint256 public totalFunderCount;       // Total funders that have contributed.
+    uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
+    uint256 public seedClaimed;            // Amount of seed token claimed by the user.
+    uint256 public feeRemainder;       // Amount of seed tokens remaining for the fee
+    uint256 public feeClaimed;         // Amount of seed tokens claimed as fee
+    uint256 public fundingCollected;       // Amount of funding tokens collected by the seed contract.
+    uint256 public fundingWithdrawn;       // Amount of funding token withdrawn from the seed contract. 
 
-    mapping (address => bool)    public whitelisted;
-    mapping (address => Lock)    public tokenLocks; // locker to lock
+    mapping (address => bool) public whitelisted;        // funders that are whitelisted and allowed to contribute
+    mapping (address => FunderPortfolio) public funders; // funder address to funder portfolio
 
-    event SeedsPurchased(address indexed recipient, uint256 locked);
+    event SeedsPurchased(address indexed recipient, uint256 amountPurchased);
     event TokensClaimed(address indexed recipient,uint256 amount,address indexed beneficiary,uint256 feeAmount);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
     event MetadataUpdated(bytes32 indexed metadata);
 
-    struct Lock { 
+    struct FunderPortfolio { 
         uint256 seedAmount;
-        uint32  secondsClaimed;
         uint256 totalClaimed;
         uint256 fundingAmount;
         uint256 fee;
@@ -176,19 +173,22 @@ contract Seed {
         minimumReached    = false;
         maximumReached    = false;
 
-        // Same calculation as we did at SeedFactory.deploySeed()
-        uint256 seedAmountSent = (_softHardThresholds[1].div(_price)).mul(10**18);
-        seedAmountSent = seedAmountSent.add((seedAmountSent.mul(uint256(PPM))).mul(_fee).div(PPM100));
-
-        seedRemainder     = seedAmountSent;
-        seedAmountAtStart = seedAmountSent;
+        seedAmountRequired = (hardCap.div(_price)).mul(PCT_BASE);
+        feeAmountRequired = seedAmountRequired.mul(_fee).div(100);
+        seedRemainder     = seedAmountRequired;
+        feeRemainder  = feeAmountRequired;
     }
 
     /**
-      * @dev                     Buy and lock seed tokens.
-      * @param _fundingAmount       The amount of seed tokens to buy.
+      * @dev                     Buy seed tokens.
+      * @param _fundingAmount    The amount of funding tokens to contribute.
     */
     function buy(uint256 _fundingAmount) public isActive allowedToBuy returns(uint256, uint256) {
+        if(!isFunded) {
+            require(seedToken.balanceOf(address(this)) >= seedAmountRequired.add(feeAmountRequired),
+                "Seed: sufficient seeds not provided");
+            isFunded = true;
+        }
         // fundingAmount is an amount of fundingTokens required to buy _seedAmount of SeedTokens
         uint256 seedAmount = (_fundingAmount.mul(PCT_BASE)).div(price);
 
@@ -196,38 +196,39 @@ contract Seed {
         uint256 fundingBalance = fundingCollected;
 
         // feeAmount is an amount of fee we are going to get in seedTokens
-        uint256 feeAmount = (seedAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmount = seedAmount.mul(fee).div(100);
 
         // total fundingAmount should not be greater than the hardCap
         require( fundingBalance.
                   add(_fundingAmount) <= hardCap,
             "Seed: amount exceeds contract sale hardCap");
 
-        require( seedRemainder >= seedAmount.add(feeAmount),
+        require( seedRemainder >= seedAmount && feeRemainder >= feeAmount,
             "Seed: seed distribution would be exceeded");
 
         fundingCollected = fundingBalance.add(_fundingAmount);
 
         // the amount of seed tokens still to be distributed
-        seedRemainder = (seedRemainder.sub(seedAmount)).sub(feeAmount);
+        seedRemainder    = seedRemainder.sub(seedAmount);
+        feeRemainder = feeRemainder.sub(feeAmount);
 
-        // Here we are sending amount of tokens to pay for lock and fee
+        // Here we are sending amount of tokens to pay for seed tokens to purchase
         require(fundingToken.transferFrom(msg.sender, address(this), _fundingAmount), "Seed: no tokens");
 
         if (fundingCollected >= softCap) {
             minimumReached = true;
-        } else if (fundingCollected >= hardCap) {
+        }
+        if (fundingCollected >= hardCap) {
             maximumReached = true;            
         }
 
-        _addLock(
+        _addFunder(
             msg.sender,
-            (tokenLocks[msg.sender].seedAmount.add(seedAmount)),         // Previous Seed Amount + new seed amount
-            (tokenLocks[msg.sender].fundingAmount.add(_fundingAmount)),  // Previous Funding Amount + new funding amount
-             tokenLocks[msg.sender].secondsClaimed,
-             tokenLocks[msg.sender].totalClaimed,
-            (tokenLocks[msg.sender].fee.add(feeAmount)),                  // Previous Fee + new fee
-             tokenLocks[msg.sender].feeClaimed
+            (funders[msg.sender].seedAmount.add(seedAmount)),         // Previous Seed Amount + new seed amount
+            (funders[msg.sender].fundingAmount.add(_fundingAmount)),  // Previous Funding Amount + new funding amount
+             funders[msg.sender].totalClaimed,
+            (funders[msg.sender].fee.add(feeAmount)),                  // Previous Fee + new fee
+             funders[msg.sender].feeClaimed
             );
         
         // buyer, seed token purchased in this transaction (not the total amount of seed purchased)
@@ -237,30 +238,30 @@ contract Seed {
     }
 
     /**
-      * @dev                     Claim locked tokens.
-      * @param _locker           Address of lock to calculate seconds and amount claimable
+      * @dev                     Claim vested seed tokens.
+      * @param _funder           Address of funder to calculate seconds and amount claimable
       * @param _claimAmount      The amount of seed token a users wants to claim.
     */
-    function claim(address _locker, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
-        uint32 secondsVested;
+    function claim(address _funder, uint256 _claimAmount) public allowedToClaim returns(uint256, uint256) {
         uint256 amountClaimable;
 
-        (secondsVested, amountClaimable) = _calculateClaim(_locker);
-        require(amountClaimable > 0, "Seed: amountClaimable is 0");
+        amountClaimable = calculateClaim(_funder);
+        require( amountClaimable > 0, "Seed: amount claimable is 0");
         require( amountClaimable >= _claimAmount, "Seed: request is greater than claimable amount");
-        uint256 feeAmountOnClaim = (_claimAmount.mul(uint256(PPM))).mul(fee).div(PPM100);
+        uint256 feeAmountOnClaim = _claimAmount.mul(fee).div(100);
 
-        Lock memory tokenLock = tokenLocks[_locker];
+        FunderPortfolio memory tokenFunder = funders[_funder];
 
-        tokenLock.totalClaimed    = uint256(tokenLock.totalClaimed.add(_claimAmount));
-        tokenLock.feeClaimed      = tokenLock.feeClaimed.add(feeAmountOnClaim);
-        tokenLocks[_locker] = tokenLock;
+        tokenFunder.totalClaimed    = uint256(tokenFunder.totalClaimed.add(_claimAmount));
+        tokenFunder.feeClaimed      = tokenFunder.feeClaimed.add(feeAmountOnClaim);
+        funders[_funder] = tokenFunder;
         
-        seedClaimed = seedClaimed.add(_claimAmount).add(feeAmountOnClaim);
+        seedClaimed    = seedClaimed.add(_claimAmount);
+        feeClaimed = feeClaimed.add(feeAmountOnClaim);
         require(seedToken.transfer(beneficiary, feeAmountOnClaim), "Seed: cannot transfer to beneficiary");
-        require(seedToken.transfer(_locker, _claimAmount), "Seed: no tokens");
+        require(seedToken.transfer(_funder, _claimAmount), "Seed: no tokens");
 
-        emit TokensClaimed(_locker, _claimAmount, beneficiary, feeAmountOnClaim);
+        emit TokensClaimed(_funder, _claimAmount, beneficiary, feeAmountOnClaim);
         
         // amount of seed rewarded , fee on the distributed reward collected from admin
         return (_claimAmount, feeAmountOnClaim);
@@ -270,14 +271,15 @@ contract Seed {
       * @dev         Returns funding tokens to user.
     */
     function retrieveFundingTokens() public allowedToRetrieve returns(uint256) {
-        require(tokenLocks[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
-        Lock memory tokenLock = tokenLocks[msg.sender];
-        uint256 fundingAmount = tokenLock.fundingAmount;
-        seedRemainder = seedRemainder.add(tokenLock.seedAmount).add(tokenLock.fee);
-        tokenLock.seedAmount = 0;
-        tokenLock.fee = 0;
-        tokenLock.fundingAmount = 0;
-        tokenLocks[msg.sender] = tokenLock;
+        require(funders[msg.sender].fundingAmount > 0, "Seed: zero funding amount");
+        FunderPortfolio memory tokenFunder = funders[msg.sender];
+        uint256 fundingAmount = tokenFunder.fundingAmount;
+        seedRemainder    = seedRemainder.add(tokenFunder.seedAmount);
+        feeRemainder = feeRemainder.add(tokenFunder.fee);
+        tokenFunder.seedAmount    = 0;
+        tokenFunder.fee           = 0;
+        tokenFunder.fundingAmount = 0;
+        funders[msg.sender]  = tokenFunder;
         fundingCollected = fundingCollected.sub(fundingAmount);
         require(
             fundingToken.transfer(msg.sender, fundingAmount),
@@ -313,8 +315,8 @@ contract Seed {
     function close() public onlyAdmin isActive {
         // transfer seed tokens back to admin
         if(minimumReached){
-            // amount of seed tokens to be distributed = seedAmountAtStart - seedRemainder
-            uint256 seedToTransfer = seedAmountAtStart.sub(seedAmountAtStart.sub(seedRemainder));
+            // remaining seeds = seedRemainder + feeRemainder
+            uint256 seedToTransfer = seedRemainder.add(feeRemainder);
             require(
                 seedToken.transfer(admin, seedToTransfer),
                 "Seed: should transfer seed tokens to admin"
@@ -322,7 +324,7 @@ contract Seed {
             paused = false;
         } else {
             require(
-                seedToken.transfer(admin, seedAmountAtStart),
+                seedToken.transfer(admin, seedAmountRequired.add(feeAmountRequired)),
                 "Seed: should transfer seed tokens to admin"
             );
             closed = true;
@@ -386,11 +388,26 @@ contract Seed {
     // GETTER FUNCTIONS
     /**
       * @dev                     Calculates the maximum claim
-      * @param _locker           Address of lock to find the maximum claim
+      * @param _funder           Address of funder to find the maximum claim
     */
-    function calculateClaim(address _locker) public view returns(uint32, uint256) {
-        // EXP - Second argument - ( seed amount bought by User ).sub( seed amount user have claimed )
-        return _calculateClaim(_locker);
+    function calculateClaim(address _funder) public view returns(uint256) {
+        FunderPortfolio memory tokenFunder = funders[_funder];
+
+        // Check cliff was reached
+        uint256 elapsedSeconds = _currentTime().sub(startTime);
+
+        if (elapsedSeconds < vestingCliff) {
+            return 0;
+        }
+
+        // If over vesting duration, all tokens vested
+        if (elapsedSeconds >= vestingDuration) {
+            return tokenFunder.seedAmount.sub(tokenFunder.totalClaimed);
+        } else {
+            uint256 amountVestedPerDay = tokenFunder.seedAmount.div(uint256(vestingDuration));
+            uint256 amountVested = uint256(elapsedSeconds.mul(amountVestedPerDay));
+            return amountVested.sub(tokenFunder.totalClaimed);
+        }
     }
 
     /**
@@ -399,53 +416,6 @@ contract Seed {
     */
     function checkWhitelisted(address _buyer) public view returns(bool) {
         return whitelisted[_buyer];
-    }
-
-    /**
-      * @dev                      get start time of seed distribution
-    */
-    function getStartTime() public view returns(uint256) {
-        return startTime;  
-    }
-
-    /**
-      * @dev                      get the total seed amount bought
-      * @param _locker            Address of lock to find the total seed amount bought
-    */
-    function getSeedAmount(address _locker) public view returns(uint256) {
-        return tokenLocks[_locker].seedAmount;
-    }
-
-    // /**
-    //   * @dev                      get the total seconds claimed
-    //   * @param _locker            Address of lock to find the total seconds claimed
-    // */
-    // function getSecondsClaimed(address _locker) public view returns(uint32) {
-    //     return tokenLocks[_locker].secondsClaimed;
-    // }
-
-    /**
-      * @dev                      get the total seed amount claimed
-      * @param _locker            Address of lock to find the total seed amount claimed
-    */
-    function getTotalClaimed(address _locker) public view returns(uint256) {
-        return tokenLocks[_locker].totalClaimed;
-    }
-
-    /**
-      * @dev                      get the fee for a locker in seed token
-      * @param _locker            Address of lock to find the fee
-    */
-    function getFee(address _locker) public view returns(uint256) {
-        return tokenLocks[_locker].fee;
-    }
-
-    /**
-      * @dev                      get the fee claimed for a locker in seed token
-      * @param _locker            Address of lock to find the fee
-    */
-    function getFeeClaimed(address _locker) public view returns(uint256) {
-        return tokenLocks[_locker].feeClaimed;
     }
 
     // INTERNAL FUNCTIONS
@@ -457,19 +427,17 @@ contract Seed {
     }
 
     /**
-      * @dev                      add/update lock
-      * @param _recipient         Address of lock recipient
-      * @param _seedAmount        seed amount of the lock
+      * @dev                      add/update funder portfolio
+      * @param _recipient         Address of funder recipient
+      * @param _seedAmount        seed amount of the funder
       * @param _fundingAmount     funding amount contributed
-      * @param _secondsClaimed    total seconds claimed
       * @param _totalClaimed      total seed token amount claimed
       * @param _fee               fee on seed amount bought
     */
-    function _addLock(
+    function _addFunder(
         address _recipient,
         uint256 _seedAmount,
         uint256 _fundingAmount,
-        uint32  _secondsClaimed,
         uint256 _totalClaimed,
         uint256 _fee,
         uint256 _feeClaimed
@@ -480,39 +448,13 @@ contract Seed {
         uint256 amountVestedPerSecond = _seedAmount.div(vestingDuration);
         require(amountVestedPerSecond > 0, "Seed: amountVestedPerSecond > 0");
 
-        tokenLocks[_recipient] = Lock({
+        funders[_recipient] = FunderPortfolio({
             seedAmount: _seedAmount,
-            secondsClaimed: _secondsClaimed,
             totalClaimed: _totalClaimed,
             fundingAmount: _fundingAmount,
             fee: _fee,
             feeClaimed: _feeClaimed
             });
-        totalLockCount++;
-    }
-
-    /**
-      * @dev                     calculates claim for a lock
-      * @param _locker           Address of lock to calculate days and amount claimable
-    */
-    function _calculateClaim(address _locker) private view returns (uint32, uint256) {
-        Lock memory tokenLock = tokenLocks[_locker];
-
-        // Check cliff was reached
-        uint256 elapsedSeconds = _currentTime().sub(startTime);
-
-        if (elapsedSeconds < vestingCliff) {
-            return (uint32(elapsedSeconds), 0);
-        }
-
-        // If over vesting duration, all tokens vested
-        if (elapsedSeconds >= vestingDuration) {
-            return (vestingDuration, tokenLock.seedAmount.sub(tokenLock.totalClaimed));
-        } else {
-            uint256 amountVestedPerDay = tokenLock.seedAmount.div(uint256(vestingDuration));
-            uint256 amountVested = uint256(elapsedSeconds.mul(amountVestedPerDay));
-            return (uint32(elapsedSeconds), amountVested.sub(tokenLock.totalClaimed));
-        }
-        
+        totalFunderCount++;
     }
 }

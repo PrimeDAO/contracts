@@ -54,14 +54,14 @@ const encodeChangeMasterCopyFarm = (newParent) => {
 const encodeApprove = (spender, amount) => {
   return new web3.eth.Contract(IERC20.abi).methods.approve(spender, amount).encodeABI();
 };
-const encodeDeploySeed = (admin, tokens, softAndHardCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata) => {
-  return new web3.eth.Contract(SeedFactory.abi).methods.deploySeed(admin, tokens, softAndHardCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata).encodeABI();
+const encodeDeploySeed = (dao, admin, tokens, softAndHardCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.deploySeed(dao, admin, tokens, softAndHardCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata).encodeABI();
 };
-const encodeChangeParentSeed = (newParent) => {
-  return new web3.eth.Contract(SeedFactory.abi).methods.changeParent(newParent).encodeABI();
+const encodeChangeMasterCopySeed = (newParent) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.changeMasterCopy(newParent).encodeABI();
 };
-const encodeChangeAvatar = (newAvatar) => {
-  return new web3.eth.Contract(SeedFactory.abi).methods.changeAvatar(newAvatar).encodeABI();
+const encodeChangeOwner = (newOwner) => {
+  return new web3.eth.Contract(SeedFactory.abi).methods.changeOwner(newOwner).encodeABI();
 };
 
 const getValueFromLogs = (tx, arg, eventName, index = 0) => {
@@ -129,8 +129,8 @@ module.exports = {
   getNewProposalId,
   encodeApprove,
   encodeDeploySeed,
-  encodeChangeParentSeed,
-  encodeChangeAvatar,
+  encodeChangeMasterCopySeed,
+  encodeChangeOwner,
   values: {
     AMOUNT,
     EXPECTED,
