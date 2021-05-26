@@ -166,12 +166,12 @@ contract("SeedFactory", (accounts) => {
         context("» changeOwner", () => {
             it("only Owner can change owner", async () => {
                 await expectRevert(
-                    seedFactory.changeOwner(accounts[2], { from: accounts[1] }),
-                    "SeedFactory: protected operation"
+                    seedFactory.transferOwnership(accounts[2], { from: accounts[1] }),
+                    "Ownable: caller is not the owner"
                 );
             });
             it("changes owner", async () => {
-                const calldata = helpers.encodeChangeOwner(accounts[0]);
+                const calldata = helpers.encodeTransferOwnership(accounts[0]);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
