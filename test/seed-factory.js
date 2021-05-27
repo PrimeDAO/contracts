@@ -5,7 +5,6 @@ const { expect } = require("chai");
 const { /*constants,*/ time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
 const helpers = require("./helpers");
 const { BN } = require("@openzeppelin/test-helpers/src/setup");
-const SeedFactory = artifacts.require("SeedFactory");
 const Seed = artifacts.require("Seed");
 const { toWei } = web3.utils;
 
@@ -75,8 +74,7 @@ contract("SeedFactory", (accounts) => {
             fee = 2;
             metadata = `0x`;
 
-            seedFactory = await SeedFactory.new();
-            // await seedFactory.initialize(accounts[0], setup.seed.address);
+            seedFactory = setup.seedFactory;
         });
 
         context("» parameters are valid", () => {
@@ -106,12 +104,12 @@ contract("SeedFactory", (accounts) => {
                 newSeed = await Seed.at(await receipt.args[0]);
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
-            // it("reverts: contract already initialized", async () => {
-            //     await expectRevert(
-            //         seedFactory.initialize(accounts[0], setup.seed.address),
-            //         "SeedFactory: contract already initialized"
-            //     );
-            // });
+            it("reverts: contract already initialized", async () => {
+                await expectRevert(
+                    seedFactory.initializeMasterCopy(setup.seed.address),
+                    "SeedFactory: contract already initialized"
+                );
+            });
         });
         context("» changeMasterCopy", () => {
             before("!! deploy new seed", async () => {
