@@ -78,7 +78,7 @@ contract("SeedFactory", (accounts) => {
 
             seedFactory = await SeedFactory.new();
             // change to owner as owner
-            await seedFactory.initialize(setup.organization.avatar.address, setup.seed.address);
+            await seedFactory.initializeMasterCopy(setup.seed.address);
         });
 
         context("» parameters are valid", () => {
@@ -128,7 +128,7 @@ contract("SeedFactory", (accounts) => {
             });
             it("reverts: contract already initialized", async () => {
                 await expectRevert(
-                    seedFactory.initialize(accounts[0], setup.seed.address),
+                    seedFactory.initializeMasterCopy(accounts[0], setup.seed.address),
                     "SeedFactory: contract already initialized"
                 );
             });

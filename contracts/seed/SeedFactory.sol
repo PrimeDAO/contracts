@@ -13,8 +13,6 @@
 /* solhint-disable space-after-comma */
 pragma solidity 0.5.13;
 
-// import "@daostack/arc/contracts/controller/Avatar.sol";
-// import "@daostack/arc/contracts/controller/Controller.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
@@ -44,43 +42,23 @@ contract SeedFactory is CloneFactory, Ownable {
         _;
     }
 
-    // modifier onlyOwner() {
-    //     require(
-    //         msg.sender == owner(),
-    //         "SeedFactory: protected operation"
-    //     );
-    //     _;
-    // }
-
-    // /**
-    //  * @dev               Initialize proxy.
-    //  * @param _owner     The address of the owner controlling this contract.
-    //  * @param _masterCopy The address of the Seed contract which will be a masterCopy for all of the clones.
-    //  */
-    // function initialize(address _owner, Seed _masterCopy) external initializer {
-    //     require(_owner     != address(0), "SeedFactory: owner cannot be null");
-    //     require(_masterCopy != Seed(0),   "SeedFactory: masterCopy cannot be null");
-    //     owner = _owner;
-    //     masterCopy = _masterCopy;
-    // }
-
     /**
-     * @dev             Update Seed contract which works as a base for clones.
-     * @param newMasterCopy The address of the new Seed basis.
+     * @dev               Initialize SeedFactory.
+     * @param _masterCopy The address of the Seed contract which will be a masterCopy for all of the clones.
      */
-    function changeMasterCopy(Seed newMasterCopy) public onlyOwner {
-        masterCopy = newMasterCopy;
-        initialized = true;
+    function initializeMasterCopy(Seed _masterCopy) external initializer onlyOwner {
+        require(_masterCopy != Seed(0),   "SeedFactory: masterCopy cannot be null");
+        masterCopy = _masterCopy;
     }
 
-    // use transferOwnership(address _newOwner) by Ownable
-    // /**
-    //  * @dev             Update Owner.
-    //  * @param _newOwner The address of the new Owner.
-    //  */
-    // function changeOwner(address _newOwner) public onlyOwner beInitialised {
-    //     owner = _newOwner;
-    // }
+    /**
+     * @dev               Update Seed contract which works as a base for clones.
+     * @param _masterCopy The address of the new Seed basis.
+     */
+    function changeMasterCopy(Seed _masterCopy) public onlyOwner {
+        masterCopy = _masterCopy;
+        initialized = true;
+    }
 
     /**
       * @dev                          Deploys Seed contract.
