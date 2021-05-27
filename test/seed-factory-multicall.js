@@ -5,7 +5,6 @@ const { expect } = require("chai");
 const { constants, time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
 const helpers = require("./helpers");
 const { BN } = require("@openzeppelin/test-helpers/src/setup");
-const SeedFactory = artifacts.require("SeedFactory");
 const Seed = artifacts.require("Seed");
 const { toWei } = web3.utils;
 
@@ -76,9 +75,8 @@ contract("SeedFactory", (accounts) => {
             fee = 2;
             metadata = `0x`;
 
-            seedFactory = await SeedFactory.new();
-            // change to owner as owner
-            await seedFactory.initialize(setup.organization.avatar.address, setup.seed.address);
+            seedFactory = setup.seedFactory;
+            seedFactory.transferOwnership(setup.organization.avatar.address, { from: accounts[0] });
         });
 
         context("» parameters are valid", () => {
@@ -128,7 +126,7 @@ contract("SeedFactory", (accounts) => {
             });
             it("reverts: contract already initialized", async () => {
                 await expectRevert(
-                    seedFactory.initialize(accounts[0], setup.seed.address),
+                    seedFactory.initializeMasterCopy(setup.seed.address),
                     "SeedFactory: contract already initialized"
                 );
             });
@@ -140,7 +138,7 @@ contract("SeedFactory", (accounts) => {
             it("only Owner can change master copy", async () => {
                 await expectRevert(
                     seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
-                    "SeedFactory: protected operation"
+                    "Ownable: caller is not the owner"
                 );
             });
             it("changes master copy", async () => {
@@ -166,12 +164,12 @@ contract("SeedFactory", (accounts) => {
         context("» changeOwner", () => {
             it("only Owner can change owner", async () => {
                 await expectRevert(
-                    seedFactory.changeOwner(accounts[2], { from: accounts[1] }),
-                    "SeedFactory: protected operation"
+                    seedFactory.transferOwnership(accounts[2], { from: accounts[1] }),
+                    "Ownable: caller is not the owner"
                 );
             });
             it("changes owner", async () => {
-                const calldata = helpers.encodeChangeOwner(accounts[0]);
+                const calldata = helpers.encodeTransferOwnership(accounts[0]);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
