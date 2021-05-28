@@ -57,7 +57,7 @@ const encodeApprove = (spender, amount) => {
 const encodeDeploySeed = (dao, admin, tokens, softAndHardCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata) => {
   return new web3.eth.Contract(SeedFactory.abi).methods.deploySeed(dao, admin, tokens, softAndHardCap, price, startTime, endTime, vestingDuration, vestingCliff, isWhitelisted, fee, metadata).encodeABI();
 };
-const encodeChangeMasterCopySeed = (newParent) => {
+const encodeChangeMasterCopy = (newParent) => {
   return new web3.eth.Contract(SeedFactory.abi).methods.changeMasterCopy(newParent).encodeABI();
 };
 const encodeTransferOwnership = (newOwner) => {
@@ -129,7 +129,7 @@ module.exports = {
   getNewProposalId,
   encodeApprove,
   encodeDeploySeed,
-  encodeChangeMasterCopySeed,
+  encodeChangeMasterCopy,
   encodeTransferOwnership,
   values: {
     AMOUNT,

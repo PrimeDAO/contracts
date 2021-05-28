@@ -104,8 +104,7 @@ const farmFactory = async (setup) => {
 
 const seedFactory = async (setup) => {
     const seed = await Seed.new();
-    const seedFactory = await SeedFactory.new();
-    await seedFactory.initializeMasterCopy(seed.address);
+    const seedFactory = await SeedFactory.new(seed.address);
     return seedFactory;
 };
 

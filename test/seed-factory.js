@@ -104,12 +104,6 @@ contract("SeedFactory", (accounts) => {
                 newSeed = await Seed.at(await receipt.args[0]);
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
-            it("reverts: contract already initialized", async () => {
-                await expectRevert(
-                    seedFactory.initializeMasterCopy(setup.seed.address),
-                    "SeedFactory: contract already initialized"
-                );
-            });
         });
         context("» changeMasterCopy", () => {
             before("!! deploy new seed", async () => {

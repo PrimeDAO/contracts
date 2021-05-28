@@ -27,35 +27,22 @@ contract SeedFactory is CloneFactory, Ownable {
     using SafeMath for uint256;
 
     Seed public masterCopy;
-    bool public initialized;
 
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
-    modifier initializer() {
-        require(!initialized, "SeedFactory: contract already initialized");
-        initialized = true;
-        _;
-    }
-
-    modifier isInitialised() {
-        require(initialized, "SeedFactory: contract not initialized");
-        _;
-    }
-
     /**
-     * @dev               Initialize SeedFactory.
-     * @param _masterCopy The address of the Seed contract which will be a masterCopy for all of the clones.
-     */
-    function initializeMasterCopy(Seed _masterCopy) external initializer onlyOwner {
-        require(_masterCopy != Seed(0),   "SeedFactory: masterCopy cannot be null");
-        masterCopy = _masterCopy;
-    }
-
-    /**
-     * @dev               Update Seed contract which works as a base for clones.
+     * @dev               Constructor to set the master copy address.
      * @param _masterCopy The address of the new Seed basis.
      */
-    function changeMasterCopy(Seed _masterCopy) public onlyOwner isInitialised {
+    constructor (Seed _masterCopy) public {
+        masterCopy  = _masterCopy;
+    }
+
+    /**
+     * @dev               Set Seed contract which works as a base for clones.
+     * @param _masterCopy The address of the new Seed basis.
+     */
+    function changeMasterCopy(Seed _masterCopy) public onlyOwner {
         masterCopy = _masterCopy;
     }
 
@@ -92,7 +79,7 @@ contract SeedFactory is CloneFactory, Ownable {
         bool _isWhitelisted,
         uint8 _fee,
         bytes32 _metadata
-    ) public onlyOwner isInitialised returns (address) {
+    ) public onlyOwner returns (address) {
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 
