@@ -111,12 +111,12 @@ contract("SeedFactory", (accounts) => {
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
+                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
                 );
             });
             it("changes master copy", async () => {
-                await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
+                await seedFactory.changeMasterCopy(newSeed.address, { from: accounts[0] });
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });

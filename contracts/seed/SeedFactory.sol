@@ -27,14 +27,8 @@ contract SeedFactory is CloneFactory, Ownable {
     using SafeMath for uint256;
 
     Seed public masterCopy;
-    bool public initialized;
 
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
-
-    modifier isInitialised() {
-        require(initialized, "SeedFactory: contract not initialized");
-        _;
-    }
 
     /**
      * @dev               Constructor to set the master copy address.
@@ -42,14 +36,13 @@ contract SeedFactory is CloneFactory, Ownable {
      */
     constructor (Seed _masterCopy) public {
         masterCopy  = _masterCopy;
-        initialized = true;
     }
 
     /**
      * @dev               Set Seed contract which works as a base for clones.
      * @param _masterCopy The address of the new Seed basis.
      */
-    function setMasterCopy(Seed _masterCopy) public onlyOwner isInitialised {
+    function changeMasterCopy(Seed _masterCopy) public onlyOwner {
         masterCopy = _masterCopy;
     }
 
@@ -86,7 +79,7 @@ contract SeedFactory is CloneFactory, Ownable {
         bool _isWhitelisted,
         uint8 _fee,
         bytes32 _metadata
-    ) public onlyOwner isInitialised returns (address) {
+    ) public onlyOwner returns (address) {
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 

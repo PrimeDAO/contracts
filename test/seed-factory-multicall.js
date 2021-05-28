@@ -131,13 +131,13 @@ contract("SeedFactory", (accounts) => {
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
+                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
                 );
             });
             it("changes master copy", async () => {
                 let newSeed = await Seed.new();
-                const calldata = helpers.encodeSetMasterCopySeed(newSeed.address);
+                const calldata = helpers.encodeChangeMasterCopy(newSeed.address);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
