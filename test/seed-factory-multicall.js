@@ -80,6 +80,56 @@ contract("SeedFactory", (accounts) => {
         });
 
         context("» parameters are valid", () => {
+            it("cannot deploy before initialisation", async () => {
+                const calldata = helpers.encodeDeploySeed(
+                    dao,
+                    admin,
+                    [seedToken.address, fundingToken.address],
+                    [softCap, hardCap],
+                    price,
+                    startTime.toNumber(),
+                    endTime.toNumber(),
+                    vestingDuration.toNumber(),
+                    vestingCliff.toNumber(),
+                    isWhitelisted,
+                    fee,
+                    metadata
+                );
+
+                const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
+                    [seedFactory.address],
+                    [calldata],
+                    [0],
+                    metadata
+                );
+                const proposalId = helpers.getNewProposalId(_tx);
+                await setup.primeDAO.multicallScheme.voting.absoluteVote.vote(
+                    proposalId,
+                    one,
+                    zero,
+                    constants.ZERO_ADDRESS
+                );
+                await expectRevert(setup.primeDAO.multicallScheme.execute(proposalId),"Proposal call failed");
+            });
+            it("initializes master copy", async () => {
+                let newSeed = await Seed.new();
+                const calldata = helpers.encodeSetMasterCopy(newSeed.address);
+                const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
+                    [seedFactory.address],
+                    [calldata],
+                    [0],
+                    metadata
+                );
+                const proposalId = helpers.getNewProposalId(_tx);
+                await setup.primeDAO.multicallScheme.voting.absoluteVote.vote(
+                    proposalId,
+                    one,
+                    zero,
+                    constants.ZERO_ADDRESS
+                );
+                await setup.primeDAO.multicallScheme.execute(proposalId);
+                expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
+            });
             it("it creates new seed contract", async () => {
                 requiredSeedAmount = new BN(hardCap).div(new BN(price)).mul(pct_base);
                 // top up admins token balance
@@ -125,18 +175,18 @@ contract("SeedFactory", (accounts) => {
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
         });
-        context("» changeMasterCopy", () => {
+        context("» setMasterCopy", () => {
             before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
+                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
                 );
             });
             it("mastercopy cannot be zero address", async () => {
-                const calldata = helpers.encodeChangeMasterCopy(constants.ZERO_ADDRESS);
+                const calldata = helpers.encodeSetMasterCopy(constants.ZERO_ADDRESS);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
@@ -157,7 +207,7 @@ contract("SeedFactory", (accounts) => {
             });
             it("changes master copy", async () => {
                 let newSeed = await Seed.new();
-                const calldata = helpers.encodeChangeMasterCopy(newSeed.address);
+                const calldata = helpers.encodeSetMasterCopy(newSeed.address);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
