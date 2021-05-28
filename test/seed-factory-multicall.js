@@ -135,26 +135,6 @@ contract("SeedFactory", (accounts) => {
                     "Ownable: caller is not the owner"
                 );
             });
-            it("mastercopy cannot be zero address", async () => {
-                const calldata = helpers.encodeChangeMasterCopy(constants.ZERO_ADDRESS);
-                const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
-                    [seedFactory.address],
-                    [calldata],
-                    [0],
-                    metadata
-                );
-                const proposalId = helpers.getNewProposalId(_tx);
-                await setup.primeDAO.multicallScheme.voting.absoluteVote.vote(
-                    proposalId,
-                    one,
-                    zero,
-                    constants.ZERO_ADDRESS
-                );
-                await expectRevert(
-                    setup.primeDAO.multicallScheme.execute(proposalId),
-                    "Proposal call failed"
-                );
-            });
             it("changes master copy", async () => {
                 let newSeed = await Seed.new();
                 const calldata = helpers.encodeChangeMasterCopy(newSeed.address);

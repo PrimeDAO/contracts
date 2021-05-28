@@ -43,7 +43,6 @@ contract SeedFactory is CloneFactory, Ownable {
      * @param _masterCopy The address of the new Seed basis.
      */
     function changeMasterCopy(Seed _masterCopy) public onlyOwner {
-        require(_masterCopy != Seed(0), "SeedFactory: mastercopy cannot be zero address");
         masterCopy = _masterCopy;
     }
 
