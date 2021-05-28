@@ -27337,15 +27337,21 @@
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
   "networks": {
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x25E0523880F5b1c67D7a73Be707dfb7AB7abAed8",
+      "transactionHash": "0x701e9e3460c921ffabafb8f9014d322cab207a674d4de65ea39b60224e05b8b3"
+    },
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xA61Da14c2F601757182A4F439597AA2feb3eD3fb",
-      "transactionHash": "0xd9432d3206655296d59abd9f40a4a7df40eedbf62e41159e6c00aa1594c739ce"
+      "address": "0x1a1D478E5a932CF57Ba6E3056ca4dCD916a91994",
+      "transactionHash": "0x64ad1a3b8b3be189ed08fc91b0d686075c0e74e136a69b9f05245c75af6428b0"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-05-27T11:17:22.210Z",
+  "updatedAt": "2021-05-28T09:08:31.767Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Enable primeDAO governance of a Configurable Rights Balancer Pool.",

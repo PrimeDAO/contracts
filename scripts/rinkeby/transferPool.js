@@ -9,8 +9,8 @@ module.exports = async function(callback) {
 
 		await console.log("***   Moving pool ownership to DAO");
 
-		const pool = await ConfigurableRightsPool.at(contracts.kovan.ConfigurableRightsPool);
-	 	await pool.setController(contracts.kovan.Avatar);
+		const pool = await ConfigurableRightsPool.at(contracts.rinkeby.ConfigurableRightsPool);
+	 	await pool.setController(contracts.rinkeby.Avatar);
 
 		await console.log("***   Success");
 

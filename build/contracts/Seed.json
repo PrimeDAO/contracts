@@ -33996,6 +33996,12 @@
     "version": "0.5.13+commit.5b0b510c.Emscripten.clang"
   },
   "networks": {
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x1151524844230d5Cfdd4A3e21bB712503031C5E6",
+      "transactionHash": "0xede0f0a0fd937e7f5f3a5a38a5e5643b5a98d9c98cf241aaa63c3f7fc7f5b149"
+    },
     "42": {
       "events": {
         "0x1a689b1a62e3bb77f9c98d8759c04f341a67deb5cc63cf53be8324b691064950": {
@@ -34063,12 +34069,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x2fd60CCB92e7267c11cEDD9AB66e65746C366bE4",
-      "transactionHash": "0xb629989280ea8769edfe2fbe1d4e9f51f9f628cbd1d70daf7feec9eb911bc31f"
+      "address": "0x005E1E5C1d942173892ceE05D330de46A93BA578",
+      "transactionHash": "0xa683cfec210c21d8cf349b0fe0cb3d2b7fe8a8db66811c5d081a10441922e981"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-05-27T11:17:22.276Z",
+  "updatedAt": "2021-05-28T09:08:31.831Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Smart contract for seed phases of liquid launch.",

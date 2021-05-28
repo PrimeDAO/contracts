@@ -13,8 +13,8 @@ module.exports = async function(callback) {
         // make sure you deploy with a load of test funds!
         // console.log('***   deploying 5 Seeds');
 
-        let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
-        let seedToken = await PrimeToken.at(contracts.kovan.PrimeToken);
+        let seedFactory = await SeedFactory.at(contracts.rinkeby.SeedFactory);
+        let seedToken = await PrimeToken.at(contracts.rinkeby.PrimeToken);
 
         let now = 1618225542; //Mon Apr 12 2021 11:05:42 GMT+0000
         let oneDay = 86400;
@@ -24,7 +24,7 @@ module.exports = async function(callback) {
         let nineDays = 777600;
 
         let admin           = process.env.ACCOUNT;
-        let fundingToken    = [ contracts.kovan.WETH, contracts.kovan.DAI, contracts.kovan.WETH, contracts.kovan.DAI, contracts.kovan.WETH ];
+        let fundingToken    = [ contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH ];
         let cap             = [ toWei('100'), toWei('100'), toWei('150'), toWei('300'), toWei('200') ];
         let price           = [ toWei('0.01'), toWei('0.04'), toWei('0.02'), toWei('0.03'), toWei('0.01') ];
         let successMinimum  = [ toWei('20'), toWei('20'), toWei('70'), toWei('200'), toWei('50') ];
@@ -38,7 +38,7 @@ module.exports = async function(callback) {
         await seedToken.approve(seedFactory.address, cap[0]);
         let seedAddress1 = await seedFactory.deploySeed(
             admin,
-            contracts.kovan.PrimeToken,
+            contracts.rinkeby.PrimeToken,
             fundingToken[0],
             [successMinimum[0],cap[0]],
             price[0],
@@ -61,7 +61,7 @@ module.exports = async function(callback) {
         await seedToken.approve(seedFactory.address, cap[1]);
         let seedAddress2 = await seedFactory.deploySeed(
             admin,
-            contracts.kovan.PrimeToken,
+            contracts.rinkeby.PrimeToken,
             fundingToken[1],
             [successMinimum[1],cap[1]],
             price[1],
@@ -83,7 +83,7 @@ module.exports = async function(callback) {
         await seedToken.approve(seedFactory.address, cap[2]);
         let seedAddress3 = await seedFactory.deploySeed(
             admin,
-            contracts.kovan.PrimeToken,
+            contracts.rinkeby.PrimeToken,
             fundingToken[2],
             [successMinimum[2],cap[2]],
             price[2],
@@ -99,7 +99,7 @@ module.exports = async function(callback) {
         await seedToken.approve(seedFactory.address, cap[3]);
         let seedAddress4 = await seedFactory.deploySeed(
             admin,
-            contracts.kovan.PrimeToken,
+            contracts.rinkeby.PrimeToken,
             fundingToken[3],
             [successMinimum[3],cap[3]],
             price[3],
@@ -115,7 +115,7 @@ module.exports = async function(callback) {
         await seedToken.approve(seedFactory.address, cap[4]);
         let seedAddress5 = await seedFactory.deploySeed(
             admin,
-            contracts.kovan.PrimeToken,
+            contracts.rinkeby.PrimeToken,
             fundingToken[4],
             [successMinimum[4],cap[4]],
             price[4],

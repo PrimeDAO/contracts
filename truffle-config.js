@@ -20,6 +20,7 @@ module.exports = {
                 return new HDWalletProvider(process.env.MNEMONIC, process.env.PROVIDER);
             },
             network_id: 4,
+            gas: 10000000,
             networkCheckTimeout: 100000000,
             timeoutBlocks: 200
         },

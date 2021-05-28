@@ -9,10 +9,10 @@ module.exports = async function(callback) {
 
         console.log('***   initializing SeedFactory');
 
-        let seedFactory = await SeedFactory.at(contracts.kovan.SeedFactory);
+        let seedFactory = await SeedFactory.at(contracts.rinkeby.SeedFactory);
         await seedFactory.initialize(
             process.env.ACCOUNT,
-            contracts.kovan.Seed
+            contracts.rinkeby.Seed
         );
         await console.log("***   Success");
 

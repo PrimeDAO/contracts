@@ -11,8 +11,8 @@ module.exports = async function(callback) {
     const numerator = toWei('1');
     const denominator = toWei('137'); 
 
-	const prime = contracts.kovan.PrimeToken;
-	const oracle = await PriceOracle.at(contracts.kovan.PriceOracle);
+	const prime = contracts.rinkeby.PrimeToken;
+	const oracle = await PriceOracle.at(contracts.rinkeby.PriceOracle);
 
     try {
 
