@@ -104,12 +104,6 @@ contract("SeedFactory", (accounts) => {
                 newSeed = await Seed.at(await receipt.args[0]);
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
-            it("reverts: contract already initialized", async () => {
-                await expectRevert(
-                    seedFactory.initializeMasterCopy(setup.seed.address),
-                    "SeedFactory: contract already initialized"
-                );
-            });
         });
         context("» changeMasterCopy", () => {
             before("!! deploy new seed", async () => {
@@ -117,12 +111,12 @@ contract("SeedFactory", (accounts) => {
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
+                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
                 );
             });
             it("changes master copy", async () => {
-                await seedFactory.changeMasterCopy(newSeed.address, { from: accounts[0] });
+                await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });

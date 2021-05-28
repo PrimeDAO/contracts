@@ -31,31 +31,25 @@ contract SeedFactory is CloneFactory, Ownable {
 
     event SeedCreated(address indexed newSeed, address indexed beneficiary);
 
-    modifier initializer() {
-        require(!initialized, "SeedFactory: contract already initialized");
-        initialized = true;
-        _;
-    }
-
     modifier isInitialised() {
         require(initialized, "SeedFactory: contract not initialized");
         _;
     }
 
     /**
-     * @dev               Initialize SeedFactory.
-     * @param _masterCopy The address of the Seed contract which will be a masterCopy for all of the clones.
+     * @dev               Constructor to set the master copy address.
+     * @param _masterCopy The address of the new Seed basis.
      */
-    function initializeMasterCopy(Seed _masterCopy) external initializer onlyOwner {
-        require(_masterCopy != Seed(0),   "SeedFactory: masterCopy cannot be null");
-        masterCopy = _masterCopy;
+    constructor (Seed _masterCopy) public {
+        masterCopy  = _masterCopy;
+        initialized = true;
     }
 
     /**
-     * @dev               Update Seed contract which works as a base for clones.
+     * @dev               Set Seed contract which works as a base for clones.
      * @param _masterCopy The address of the new Seed basis.
      */
-    function changeMasterCopy(Seed _masterCopy) public onlyOwner isInitialised {
+    function setMasterCopy(Seed _masterCopy) public onlyOwner isInitialised {
         masterCopy = _masterCopy;
     }
 

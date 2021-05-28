@@ -124,12 +124,6 @@ contract("SeedFactory", (accounts) => {
                 newSeed = await Seed.at(await receipt.args[0]);
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
-            it("reverts: contract already initialized", async () => {
-                await expectRevert(
-                    seedFactory.initializeMasterCopy(setup.seed.address),
-                    "SeedFactory: contract already initialized"
-                );
-            });
         });
         context("» changeMasterCopy", () => {
             before("!! deploy new seed", async () => {
@@ -137,13 +131,13 @@ contract("SeedFactory", (accounts) => {
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
+                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
                 );
             });
             it("changes master copy", async () => {
                 let newSeed = await Seed.new();
-                const calldata = helpers.encodeChangeMasterCopySeed(newSeed.address);
+                const calldata = helpers.encodeSetMasterCopySeed(newSeed.address);
                 const _tx = await setup.primeDAO.multicallScheme.proposeCalls(
                     [seedFactory.address],
                     [calldata],
