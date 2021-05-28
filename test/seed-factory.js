@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require("chai");
-const { /*constants,*/ time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
+const { constants, time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
 const helpers = require("./helpers");
 const { BN } = require("@openzeppelin/test-helpers/src/setup");
 const Seed = artifacts.require("Seed");
@@ -113,6 +113,12 @@ contract("SeedFactory", (accounts) => {
                 await expectRevert(
                     seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
+                );
+            });
+            it("mastercopy cannot be zero address", async () => {
+                await expectRevert(
+                    seedFactory.changeMasterCopy(constants.ZERO_ADDRESS, { from: accounts[0] }),
+                    "SeedFactory: mastercopy cannot be zero address"
                 );
             });
             it("changes master copy", async () => {
