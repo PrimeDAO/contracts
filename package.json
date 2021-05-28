@@ -21,6 +21,25 @@
     "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
     "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
     "init:staking:mainnet": "npx truffle exec scripts/mainnet/initRewards.js --network mainnet",
+
+    "deploy:contracts:ganache": "truffle migrate --network ganache --reset",
+    "deploy:dao:ganache": "npx run scripts/ganache/migrateDAO.js --network ganache",
+    "setup:oracle:ganache": "npx truffle exec scripts/ganache/setupPriceOracle.js --network ganache",
+    "create:pool:ganache": "npx truffle exec scripts/ganache/createPool.js --network ganache",
+    "transfer:pool:ganache": "npx truffle exec scripts/ganache/transferPool.js --network ganache",
+    "init:staking:ganache": "npx truffle exec scripts/ganache/initRewards.js --network ganache",
+    "init:seedfactory:ganache": "npx truffle exec scripts/ganache/initSeedFactory.js --network ganache",
+    "deploy:seeds:ganache": "npx truffle exec scripts/ganache/deploySeeds.js --network ganache",
+
+    "deploy:contracts:rinkeby": "truffle migrate --network rinkeby --reset",
+    "deploy:dao:rinkeby": "npx run scripts/rinkeby/migrateDAO.js --network rinkeby",
+    "setup:oracle:rinkeby": "npx truffle exec scripts/rinkeby/setupPriceOracle.js --network rinkeby",
+    "create:pool:rinkeby": "npx truffle exec scripts/rinkeby/createPool.js --network rinkeby",
+    "transfer:pool:rinkeby": "npx truffle exec scripts/rinkeby/transferPool.js --network rinkeby",
+    "init:staking:rinkeby": "npx truffle exec scripts/rinkeby/initRewards.js --network rinkeby",
+    "init:seedfactory:rinkeby": "npx truffle exec scripts/rinkeby/initSeedFactory.js --network rinkeby",
+    "deploy:seeds:rinkeby": "npx truffle exec scripts/rinkeby/deploySeeds.js --network rinkeby",
+
     "coverage": "truffle run coverage",
     "flatten": "sol-merger \"./contracts/**/*.sol\" ./_flat"
   },

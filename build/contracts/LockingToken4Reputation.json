@@ -5218,8 +5218,9 @@
       "address": "0xCF4eE5412eb92ADDcC4cf9d3b91c526CcE107ff4"
     }
   },
-  "schemaVersion": "3.2.4",
-  "updatedAt": "2021-05-10T11:00:12.785Z",
+  "schemaVersion": "3.4.1",
+  "updatedAt": "2021-05-27T11:17:22.293Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "getAgreementHash()": {
