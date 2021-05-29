@@ -136,10 +136,10 @@ contract("SeedFactory", (accounts) => {
                     "Ownable: caller is not the owner"
                 );
             });
-            it("mastercopy cannot be zero address", async () => {
+            it("new mastercopy cannot be zero address", async () => {
                 await expectRevert(
                     seedFactory.setMasterCopy(constants.ZERO_ADDRESS, { from: accounts[0] }),
-                    "SeedFactory: mastercopy cannot be zero address"
+                    "SeedFactory: new mastercopy cannot be zero address"
                 );
             });
             it("changes master copy", async () => {
