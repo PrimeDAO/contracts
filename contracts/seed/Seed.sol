@@ -19,7 +19,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
- * @title primebeneSeed contract
+ * @title PrimeDAO Seed contract
  * @dev   Smart contract for seed phases of liquid launch.
  */
 contract Seed {
@@ -33,7 +33,7 @@ contract Seed {
     uint256 public softCap;
     uint256 public hardCap;
     uint256 public seedAmountRequired;    // Amount of seed required for distribution
-    uint256 public feeAmountRequired;    // Amount of seed required for fee
+    uint256 public feeAmountRequired;     // Amount of seed required for fee
     uint256 public price;
     uint256 public startTime;
     uint256 public endTime;
@@ -53,13 +53,13 @@ contract Seed {
     bool    public paused;                 // is the distribution paused
     bool    public isFunded;               // distribution can only start when required seed tokens have been funded
     bool    public initialized;            // is this contract initialized [not necessary that it is funded]
-    bool    public minimumReached;         // // if the softCap[minimum limit of funding token] is reached
+    bool    public minimumReached;         // if the softCap[minimum limit of funding token] is reached
     bool    public maximumReached;         // if the hardCap[maximum limit of funding token] is reached
     uint256 public totalFunderCount;       // Total funders that have contributed.
     uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
     uint256 public seedClaimed;            // Amount of seed token claimed by the user.
-    uint256 public feeRemainder;       // Amount of seed tokens remaining for the fee
-    uint256 public feeClaimed;         // Amount of seed tokens claimed as fee
+    uint256 public feeRemainder;           // Amount of seed tokens remaining for the fee
+    uint256 public feeClaimed;             // Amount of seed tokens claimed as fee
     uint256 public fundingCollected;       // Amount of funding tokens collected by the seed contract.
     uint256 public fundingWithdrawn;       // Amount of funding token withdrawn from the seed contract. 
 
