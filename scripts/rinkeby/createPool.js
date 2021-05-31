@@ -26,7 +26,6 @@ module.exports = async function(callback) {
     const bPrimeAmount = toWei(config.crPool2.lpTokenAmount);
 
     const prime = await PrimeToken.at(contracts.rinkeby.PrimeToken);
-    console.log("Problem starts");
     const bal = await BAL.at(contracts.rinkeby.BAL);
 
     const permissions = {
@@ -36,7 +35,6 @@ module.exports = async function(callback) {
         canAddRemoveTokens: true,
         canWhitelistLPs: false,
     };
-    console.log("if this happens");
 
     const poolParams = {
         poolTokenSymbol: SYMBOL,
@@ -47,11 +45,7 @@ module.exports = async function(callback) {
         swapFee: swapFee,
     };
 
-    console.log("before crp");
-
     const crpFactory = await CRPFactory.at(contracts.rinkeby.CRPFactory);
-
-    console.log("before try");
 
     try {
         await console.log("***   Deploying a PRIME Configurable Rights Pool");
@@ -89,7 +83,6 @@ module.exports = async function(callback) {
         //    if (err) throw err;
         // });
     } catch (error) {
-        console.log("Catch - error");
         await console.log(error);
     }
 

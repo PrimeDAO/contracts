@@ -19,9 +19,6 @@ const fs = require("fs");
 const primeSupply = 10000000000;
 
 module.exports = async function (deployer, network) {
-    const { toWei } = web3.utils;
-
-    console.log(network);
 
     switch(network) {
     case 'mainnet': 
@@ -103,8 +100,6 @@ const deployOnTest = async (deployer, network) => {
     await deployer.deploy(RepRedeemer);
     await deployer.deploy(Seed);
     await deployer.deploy(SeedFactory);
-    const seedFactory = await SeedFactory.deployed();
-    console.log(seedFactory.address);
 };
 
 const saveContractAddress = (network) => {

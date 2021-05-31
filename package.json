@@ -7,6 +7,7 @@
     "test": "truffle test",
     "lint": "solhint 'contracts/**/*.sol' && npx eslint test/*.js",
     "compile": "truffle compile --all",
+    
     "deploy:contracts:kovan": "truffle migrate --network kovan --reset",
     "deploy:dao:kovan": "npx run scripts/kovan/migrateDAO.js --network kovan",
     "setup:oracle:kovan": "npx truffle exec scripts/kovan/setupPriceOracle.js --network kovan",
@@ -15,21 +16,13 @@
     "init:staking:kovan": "npx truffle exec scripts/kovan/initRewards.js --network kovan",
     "init:seedfactory:kovan": "npx truffle exec scripts/kovan/initSeedFactory.js --network kovan",
     "deploy:seeds:kovan": "npx truffle exec scripts/kovan/deploySeeds.js --network kovan",
+
     "deploy:contracts:mainnet": "truffle migrate --network mainnet --reset",
     "deploy:dao:mainnet": "npx run scripts/mainnet/migrateDAO.js --network mainnet",
     "setup:lock4rep:mainnet": "npx truffle exec scripts/mainnet/setupLockToken4Reputation.js --network mainnet",
     "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
     "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
     "init:staking:mainnet": "npx truffle exec scripts/mainnet/initRewards.js --network mainnet",
-
-    "deploy:contracts:ganache": "truffle migrate --network ganache --reset",
-    "deploy:dao:ganache": "npx run scripts/ganache/migrateDAO.js --network ganache",
-    "setup:oracle:ganache": "npx truffle exec scripts/ganache/setupPriceOracle.js --network ganache",
-    "create:pool:ganache": "npx truffle exec scripts/ganache/createPool.js --network ganache",
-    "transfer:pool:ganache": "npx truffle exec scripts/ganache/transferPool.js --network ganache",
-    "init:staking:ganache": "npx truffle exec scripts/ganache/initRewards.js --network ganache",
-    "init:seedfactory:ganache": "npx truffle exec scripts/ganache/initSeedFactory.js --network ganache",
-    "deploy:seeds:ganache": "npx truffle exec scripts/ganache/deploySeeds.js --network ganache",
 
     "deploy:contracts:rinkeby": "truffle migrate --network rinkeby --reset",
     "deploy:dao:rinkeby": "npx run scripts/rinkeby/migrateDAO.js --network rinkeby",
