@@ -102,8 +102,9 @@ const deployOnTest = async (deployer, network) => {
     await deployer.deploy(BalancerProxy);
     await deployer.deploy(RepRedeemer);
     await deployer.deploy(Seed);
-    const seed = await Seed.deployed();
-    await deployer.deploy(SeedFactory, seed.address);
+    await deployer.deploy(SeedFactory);
+    const seedFactory = await SeedFactory.deployed();
+    console.log(seedFactory.address);
 };
 
 const saveContractAddress = (network) => {

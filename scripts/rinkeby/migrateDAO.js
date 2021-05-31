@@ -3,6 +3,7 @@ require("dotenv").config();
 const DAOstackMigration = require("@daostack/migration");
 const specs = require("./primeDAO.json");
 const contracts = require("../../contractAddresses.json");
+const fs = require('fs');
 
 const migrateDAO = async () => {
     try {
@@ -25,7 +26,12 @@ const migrateDAO = async () => {
         };
 
         const result = await DAOstackMigration.migrateDAO(options);
-        console.log("+ Deployed DAO at " + result.dao["0.0.1-rc.44"].Avatar);
+        contracts.rinkeby.Avatar = result.dao["0.0.1-rc.44"].Avatar;
+        console.log("+ Deployed DAO at " + contracts.rinkeby.Avatar);
+        // overwrite contranctAddresses.json
+        fs.writeFile('./contractAddresses.json', JSON.stringify(contracts), (err) => {
+            if (err) throw err;
+        });
     } catch (e) {
         console.log(e);
     }

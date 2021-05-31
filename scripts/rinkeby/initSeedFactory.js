@@ -10,8 +10,7 @@ module.exports = async function(callback) {
         console.log('***   initializing SeedFactory');
 
         let seedFactory = await SeedFactory.at(contracts.rinkeby.SeedFactory);
-        await seedFactory.initialize(
-            process.env.ACCOUNT,
+        await seedFactory.setMasterCopy(
             contracts.rinkeby.Seed
         );
         await console.log("***   Success");
@@ -22,4 +21,4 @@ module.exports = async function(callback) {
 
     }
     callback();
-}
+};
