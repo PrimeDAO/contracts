@@ -2,10 +2,9 @@
 /*eslint no-undef: "error"*/
 
 const { expect } = require("chai");
-const { /*constants,*/ time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
+const { constants, time, expectRevert, expectEvent } = require("@openzeppelin/test-helpers");
 const helpers = require("./helpers");
 const { BN } = require("@openzeppelin/test-helpers/src/setup");
-const SeedFactory = artifacts.require("SeedFactory");
 const Seed = artifacts.require("Seed");
 const { toWei } = web3.utils;
 
@@ -75,11 +74,31 @@ contract("SeedFactory", (accounts) => {
             fee = 2;
             metadata = `0x`;
 
-            seedFactory = await SeedFactory.new();
-            await seedFactory.initialize(accounts[0], setup.seed.address);
+            seedFactory = setup.seedFactory;
         });
 
         context("» parameters are valid", () => {
+            it("it reverts when masterCopy is zero address", async () => {
+                await expectRevert(seedFactory.deploySeed(
+                    dao,
+                    admin,
+                    [seedToken.address, fundingToken.address],
+                    [softCap, hardCap],
+                    price,
+                    startTime.toNumber(),
+                    endTime.toNumber(),
+                    vestingDuration.toNumber(),
+                    vestingCliff.toNumber(),
+                    isWhitelisted,
+                    fee,
+                    metadata
+                ), "SeedFactory: mastercopy cannot be zero address");
+            });
+            it("sets master copy", async () => {
+                newSeed = await Seed.new();
+                await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
+                expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
+            });
             it("it creates new seed contract", async () => {
                 requiredSeedAmount = new BN(hardCap).div(new BN(price)).mul(pct_base);
 
@@ -106,37 +125,37 @@ contract("SeedFactory", (accounts) => {
                 newSeed = await Seed.at(await receipt.args[0]);
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
-            it("reverts: contract already initialized", async () => {
-                await expectRevert(
-                    seedFactory.initialize(accounts[0], setup.seed.address),
-                    "SeedFactory: contract already initialized"
-                );
-            });
         });
-        context("» changeMasterCopy", () => {
+        context("» setMasterCopy", () => {
             before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
-                    "SeedFactory: protected operation"
+                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
+                    "Ownable: caller is not the owner"
+                );
+            });
+            it("new mastercopy cannot be zero address", async () => {
+                await expectRevert(
+                    seedFactory.setMasterCopy(constants.ZERO_ADDRESS, { from: accounts[0] }),
+                    "SeedFactory: new mastercopy cannot be zero address"
                 );
             });
             it("changes master copy", async () => {
-                await seedFactory.changeMasterCopy(newSeed.address, { from: accounts[0] });
+                await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });
         context("» changeOwner", () => {
             it("only Owner can change owner", async () => {
                 await expectRevert(
-                    seedFactory.changeOwner(accounts[2], { from: accounts[1] }),
-                    "SeedFactory: protected operation"
+                    seedFactory.transferOwnership(accounts[2], { from: accounts[1] }),
+                    "Ownable: caller is not the owner"
                 );
             });
             it("changes owner", async () => {
-                await seedFactory.changeOwner(accounts[2], { from: accounts[0] });
+                await seedFactory.transferOwnership(accounts[2], { from: accounts[0] });
                 expect(await seedFactory.owner()).to.equal(accounts[2]);
             });
         });

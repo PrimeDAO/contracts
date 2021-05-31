@@ -103,10 +103,7 @@ const farmFactory = async (setup) => {
 };
 
 const seedFactory = async (setup) => {
-    const seed = await Seed.new();
     const seedFactory = await SeedFactory.new();
-    await seedFactory.initialize(setup.organization.avatar.address, seed.address);
-
     return seedFactory;
 };
 
