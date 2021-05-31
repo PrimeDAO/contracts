@@ -90,7 +90,7 @@ contract SeedFactory is CloneFactory, Ownable {
             _endTime,
             _vestingDuration,
             _vestingCliff,
-            _isWhitelisted,
+            _permissionedSeed,
             _fee
         );
 
