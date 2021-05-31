@@ -78,6 +78,27 @@ contract("SeedFactory", (accounts) => {
         });
 
         context("» parameters are valid", () => {
+            it("it reverts when masterCopy is zero address", async () => {
+                await expectRevert(seedFactory.deploySeed(
+                    dao,
+                    admin,
+                    [seedToken.address, fundingToken.address],
+                    [softCap, hardCap],
+                    price,
+                    startTime.toNumber(),
+                    endTime.toNumber(),
+                    vestingDuration.toNumber(),
+                    vestingCliff.toNumber(),
+                    isWhitelisted,
+                    fee,
+                    metadata
+                ), "SeedFactory: mastercopy cannot be zero address");
+            });
+            it("sets master copy", async () => {
+                newSeed = await Seed.new();
+                await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
+                expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
+            });
             it("it creates new seed contract", async () => {
                 requiredSeedAmount = new BN(hardCap).div(new BN(price)).mul(pct_base);
 
@@ -105,24 +126,24 @@ contract("SeedFactory", (accounts) => {
                 expect((await newSeed.seedAmountRequired()).toString()).to.equal(requiredSeedAmount.toString());
             });
         });
-        context("» changeMasterCopy", () => {
+        context("» setMasterCopy", () => {
             before("!! deploy new seed", async () => {
                 newSeed = await Seed.new();
             });
             it("only Owner can change master copy", async () => {
                 await expectRevert(
-                    seedFactory.changeMasterCopy(newSeed.address, { from: accounts[1] }),
+                    seedFactory.setMasterCopy(newSeed.address, { from: accounts[1] }),
                     "Ownable: caller is not the owner"
                 );
             });
-            it("mastercopy cannot be zero address", async () => {
+            it("new mastercopy cannot be zero address", async () => {
                 await expectRevert(
-                    seedFactory.changeMasterCopy(constants.ZERO_ADDRESS, { from: accounts[0] }),
-                    "SeedFactory: mastercopy cannot be zero address"
+                    seedFactory.setMasterCopy(constants.ZERO_ADDRESS, { from: accounts[0] }),
+                    "SeedFactory: new mastercopy cannot be zero address"
                 );
             });
             it("changes master copy", async () => {
-                await seedFactory.changeMasterCopy(newSeed.address, { from: accounts[0] });
+                await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
         });
