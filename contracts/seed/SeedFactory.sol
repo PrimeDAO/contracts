@@ -20,8 +20,8 @@ import "./Seed.sol";
 import "../utils/CloneFactory.sol";
 
 /**
- * @title primeDAO Seed Factory
- * @dev   Enable primeDAO governance to create new Seed contracts.
+ * @title PrimeDAO Seed Factory
+ * @dev   Enable PrimeDAO governance to create new Seed contracts.
  */
 contract SeedFactory is CloneFactory, Ownable {
     using SafeMath for uint256;
@@ -55,7 +55,7 @@ contract SeedFactory is CloneFactory, Ownable {
       * @param _endTime               Distribution end time in unix timecode.
       * @param _vestingDuration       Vesting period duration in days.
       * @param _vestingCliff          Cliff duration in days.
-      * @param _isWhitelisted         Set to true if only whitelisted adresses are allowed to participate.
+      * @param _permissionedSeed         Set to true if only whitelisted adresses are allowed to participate.
       * @param _fee                   Success fee expressed in Wei as a % (e.g. 2 = 2% fee)
       * @param _metadata              Seed contract metadata, that is IPFS URI
     */
@@ -69,7 +69,7 @@ contract SeedFactory is CloneFactory, Ownable {
         uint256 _endTime,
         uint32 _vestingDuration,
         uint32 _vestingCliff,
-        bool _isWhitelisted,
+        bool _permissionedSeed,
         uint8 _fee,
         bytes32 _metadata
     ) public onlyOwner returns (address) {
