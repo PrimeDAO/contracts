@@ -1,0 +1,57 @@
+{
+  "orgName": "primeDAO-test-new",
+  "tokenName": "PrimeDAO Useless Token",
+  "tokenSymbol": "PDAO",
+  "ContributionReward": [{ "voteParams": 0 }],
+  "SchemeRegistrar": [{ "voteRegisterParams": 0, "voteRemoveParams": 0 }],
+  "UpgradeScheme": [{ "voteParams": 0 }],
+  "StandAloneContracts": [],
+  "CustomSchemes": [
+    {
+       "name":"LockingToken4Reputation",
+       "schemeName":"LockingToken4Reputation",
+       "isUniversal":false,
+       "params":[
+         "80000000000000000000000",
+         1610060400,
+         1610146800,
+         1610146800,
+         259200
+       ],
+       "permissions":"0x00000010",
+       "alias":"LockingToken4Reputation",
+       "fromArc":true
+     }
+  ],
+  "VotingMachinesParams": [
+    {
+      "activationTime": 0,
+      "boostedVotePeriodLimit": 172800,
+      "daoBountyConst": 10,
+      "minimumDaoBounty": 100,
+      "preBoostedVotePeriodLimit": 86400,
+      "proposingRepReward": 0,
+      "queuedVotePeriodLimit": 604800,
+      "queuedVoteRequiredPercentage": 50,
+      "quietEndingPeriod": 172800,
+      "thresholdConst": 1500,
+      "voteOnBehalf": "0x0000000000000000000000000000000000000000",
+      "votersReputationLossRatio": 0
+    }
+  ],
+  "schemes": {"ContributionReward": true, "GenericScheme": true, "SchemeRegistrar": true, "GlobalConstraintRegistrar": false, "UpgradeScheme": true },
+  "unregisterOwner": true,
+  "useUController": false,
+  "useDaoCreator": true,
+  "founders": [
+    { "address": "0xad0B69596627D77b6b1ad8746eAC586c9CfA437c", 
+      "tokens": 0, 
+      "reputation": 100 },
+    { "address": "0x1bf4e7D549fD7Bf9c6BA3Be8BD2b9Af62F086220", 
+      "tokens": 0, 
+      "reputation": 100 },
+    { "address": "0xA7e48a6f4d19a60b6FA72fD15b247915FB0aEa6a", 
+      "tokens": 0, 
+      "reputation": 100 }
+  ]
+}

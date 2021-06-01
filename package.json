@@ -7,6 +7,7 @@
     "test": "truffle test",
     "lint": "solhint 'contracts/**/*.sol' && npx eslint test/*.js",
     "compile": "truffle compile --all",
+    
     "deploy:contracts:kovan": "truffle migrate --network kovan --reset",
     "deploy:dao:kovan": "npx run scripts/kovan/migrateDAO.js --network kovan",
     "setup:oracle:kovan": "npx truffle exec scripts/kovan/setupPriceOracle.js --network kovan",
@@ -15,12 +16,23 @@
     "init:staking:kovan": "npx truffle exec scripts/kovan/initRewards.js --network kovan",
     "init:seedfactory:kovan": "npx truffle exec scripts/kovan/initSeedFactory.js --network kovan",
     "deploy:seeds:kovan": "npx truffle exec scripts/kovan/deploySeeds.js --network kovan",
+
     "deploy:contracts:mainnet": "truffle migrate --network mainnet --reset",
     "deploy:dao:mainnet": "npx run scripts/mainnet/migrateDAO.js --network mainnet",
     "setup:lock4rep:mainnet": "npx truffle exec scripts/mainnet/setupLockToken4Reputation.js --network mainnet",
     "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
     "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
     "init:staking:mainnet": "npx truffle exec scripts/mainnet/initRewards.js --network mainnet",
+
+    "deploy:contracts:rinkeby": "truffle migrate --network rinkeby --reset",
+    "deploy:dao:rinkeby": "npx run scripts/rinkeby/migrateDAO.js --network rinkeby",
+    "setup:oracle:rinkeby": "npx truffle exec scripts/rinkeby/setupPriceOracle.js --network rinkeby",
+    "create:pool:rinkeby": "npx truffle exec scripts/rinkeby/createPool.js --network rinkeby",
+    "transfer:pool:rinkeby": "npx truffle exec scripts/rinkeby/transferPool.js --network rinkeby",
+    "init:staking:rinkeby": "npx truffle exec scripts/rinkeby/initRewards.js --network rinkeby",
+    "init:seedfactory:rinkeby": "npx truffle exec scripts/rinkeby/initSeedFactory.js --network rinkeby",
+    "deploy:seeds:rinkeby": "npx truffle exec scripts/rinkeby/deploySeeds.js --network rinkeby",
+
     "coverage": "truffle run coverage",
     "flatten": "sol-merger \"./contracts/**/*.sol\" ./_flat"
   },
