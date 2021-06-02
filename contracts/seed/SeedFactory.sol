@@ -71,7 +71,7 @@ contract SeedFactory is CloneFactory, Ownable {
         uint32 _vestingCliff,
         bool _permissionedSeed,
         uint8 _fee,
-        bytes32 _metadata
+        bytes memory _metadata
     ) public onlyOwner returns (address) {
         require(masterCopy != Seed(0), "SeedFactory: mastercopy cannot be zero address");
         // deploy clone
