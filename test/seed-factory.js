@@ -99,6 +99,82 @@ contract("SeedFactory", (accounts) => {
                 await seedFactory.setMasterCopy(newSeed.address, { from: accounts[0] });
                 expect(await seedFactory.masterCopy()).to.equal(newSeed.address);
             });
+            it("reverts when fundingToken == seedToken", async () => {
+                await expectRevert(
+                    seedFactory.deploySeed(
+                        dao,
+                        admin,
+                        [seedToken.address, seedToken.address],
+                        [softCap, hardCap],
+                        price,
+                        startTime.toNumber(),
+                        endTime.toNumber(),
+                        vestingDuration.toNumber(),
+                        vestingCliff.toNumber(),
+                        isWhitelisted,
+                        fee,
+                        metadata
+                    ),
+                    "SeedFactory: seedToken cannot be fundingToken"
+                );
+            });
+            it("reverts when softCap > hardCap", async () => {
+                await expectRevert(
+                    seedFactory.deploySeed(
+                        dao,
+                        admin,
+                        [seedToken.address, fundingToken.address],
+                        [toWei("101"), softCap],
+                        price,
+                        startTime.toNumber(),
+                        endTime.toNumber(),
+                        vestingDuration.toNumber(),
+                        vestingCliff.toNumber(),
+                        isWhitelisted,
+                        fee,
+                        metadata
+                    ),
+                    "SeedFactory: hardCap cannot be less than softCap"
+                );
+            });
+            it("reverts when vestingCliff > vestingDuration", async () => {
+                await expectRevert(
+                    seedFactory.deploySeed(
+                        dao,
+                        admin,
+                        [seedToken.address, fundingToken.address],
+                        [hardCap, softCap],
+                        price,
+                        startTime.toNumber(),
+                        endTime.toNumber(),
+                        vestingCliff.toNumber(),
+                        vestingDuration.toNumber(),
+                        isWhitelisted,
+                        fee,
+                        metadata
+                    ),
+                    "SeedFactory: vestingDuration cannot be less than vestingCliff"
+                );
+            });
+            it("reverts when startTime >= endTime", async () => {
+                await expectRevert(
+                    seedFactory.deploySeed(
+                        dao,
+                        admin,
+                        [seedToken.address, fundingToken.address],
+                        [hardCap, softCap],
+                        price,
+                        endTime.toNumber(),
+                        startTime.toNumber(),
+                        vestingDuration.toNumber(),
+                        vestingCliff.toNumber(),
+                        isWhitelisted,
+                        fee,
+                        metadata
+                    ),
+                    "SeedFactory: endTime cannot be less than equal to startTime"
+                );
+            });
             it("it creates new seed contract", async () => {
                 requiredSeedAmount = new BN(hardCap).div(new BN(price)).mul(pct_base);
 

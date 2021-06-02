@@ -31,8 +31,8 @@ module.exports = async function(callback) {
         let price           = [ toWei('1.5'), toWei('100'), toWei('0.001'), toWei('11111'), toWei('0.01') ];
         let startTime       = [ 1622585775, 1628197200, 1622581200,  1622581200, now + nineDays ];
         let endTime         = [ 1622586615,  1646352000, 1625000400, 1627678800, startTime[4] + twoDays ];
-        let vestingDuration = [ 360, 20, 0.01*oneDay, 1000, 365 ]; // 1 year
-        let vestingCliff    = [ 22, 1, Math.floor(0.001*oneDay), 10, 120 ]; // 3 months
+        let vestingDuration = [ 360, 20, 0.01, 1000, 365 ]; // 1 year
+        let vestingCliff    = [ 22, 1, 0.001, 10, 120 ]; // 3 months
         let permissionedSeed   = [ false, false, false, false, true ];
         let fee             = [ 2, 2, 1, 5, 2 ];
         let metadata        = ['QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg', 'QmVX6kpZR7d1ci7pKQ9RZTqGbcCWjC3NcmKyCqB1XsEyDz', 'QmNnJ6UEpDZE7v5CkuQrw5EQYBBF7wetBqbofPqofb3eMs', 'Qmcrp5BaafvZUt8ETtwM11Uuv7wxAMcnR5JqiTEnrZF5P5', 'ax' ];
@@ -47,8 +47,8 @@ module.exports = async function(callback) {
             price[0],
             startTime[0],
             endTime[0],
-            vestingDuration[0]*oneDay,
-            vestingCliff[0]*oneDay,
+            Math.floor(vestingDuration[0]*oneDay),
+            Math.floor(vestingCliff[0]*oneDay),
             permissionedSeed[0],
             fee[0],
             toHex(metadata[0])
@@ -71,8 +71,8 @@ module.exports = async function(callback) {
             price[1],
             startTime[1],
             endTime[1],
-            vestingDuration[1]*oneDay,
-            vestingCliff[1]*oneDay,
+            Math.floor(vestingDuration[1]*oneDay),
+            Math.floor(vestingCliff[1]*oneDay),
             permissionedSeed[1],
             fee[1],
             toHex(metadata[1])
@@ -95,8 +95,8 @@ module.exports = async function(callback) {
             price[2],
             startTime[2],
             endTime[2],
-            vestingDuration[2]*oneDay,
-            vestingCliff[2]*oneDay,
+            Math.floor(vestingDuration[2]*oneDay),
+            Math.floor(vestingCliff[2]*oneDay),
             permissionedSeed[2],
             fee[2],
             toHex(metadata[2])
@@ -119,8 +119,8 @@ module.exports = async function(callback) {
             price[3],
             startTime[3],
             endTime[3],
-            vestingDuration[3]*oneDay,
-            vestingCliff[3]*oneDay,
+            Math.floor(vestingDuration[3]*oneDay),
+            Math.floor(vestingCliff[3]*oneDay),
             permissionedSeed[3],
             fee[3],
             toHex(metadata[3])
@@ -143,8 +143,8 @@ module.exports = async function(callback) {
             price[4],
             startTime[4],
             endTime[4],
-            vestingDuration[4]*oneDay,
-            vestingCliff[4]*oneDay,
+            Math.floor(vestingDuration[4]*oneDay),
+            Math.floor(vestingCliff[4]*oneDay),
             permissionedSeed[4],
             fee[4],
             toHex(metadata[4])
