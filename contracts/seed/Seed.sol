@@ -173,7 +173,7 @@ contract Seed {
         minimumReached    = false;
         maximumReached    = false;
 
-        seedAmountRequired = (hardCap.div(_price)).mul(PCT_BASE);
+        seedAmountRequired = hardCap.mul(PCT_BASE).div(_price);
         feeAmountRequired = seedAmountRequired.mul(_fee).div(100);
         seedRemainder     = seedAmountRequired;
         feeRemainder  = feeAmountRequired;

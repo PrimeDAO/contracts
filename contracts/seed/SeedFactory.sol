@@ -74,6 +74,7 @@ contract SeedFactory is CloneFactory, Ownable {
         bytes memory _metadata
     ) public onlyOwner returns (address) {
         require(masterCopy != Seed(0), "SeedFactory: mastercopy cannot be zero address");
+        require( _softHardThresholds[1] >= _softHardThresholds[0], "SeedFactory: hardCap cannot be less than softCap" );
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 
