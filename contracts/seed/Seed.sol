@@ -44,7 +44,7 @@ contract Seed {
     IERC20  public fundingToken;
     uint8   public fee;
 
-    bytes32 public metadata;           // IPFS Hash
+    bytes   public metadata;           // IPFS Hash
 
     uint256 constant internal PCT_BASE        = 10 ** 18;  // // 0% = 0; 1% = 10 ** 16; 100% = 10 ** 18
 
@@ -69,7 +69,7 @@ contract Seed {
     event SeedsPurchased(address indexed recipient, uint256 amountPurchased);
     event TokensClaimed(address indexed recipient,uint256 amount,address indexed beneficiary,uint256 feeAmount);
     event FundingReclaimed(address indexed recipient, uint256 amountReclaimed);
-    event MetadataUpdated(bytes32 indexed metadata);
+    event MetadataUpdated(bytes indexed metadata);
 
     struct FunderPortfolio { 
         uint256 seedAmount;
@@ -376,7 +376,7 @@ contract Seed {
       * @dev                     Updates metadata.
       * @param _metadata         Seed contract metadata, that is IPFS Hash
     */
-    function updateMetadata(bytes32 _metadata) public {
+    function updateMetadata(bytes memory _metadata) public {
         require(
             initialized != true || msg.sender == admin,
             "Seed: contract should not be initialized or caller should be admin"

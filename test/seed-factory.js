@@ -6,7 +6,7 @@ const { constants, time, expectRevert, expectEvent } = require("@openzeppelin/te
 const helpers = require("./helpers");
 const { BN } = require("@openzeppelin/test-helpers/src/setup");
 const Seed = artifacts.require("Seed");
-const { toWei } = web3.utils;
+const { toWei, toHex } = web3.utils;
 
 const deploy = async (accounts) => {
     // initialize test setup
@@ -72,7 +72,7 @@ contract("SeedFactory", (accounts) => {
             vestingCliff = await time.duration.days(90); // 3 months
             isWhitelisted = false;
             fee = 2;
-            metadata = `0x`;
+            metadata = toHex('QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg');
 
             seedFactory = setup.seedFactory;
         });
