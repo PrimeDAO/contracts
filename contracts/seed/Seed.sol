@@ -394,7 +394,7 @@ contract Seed {
         FunderPortfolio memory tokenFunder = funders[_funder];
 
         // Check cliff was reached
-        uint256 elapsedSeconds = _currentTime().sub(startTime);
+        uint256 elapsedSeconds = _currentTime().sub(endTime);
 
         if (elapsedSeconds < vestingCliff) {
             return 0;
