@@ -173,7 +173,7 @@ contract Seed {
         minimumReached    = false;
         maximumReached    = false;
 
-        seedAmountRequired = (hardCap.div(_price)).mul(PCT_BASE);
+        seedAmountRequired = hardCap.mul(PCT_BASE).div(_price);
         feeAmountRequired = seedAmountRequired.mul(_fee).div(100);
         seedRemainder     = seedAmountRequired;
         feeRemainder  = feeAmountRequired;
@@ -394,7 +394,7 @@ contract Seed {
         FunderPortfolio memory tokenFunder = funders[_funder];
 
         // Check cliff was reached
-        uint256 elapsedSeconds = _currentTime().sub(startTime);
+        uint256 elapsedSeconds = _currentTime().sub(endTime);
 
         if (elapsedSeconds < vestingCliff) {
             return 0;

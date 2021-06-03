@@ -75,7 +75,7 @@ contract("Seed", (accounts) => {
     const pct_base = new BN("1000000000000000000"); // 10**18
     const ninetyTwoDaysInSeconds  = time.duration.days(92);
     const eightyNineDaysInSeconds = time.duration.days(89);
-    const threeDaysInSeconds      = time.duration.days(3);
+    const tenDaysInSeconds      = time.duration.days(10);
 
     context("» creator is avatar", () => {
         before("!! deploy setup", async () => {
@@ -286,10 +286,10 @@ contract("Seed", (accounts) => {
                 });
                 it("calculates correct claim", async () => {
                     // increase time
-                    await time.increase(threeDaysInSeconds);
+                    await time.increase(tenDaysInSeconds);
                     const claim = await setup.seed.calculateClaim(buyer1);
                     const expectedClaim = (await time.latest())
-                        .sub(startTime)
+                        .sub(endTime)
                         .mul(new BN(buySeedAmount).mul(twoBN).div(new BN(vestingDuration)));
                     expect(claim.toString()).to.equal(expectedClaim.toString());
                 });
@@ -378,6 +378,7 @@ contract("Seed", (accounts) => {
                     await setup.data.seed.buy(new BN(buyAmount).mul(twoBN), { from: buyer2 });
                 });
                 it("claims all seeds after vesting duration", async () => {
+                    time.increase(await time.duration.days(7));
                     time.increase(vestingDuration);
                     let tx = await setup.data.seed.claim(buyer2, new BN(buySeedAmount).mul(twoBN), { from: buyer2 });
                     setup.data.tx = tx;
