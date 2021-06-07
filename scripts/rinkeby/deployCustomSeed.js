@@ -24,139 +24,49 @@ module.exports = async function(callback) {
         let sevenDays = 604800;
         let nineDays = 777600;
 
-        let admin           = process.env.ACCOUNT;
-        let fundingToken    = [ contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH ];
-        let cap             = [ toWei('4'), toWei('900'), toWei('0.00002'), toWei('999999999999999'), toWei('200') ];
-        let successMinimum  = [ toWei('2'), toWei('100'), toWei('0.00001'), toWei('9999'), toWei('50') ];
-        let price           = [ toWei('1.5'), toWei('100'), toWei('0.001'), toWei('11111'), toWei('0.01') ];
-        let startTime       = [ 1622585775, 1628197200, 1622581200,  1622581200, now + nineDays ];
-        let endTime         = [ 1622586615,  1646352000, 1625000400, 1627678800, startTime[4] + twoDays ];
-        let vestingDuration = [ 360, 20, 0.01, 1000, 365 ]; // 1 year
-        let vestingCliff    = [ 22, 1, 0.001, 10, 120 ]; // 3 months
-        let permissionedSeed   = [ false, false, false, false, true ];
-        let fee             = [ 2, 2, 1, 5, 2 ];
-        let metadata        = ['QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg', 'QmVX6kpZR7d1ci7pKQ9RZTqGbcCWjC3NcmKyCqB1XsEyDz', 'QmNnJ6UEpDZE7v5CkuQrw5EQYBBF7wetBqbofPqofb3eMs', 'Qmcrp5BaafvZUt8ETtwM11Uuv7wxAMcnR5JqiTEnrZF5P5', 'ax' ];
+        let admin            = process.env.ACCOUNT;
+        let fundingToken     = [ contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH, contracts.rinkeby.DAI, contracts.rinkeby.WETH, contracts.rinkeby.DAI ];
+        let cap              = [ toWei('4'), toWei('900'), toWei('0.00002'), toWei('999999999999999'), toWei('1'), toWei('1'), toWei('99999999999999999999999999999999999') ];
+        let successMinimum   = [ toWei('2'), toWei('100'), toWei('0.00001'), toWei('9999'), toWei('1'), toWei('1'), toWei('0.0000000000000009') ];
+        let price            = [ toWei('1.5'), toWei('100'), toWei('0.001'), toWei('11111'), toWei('1000000000000000000000000000'), toWei('1'), toWei('0.000000000000009') ];
+        let startTime        = [ 1622585775, 1628197200, 1622581200,  1622581200, 1622764800, 1622818800, 1625356800 ];
+        let endTime          = [ 1622586615,  1646352000, 1625000400, 1627678800, 1622764860, 1625356800, 1628035200 ];
+        let vestingDuration  = [ 360, 20, 0.01, 1000, 2, 1000, 20 ]; // 1 year
+        let vestingCliff     = [ 22, 1, 0.001, 10, 1, 1, 2 ]; // 3 months
+        let permissionedSeed = [ false, false, false, false, false, false, false ];
+        let fee              = [ 2, 2, 1, 5, 2, 2, 2 ];
+        let metadata         = [
+            'QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg', 
+            'QmVX6kpZR7d1ci7pKQ9RZTqGbcCWjC3NcmKyCqB1XsEyDz', 
+            'QmNnJ6UEpDZE7v5CkuQrw5EQYBBF7wetBqbofPqofb3eMs', 
+            'Qmcrp5BaafvZUt8ETtwM11Uuv7wxAMcnR5JqiTEnrZF5P5', 
+            'QmYsn3FoDgqVHybrFvWe7b1EuVmdAyeBGuHn4tFjSY4ywc',
+            'QmbT9nMP1gTLr5NB295sBP5Z6YGhm577Tw3pY7YKVhLkZR',
+            'QmbGsQPUGZ2E9ENf73HqJsSnsgXJZwojA1eSDxbqb8WQaH'
+        ];
+
+        const deploySeeds = deploy(
+            seedFactory, 
+            contracts, 
+            admin, 
+            fundingToken, 
+            successMinimum, 
+            cap, 
+            price, 
+            startTime, 
+            endTime, 
+            vestingDuration, 
+            vestingCliff, 
+            permissionedSeed, 
+            fee, 
+            metadata);
 
         console.log("Deployment Started.......");
-        await seedToken.approve(seedFactory.address, cap[0]);
-        let seedAddress1 = await seedFactory.deploySeed(
-            contracts.rinkeby.Avatar,
-            admin,
-            [contracts.rinkeby.PrimeToken, fundingToken[0]],
-            [successMinimum[0],cap[0]],
-            price[0],
-            startTime[0],
-            endTime[0],
-            Math.floor(vestingDuration[0]*oneDay),
-            Math.floor(vestingCliff[0]*oneDay),
-            permissionedSeed[0],
-            fee[0],
-            toHex(metadata[0])
-        );
-        console.log("deployed seed at " + seedAddress1.logs[0].args.newSeed);
-        contracts.rinkeby.seed1 = seedAddress1.logs[0].args.newSeed;
-        let seed1 = await Seed.at((seedAddress1.logs[0].args.newSeed).toString());
-        let seedStart1 = await seed1.startTime();
-        let seedEnd1 = await seed1.endTime();
-        let start1 = new Date((seedStart1.toNumber())*1000).toLocaleDateString("en-GB");
-        let end1 = new Date((seedEnd1.toNumber())*1000).toLocaleDateString("en-GB");
-        console.log("seed starttime: " + start1 + ". seed endTime: " + end1);
-
-        await seedToken.approve(seedFactory.address, cap[1]);
-        let seedAddress2 = await seedFactory.deploySeed(
-            contracts.rinkeby.Avatar,
-            admin,
-            [contracts.rinkeby.PrimeToken,fundingToken[1]],
-            [successMinimum[1],cap[1]],
-            price[1],
-            startTime[1],
-            endTime[1],
-            Math.floor(vestingDuration[1]*oneDay),
-            Math.floor(vestingCliff[1]*oneDay),
-            permissionedSeed[1],
-            fee[1],
-            toHex(metadata[1])
-        );
-        console.log("deployed seed at " + seedAddress2.logs[0].args.newSeed);
-        contracts.rinkeby.seed2 = seedAddress2.logs[0].args.newSeed;
-        let seed2 = await Seed.at((seedAddress2.logs[0].args.newSeed).toString());
-        let seedStart2 = await seed2.startTime();
-        let seedEnd2 = await seed2.endTime();
-        let start2 = new Date((seedStart2.toNumber())*1000).toLocaleDateString("en-GB");
-        let end2 = new Date((seedEnd2.toNumber())*1000).toLocaleDateString("en-GB");
-        console.log("seed starttime: " + start2 + ". seed endTime: " + end2);
-
-        await seedToken.approve(seedFactory.address, cap[2]);
-        let seedAddress3 = await seedFactory.deploySeed(
-            contracts.rinkeby.Avatar,
-            admin,
-            [contracts.rinkeby.PrimeToken, fundingToken[2]],
-            [successMinimum[2],cap[2]],
-            price[2],
-            startTime[2],
-            endTime[2],
-            Math.floor(vestingDuration[2]*oneDay),
-            Math.floor(vestingCliff[2]*oneDay),
-            permissionedSeed[2],
-            fee[2],
-            toHex(metadata[2])
-        );
-        console.log("deployed seed at " + seedAddress3.logs[0].args.newSeed);
-        contracts.rinkeby.seed3 = seedAddress3.logs[0].args.newSeed;
-        let seed3 = await Seed.at((seedAddress3.logs[0].args.newSeed).toString());
-        let seedStart3 = await seed3.startTime();
-        let seedEnd3 = await seed3.endTime();
-        let start3 = new Date((seedStart3.toNumber())*1000).toLocaleDateString("en-GB");
-        let end3 = new Date((seedEnd3.toNumber())*1000).toLocaleDateString("en-GB");
-        console.log("seed starttime: " + start3 + ". seed endTime: " + end3);
-
-        await seedToken.approve(seedFactory.address, cap[3]);
-        let seedAddress4 = await seedFactory.deploySeed(
-            contracts.rinkeby.Avatar,
-            admin,
-            [contracts.rinkeby.PrimeToken,fundingToken[3]],
-            [successMinimum[3],cap[3]],
-            price[3],
-            startTime[3],
-            endTime[3],
-            Math.floor(vestingDuration[3]*oneDay),
-            Math.floor(vestingCliff[3]*oneDay),
-            permissionedSeed[3],
-            fee[3],
-            toHex(metadata[3])
-        );
-        console.log("deployed seed at " + seedAddress4.logs[0].args.newSeed);
-        contracts.rinkeby.seed4 = seedAddress4.logs[0].args.newSeed;
-        let seed4 = await Seed.at((seedAddress4.logs[0].args.newSeed).toString());
-        let seedStart4 = await seed4.startTime();
-        let seedEnd4 = await seed4.endTime();
-        let start4 = new Date((seedStart4.toNumber())*1000).toLocaleDateString("en-GB");
-        let end4 = new Date((seedEnd4.toNumber())*1000).toLocaleDateString("en-GB");
-        console.log("seed starttime: " + start4 + ". seed endTime: " + end4);
-
-        await seedToken.approve(seedFactory.address, cap[4]);
-        let seedAddress5 = await seedFactory.deploySeed(
-            contracts.rinkeby.Avatar,
-            admin,
-            [contracts.rinkeby.PrimeToken,fundingToken[4]],
-            [successMinimum[4],cap[4]],
-            price[4],
-            startTime[4],
-            endTime[4],
-            Math.floor(vestingDuration[4]*oneDay),
-            Math.floor(vestingCliff[4]*oneDay),
-            permissionedSeed[4],
-            fee[4],
-            toHex(metadata[4])
-        );
-        console.log("deployed seed at " + seedAddress5.logs[0].args.newSeed);
-        contracts.rinkeby.seed5 = seedAddress5.logs[0].args.newSeed;
-        let seed5 = await Seed.at((seedAddress5.logs[0].args.newSeed).toString());
-        let seedStart5 = await seed5.startTime();
-        let seedEnd5 = await seed5.endTime();
-        let start5 = new Date((seedStart5.toNumber())*1000).toLocaleDateString("en-GB");
-        let end5 = new Date((seedEnd5.toNumber())*1000).toLocaleDateString("en-GB");
-        console.log("seed starttime: " + start5 + ". seed endTime: " + end5);
+        
+        for(let i = 0; i<metadata.length;i++){
+            // await seedToken.approve(seedFactory.address, cap[i]);
+            contracts.rinkeby[`seed${i+1}`] = await deploySeeds(i);
+        }
 
         fs.writeFileSync(
             './contractAddresses.json',
@@ -171,4 +81,44 @@ module.exports = async function(callback) {
 
     }
     callback();
+};
+
+const deploy = (seedFactory, 
+    contracts, 
+    admin, 
+    fundingToken, 
+    successMinimum, 
+    cap, 
+    price, 
+    startTime, 
+    endTime, 
+    vestingDuration, 
+    vestingCliff, 
+    permissionedSeed, 
+    fee, 
+    metadata) => async (index) => {
+    console.log(`Seed ${index+1} to be deployed`);
+    let oneDay = 86400;
+    let seedAddress = await seedFactory.deploySeed(
+        contracts.rinkeby.Avatar,
+        admin,
+        [contracts.rinkeby.PrimeToken,fundingToken[index]],
+        [successMinimum[index],cap[index]],
+        price[index],
+        startTime[index],
+        endTime[index],
+        Math.floor(vestingDuration[index]*oneDay),
+        Math.floor(vestingCliff[index]*oneDay),
+        permissionedSeed[index],
+        fee[index],
+        toHex(metadata[index])
+    );
+    console.log("deployed seed at " + seedAddress.logs[0].args.newSeed);
+    let seed = await Seed.at((seedAddress.logs[0].args.newSeed).toString());
+    let seedStart = await seed.startTime();
+    let seedEnd = await seed.endTime();
+    let start = new Date((seedStart.toNumber())*1000).toLocaleDateString("en-GB");
+    let end = new Date((seedEnd.toNumber())*1000).toLocaleDateString("en-GB");
+    console.log("seed starttime: " + start + ". seed endTime: " + end);
+    return seedAddress.logs[0].args.newSeed;
 };

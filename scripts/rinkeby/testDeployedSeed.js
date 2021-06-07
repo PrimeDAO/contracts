@@ -26,20 +26,33 @@ module.exports = async (callback) => {
     const { fromWei, hexToAscii } = web3.utils;
 
     console.log("Testing Deployed Seed 1......");
+
     let seed = await Seed.at(contracts.rinkeby.seed1);
     console.log("Seed 1......");
     await log(seed, fromWei, hexToAscii);
+
     seed = await Seed.at(contracts.rinkeby.seed2);
     console.log("Seed 2......");
     await log(seed, fromWei, hexToAscii);
+
     seed = await Seed.at(contracts.rinkeby.seed3);
     console.log("Seed 3......");
     await log(seed, fromWei, hexToAscii);
+
     seed = await Seed.at(contracts.rinkeby.seed4);
     console.log("Seed 4......");
     await log(seed, fromWei, hexToAscii);
+
     seed = await Seed.at(contracts.rinkeby.seed5);
     console.log("Seed 5......");
+    await log(seed, fromWei, hexToAscii);
+
+    seed = await Seed.at(contracts.rinkeby.seed6);
+    console.log("Seed 6......");
+    await log(seed, fromWei, hexToAscii);
+    
+    seed = await Seed.at(contracts.rinkeby.seed7);
+    console.log("Seed 7......");
     await log(seed, fromWei, hexToAscii);
 
     callback();

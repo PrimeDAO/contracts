@@ -11,13 +11,12 @@ const StakingRewards = artifacts.require('StakingRewards');
 const RepRedeemer = artifacts.require('RepRedeemer');
 const SeedFactory = artifacts.require('SeedFactory');
 const Seed = artifacts.require('Seed');
-
 const LockingToken4Reputation = artifacts.require('LockingToken4Reputation');
-
 const contracts = require('../contractAddresses.json');
-const fs = require("fs");
-const primeSupply = 10000000000;
 
+const { toWei } = web3.utils;
+const fs = require("fs");
+const primeSupply = toWei('100000000000000000000000000000000000000000000000000000000000');
 module.exports = async function (deployer, network) {
 
     switch(network) {
