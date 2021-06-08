@@ -1,4 +1,4 @@
-[![banner](https://i.ibb.co/NWjZc4N/Artboard-44.png)](https://primedao.eth.link/#/)
+[![banner](https://i.ibb.co/BqjcRGG/Prime-DAO-Github-Contracts-Banner.png)](https://primedao.eth.link/#/)
 
 # 🤖 PrimeDAO Smart Contracts
 [![<ORG_NAME>](https://circleci.com/gh/PrimeDAO/contracts.svg?style=svg)](https://app.circleci.com/pipelines/github/PrimeDAO)
