@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/PrimeDAO/contracts/branch/main/graph/badge.svg?token=BG6I17TXEL)](https://codecov.io/gh/PrimeDAO/contracts)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# 🤖 PrimeDAO Smart Contracts
+# PrimeDAO Smart Contracts
 
 This repo contains the smart contracts making up PrimeDAO.
 
