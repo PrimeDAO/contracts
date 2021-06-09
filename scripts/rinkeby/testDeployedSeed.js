@@ -25,34 +25,34 @@ const log = async (seed, fromWei, toAscii) => {
 module.exports = async (callback) => {
     const { fromWei, hexToAscii } = web3.utils;
 
-    console.log("Testing Deployed Seed 1......");
+    console.log("Testing Deployed Seed......");
 
     let seed = await Seed.at(contracts.rinkeby.seed1);
-    console.log("Seed 1......");
+    console.log(`Seed 1......${contracts.rinkeby.seed1}`);
     await log(seed, fromWei, hexToAscii);
 
     seed = await Seed.at(contracts.rinkeby.seed2);
-    console.log("Seed 2......");
+    console.log(`Seed 2......${contracts.rinkeby.seed2}`);
     await log(seed, fromWei, hexToAscii);
 
     seed = await Seed.at(contracts.rinkeby.seed3);
-    console.log("Seed 3......");
+    console.log(`Seed 3......${contracts.rinkeby.seed3}`);
     await log(seed, fromWei, hexToAscii);
 
     seed = await Seed.at(contracts.rinkeby.seed4);
-    console.log("Seed 4......");
+    console.log(`Seed 4......${contracts.rinkeby.seed4}`);
     await log(seed, fromWei, hexToAscii);
 
     seed = await Seed.at(contracts.rinkeby.seed5);
-    console.log("Seed 5......");
+    console.log(`Seed 5......${contracts.rinkeby.seed5}`);
     await log(seed, fromWei, hexToAscii);
 
     seed = await Seed.at(contracts.rinkeby.seed6);
-    console.log("Seed 6......");
+    console.log(`Seed 6......${contracts.rinkeby.seed6}`);
     await log(seed, fromWei, hexToAscii);
     
     seed = await Seed.at(contracts.rinkeby.seed7);
-    console.log("Seed 7......");
+    console.log(`Seed 7......${contracts.rinkeby.seed7}`);
     await log(seed, fromWei, hexToAscii);
 
     callback();

@@ -72,11 +72,11 @@ contract Seed {
     event MetadataUpdated(bytes indexed metadata);
 
     struct FunderPortfolio { 
-        uint256 seedAmount;
-        uint256 totalClaimed;
-        uint256 fundingAmount;
-        uint256 fee;
-        uint256 feeClaimed;
+        uint256 seedAmount;                 // Total amount of seed tokens bought
+        uint256 totalClaimed;               // Total amount of seed tokens claimed
+        uint256 fundingAmount;              // Total amount of funding tokens contributed
+        uint256 fee;                        // Total amount of fee in seed amount for this portfolio
+        uint256 feeClaimed;                 // Total amount of fee sent to beneficiary for this portfolio
     }
 
     modifier initializer() {

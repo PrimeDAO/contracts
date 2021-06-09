@@ -33,8 +33,8 @@
     "init:seedfactory:rinkeby": "npx truffle exec scripts/rinkeby/initSeedFactory.js --network rinkeby",
     "deploy:seeds:rinkeby": "npx truffle exec scripts/rinkeby/deploySeeds.js --network rinkeby",
     "deploy:customSeeds:rinkeby": "npx truffle exec scripts/rinkeby/deployCustomSeed.js --network rinkeby",
-    "deploy:testSeeds:rinkeby": "npx truffle exec scripts/rinkeby/testDeployedSeed.js --network rinkeby",
     "deploy:fundSeeds:rinkeby": "npx truffle exec scripts/rinkeby/fundSeeds.js --network rinkeby",
+    "log:Seeds:rinkeby": "npx truffle exec scripts/rinkeby/testDeployedSeed.js --network rinkeby",
 
     "coverage": "truffle run coverage",
     "flatten": "sol-merger \"./contracts/**/*.sol\" ./_flat"
