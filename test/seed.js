@@ -277,6 +277,9 @@ contract("Seed", (accounts) => {
         });
         context("# claim", () => {
             context("» generics", () => {
+                it("claim = 0 when not currentTime<endTime", async () => {
+                    expect((await setup.seed.calculateClaim(buyer2)).toString()).to.equal('0');
+                });
                 it("it cannot claim before vestingCliff", async () => {
                     await time.increase(eightyNineDaysInSeconds);
                     await expectRevert(
@@ -292,6 +295,9 @@ contract("Seed", (accounts) => {
                         .sub(endTime)
                         .mul(new BN(buySeedAmount).mul(twoBN).div(new BN(vestingDuration)));
                     expect(claim.toString()).to.equal(expectedClaim.toString());
+                });
+                it("claim = 0 when not contributed", async () => {
+                    expect((await setup.seed.calculateClaim(buyer2)).toString()).to.equal('0');
                 });
                 it("it cannot claim if not vested", async () => {
                     await expectRevert(
