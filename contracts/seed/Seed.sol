@@ -393,6 +393,10 @@ contract Seed {
     function calculateClaim(address _funder) public view returns(uint256) {
         FunderPortfolio memory tokenFunder = funders[_funder];
 
+        if(_currentTime() < endTime){
+            return 0;
+        }
+
         // Check cliff was reached
         uint256 elapsedSeconds = _currentTime().sub(endTime);
 
