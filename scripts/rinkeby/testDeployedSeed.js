@@ -3,6 +3,30 @@ const contracts = require('../../contractAddresses.json');
 const details = require('../../seedDetails.json');
 const fs = require('fs');
 
+module.exports = async (callback) => {
+
+    if(details?.seedDetails == undefined){
+        details.seedDetails = {};
+    }
+
+    const { fromWei } = web3.utils;
+
+    console.log("Testing Deployed Seed......");
+
+    for( let i = 0; i< Object.keys(details.rinkeby).length ; i++ ){
+        let seed = await Seed.at(details.rinkeby[`seed${i+1}`]);
+        console.log(`Seed ${i+1}......${details.rinkeby[`seed${i+1}`]}`);
+        details.seedDetails[`seed${i+1}`] = await log(seed, fromWei);
+    }
+
+    fs.writeFileSync(
+        './seedDetails.json',
+        JSON.stringify(details)
+    );
+
+    callback();
+};
+
 const toAscii = (str1) =>
 {
     let hex  = str1.toString();
@@ -36,56 +60,3 @@ const log = async (seed, fromWei) => {
     console.log(seedDetails);
     return seedDetails;
 };
-
-module.exports = async (callback) => {
-    const { fromWei } = web3.utils;
-
-    console.log("Testing Deployed Seed......");
-
-    let seed = await Seed.at(contracts.rinkeby.seed1);
-    console.log(`Seed 1......${contracts.rinkeby.seed1}`);
-    details.seed1 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed2);
-    console.log(`Seed 2......${contracts.rinkeby.seed2}`);
-    details.seed2 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed3);
-    console.log(`Seed 3......${contracts.rinkeby.seed3}`);
-    details.seed3 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed4);
-    console.log(`Seed 4......${contracts.rinkeby.seed4}`);
-    details.seed4 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed5);
-    console.log(`Seed 5......${contracts.rinkeby.seed5}`);
-    details.seed5 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed6);
-    console.log(`Seed 6......${contracts.rinkeby.seed6}`);
-    details.seed6 = await log(seed, fromWei);
-    
-    seed = await Seed.at(contracts.rinkeby.seed7);
-    console.log(`Seed 7......${contracts.rinkeby.seed7}`);
-    details.seed7 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed8);
-    console.log(`Seed 8......${contracts.rinkeby.seed8}`);
-    details.seed8 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed9);
-    console.log(`Seed 9......${contracts.rinkeby.seed9}`);
-    details.seed9 = await log(seed, fromWei);
-
-    seed = await Seed.at(contracts.rinkeby.seed10);
-    console.log(`Seed 10......${contracts.rinkeby.seed10}`);
-    details.seed10 = await log(seed, fromWei);
-
-    fs.writeFileSync(
-        './seedDetails.json',
-        JSON.stringify(details)
-    );
-
-    callback();
-}
