@@ -2,6 +2,7 @@ require('dotenv').config();
 const SeedFactory = artifacts.require("SeedFactory");
 const Seed = artifacts.require("Seed");
 const PrimeToken = artifacts.require("PrimeToken");
+const details = require('../../seedDetails.json');
 const contracts = require('../../contractAddresses.json');
 const { toWei, toHex, BN } = web3.utils;
 const fs = require('fs');
@@ -69,27 +70,27 @@ module.exports = async function(callback) {
 
         await logBalance('0x67be2c36e75b7439ffc2dcb99dbdf4fbb2455930'); 
 
-        await fundSeed(contracts.rinkeby.seed1, 0);
-        await fundSeed(contracts.rinkeby.seed2, 1);
-        await fundSeed(contracts.rinkeby.seed3, 2);
-        await fundSeed(contracts.rinkeby.seed4, 3);
-        await fundSeed(contracts.rinkeby.seed5, 4);
-        await fundSeed(contracts.rinkeby.seed6, 5);
-        await fundSeed(contracts.rinkeby.seed7, 6);
-        await fundSeed(contracts.rinkeby.seed8, 7);
-        await fundSeed(contracts.rinkeby.seed9, 8);
-        await fundSeed(contracts.rinkeby.seed10, 9);
+        await fundSeed(details.rinkeby.seed1, 0);
+        await fundSeed(details.rinkeby.seed2, 1);
+        await fundSeed(details.rinkeby.seed3, 2);
+        await fundSeed(details.rinkeby.seed4, 3);
+        await fundSeed(details.rinkeby.seed5, 4);
+        await fundSeed(details.rinkeby.seed6, 5);
+        await fundSeed(details.rinkeby.seed7, 6);
+        await fundSeed(details.rinkeby.seed8, 7);
+        await fundSeed(details.rinkeby.seed9, 8);
+        await fundSeed(details.rinkeby.seed10, 9);
 
-        await logBalance(contracts.rinkeby.seed1);
-        await logBalance(contracts.rinkeby.seed2);
-        await logBalance(contracts.rinkeby.seed3);
-        await logBalance(contracts.rinkeby.seed4);
-        await logBalance(contracts.rinkeby.seed5);
-        await logBalance(contracts.rinkeby.seed6);
-        await logBalance(contracts.rinkeby.seed7);
-        await logBalance(contracts.rinkeby.seed8);
-        await logBalance(contracts.rinkeby.seed9);
-        await logBalance(contracts.rinkeby.seed10);
+        await logBalance(details.rinkeby.seed1);
+        await logBalance(details.rinkeby.seed2);
+        await logBalance(details.rinkeby.seed3);
+        await logBalance(details.rinkeby.seed4);
+        await logBalance(details.rinkeby.seed5);
+        await logBalance(details.rinkeby.seed6);
+        await logBalance(details.rinkeby.seed7);
+        await logBalance(details.rinkeby.seed8);
+        await logBalance(details.rinkeby.seed9);
+        await logBalance(details.rinkeby.seed10);
 
         await console.log("***   Success");
 
