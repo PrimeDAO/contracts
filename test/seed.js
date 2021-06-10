@@ -240,11 +240,6 @@ contract("Seed", (accounts) => {
                         "Seed: the distribution has not yet finished"
                     );
                 });
-                it("it returns 0 when calculating claim before vesting starts", async () => {
-                    expect(
-                        (await setup.seed.calculateClaim(buyer1)).toString()
-                    ).to.equal('0');
-                });
                 it("updates lock when it buys tokens", async () => {
                     let prevSeedAmount = (await setup.seed.funders(buyer1)).seedAmount;
                     let prevFeeAmount = (await setup.seed.funders(buyer1)).fee;
@@ -264,9 +259,6 @@ contract("Seed", (accounts) => {
                 });
                 it("maximumReached == true", async () => {
                     expect(await setup.seed.maximumReached()).to.equal(true);
-                });
-                it("vestingStartTime == current timestamp", async () => {
-                    expect((await setup.seed.vestingStartTime()).toString()).to.equal((await time.latest()).toString());
                 });
                 it("updates the remaining seeds to distribution after another buy", async () => {
                     expect((await setup.seed.seedRemainder()).toString()).to.equal(
@@ -299,9 +291,8 @@ contract("Seed", (accounts) => {
                     // increase time
                     await time.increase(tenDaysInSeconds);
                     const claim = await setup.seed.calculateClaim(buyer1);
-                    const vestingStartTime = await setup.seed.vestingStartTime();
                     const expectedClaim = (await time.latest())
-                        .sub(vestingStartTime)
+                        .sub(endTime)
                         .mul(new BN(buySeedAmount).mul(twoBN).div(new BN(vestingDuration)));
                     expect(claim.toString()).to.equal(expectedClaim.toString());
                 });
