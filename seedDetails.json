@@ -1,15 +1,15 @@
 {
     "rinkeby": {
-        "seed1": "0x22369D7c8Cae8196FF4a110887F0B05670f5052a",
-        "seed2": "0xC3B72269fc958Da3D471EC32fB02443603124C7F",
-        "seed3": "0x601850190E6C8C0975B3120a21565b88dBF73fF5",
-        "seed4": "0x14C44046C8e70CFf4726aC06dBb276978faf06B9",
-        "seed5": "0xA64EDEeE6f61267EfEc56929b9364EB54D97E9A9",
-        "seed6": "0xc7AA2B3A9faE2b91F7Cb53650f13F0c42599bb30",
-        "seed7": "0x83049CecD8FB3Ce9739E5607160D1CDbb928c951",
-        "seed8": "0x7041d9aE41EE915b9972A538E6Fb04e62A0191D9",
-        "seed9": "0x1e24a1F3621feF5863C9137daeD1fe76eb3870C2",
-        "seed10": "0x6B014Ed346F86E807be211a38c6dde898910ddcd"
+        "seed1": "0x16edABE4F2021B168FbdA43dbCAf21fF237A4c4f",
+        "seed2": "0x66C6397C114f16Ff9b36Bf65aa876b8f0515Dc85",
+        "seed3": "0x8Bf7156d50E276e8FCACe7d261a93F73832B97D7",
+        "seed4": "0x12F3Cf8E5925aca0f640a5f23ED9D5F9B5c40Dc5",
+        "seed5": "0x94B604e60594461527a85B21D2Bb4AD930F9aAca",
+        "seed6": "0x3dcDe9B6f8AFc8F9a3B26EEb81CaE3fa3b5252d9",
+        "seed7": "0xAB5aEcb60B92a775E845bD99F2157cff6BD7e28e",
+        "seed8": "0x0927D87d489B4416b900C48a7A5CB787904cA66A",
+        "seed9": "0x7edb53129e37DC106F0F89703f95c433b5d6BB99",
+        "seed10": "0x3167606120482285154E683d2aacCFD894593452"
     },
     "seedDetails": {
         "seed1": {
@@ -23,13 +23,13 @@
             "isPermissioned": false,
             "Vesting duration": "31104000",
             "Vesting cliff": "1900800",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
             "fee": "2",
             "metadata": "0x516d5243747943574b6e4a5474544379315254587465387059387656353853553859744143396f61323443345167",
-            "metadata in utf8": "QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg",
+            "metadata in utf8": "\u0000QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed2": {
             "SoftCap": "100",
@@ -42,13 +42,13 @@
             "isPermissioned": false,
             "Vesting duration": "1728000",
             "Vesting cliff": "86400",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
             "fee": "2",
             "metadata": "0x516d5658366b705a52376431636937704b5139525a547147626343576a43334e636d4b794371423158734579447a",
-            "metadata in utf8": "QmVX6kpZR7d1ci7pKQ9RZTqGbcCWjC3NcmKyCqB1XsEyDz",
+            "metadata in utf8": "\u0000QmVX6kpZR7d1ci7pKQ9RZTqGbcCWjC3NcmKyCqB1XsEyDz",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed3": {
             "SoftCap": "0.00001",
@@ -61,13 +61,13 @@
             "isPermissioned": false,
             "Vesting duration": "864",
             "Vesting cliff": "86",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
             "fee": "1",
             "metadata": "0x516d4e6e4a36554570445a45377635436b7551727735455159424246377765744271626f6650716f666233654d73",
-            "metadata in utf8": "QmNnJ6UEpDZE7v5CkuQrw5EQYBBF7wetBqbofPqofb3eMs",
+            "metadata in utf8": "\u0000QmNnJ6UEpDZE7v5CkuQrw5EQYBBF7wetBqbofPqofb3eMs",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed4": {
             "SoftCap": "9999",
@@ -80,13 +80,13 @@
             "isPermissioned": false,
             "Vesting duration": "86400000",
             "Vesting cliff": "864000",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
             "fee": "5",
             "metadata": "0x516d6372703542616166765a557438455474774d3131557576377778414d636e52354a716954456e725a46355035",
-            "metadata in utf8": "Qmcrp5BaafvZUt8ETtwM11Uuv7wxAMcnR5JqiTEnrZF5P5",
+            "metadata in utf8": "\u0000Qmcrp5BaafvZUt8ETtwM11Uuv7wxAMcnR5JqiTEnrZF5P5",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed5": {
             "SoftCap": "1",
@@ -99,13 +99,13 @@
             "isPermissioned": false,
             "Vesting duration": "172800",
             "Vesting cliff": "86400",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
             "fee": "2",
             "metadata": "0x516d59736e33466f4467715648796272467657653762314575566d64417965424775486e3474466a535934797763",
-            "metadata in utf8": "QmYsn3FoDgqVHybrFvWe7b1EuVmdAyeBGuHn4tFjSY4ywc",
+            "metadata in utf8": "\u0000QmYsn3FoDgqVHybrFvWe7b1EuVmdAyeBGuHn4tFjSY4ywc",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed6": {
             "SoftCap": "1",
@@ -118,13 +118,13 @@
             "isPermissioned": false,
             "Vesting duration": "86400000",
             "Vesting cliff": "86400",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
             "fee": "2",
             "metadata": "0x516d6254396e4d503167544c72354e42323935734250355a365947686d353737547733705937594b56684c6b5a52",
-            "metadata in utf8": "QmbT9nMP1gTLr5NB295sBP5Z6YGhm577Tw3pY7YKVhLkZR",
+            "metadata in utf8": "\u0000QmbT9nMP1gTLr5NB295sBP5Z6YGhm577Tw3pY7YKVhLkZR",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed7": {
             "SoftCap": "0.0000000000000009",
@@ -137,13 +137,13 @@
             "isPermissioned": false,
             "Vesting duration": "1728000",
             "Vesting cliff": "172800",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
             "fee": "2",
             "metadata": "0x516d624773515055475a324539454e66373348714a73536e7367584a5a776f6a4131655344786271623857516148",
-            "metadata in utf8": "QmbGsQPUGZ2E9ENf73HqJsSnsgXJZwojA1eSDxbqb8WQaH",
+            "metadata in utf8": "\u0000QmbGsQPUGZ2E9ENf73HqJsSnsgXJZwojA1eSDxbqb8WQaH",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed8": {
             "SoftCap": "1",
@@ -156,13 +156,13 @@
             "isPermissioned": false,
             "Vesting duration": "17280",
             "Vesting cliff": "8640",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
             "fee": "2",
             "metadata": "0x516d547069686f71754153775573563139544a44747532597141427a4b61514e6b6576794a59664562796464754d",
-            "metadata in utf8": "QmTpihoquASwUsV19TJDtu2YqABzKaQNkevyJYfEbydduM",
+            "metadata in utf8": "\u0000QmTpihoquASwUsV19TJDtu2YqABzKaQNkevyJYfEbydduM",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed9": {
             "SoftCap": "0.5",
@@ -175,13 +175,13 @@
             "isPermissioned": false,
             "Vesting duration": "17280",
             "Vesting cliff": "8640",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
             "fee": "2",
             "metadata": "0x516d544436474e35574255757754674869704b3969794176583951465a7873484a6733506f74774e485033746a69",
-            "metadata in utf8": "QmTD6GN5WBUuwTgHipK9iyAvX9QFZxsHJg3PotwNHP3tji",
+            "metadata in utf8": "\u0000QmTD6GN5WBUuwTgHipK9iyAvX9QFZxsHJg3PotwNHP3tji",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         },
         "seed10": {
             "SoftCap": "0.2",
@@ -194,13 +194,13 @@
             "isPermissioned": false,
             "Vesting duration": "17280",
             "Vesting cliff": "4320",
-            "seed token": "0x7741264f3AC444d5560174cb25bDf3DE4182b788",
+            "seed token": "0xEF97d20F4A0a54c000446dd04bB4087E97D3e5cD",
             "funding token": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
             "fee": "2",
             "metadata": "0x516d524e4a526d534b37657675746d79733279487974687662393768674366764663416b35674c4532445835354a",
-            "metadata in utf8": "QmRNJRmSK7evutmys2yHythvb97hgCfvFcAk5gLE2DX55J",
+            "metadata in utf8": "\u0000QmRNJRmSK7evutmys2yHythvb97hgCfvFcAk5gLE2DX55J",
             "admin": "0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930",
-            "beneficiary": "0xF6631f71D1Aa27b78FEf34ab65B3846fA5ef289B"
+            "beneficiary": "0xaAd293D96524308c650f16a615D8E6939fb98d18"
         }
     }
 }

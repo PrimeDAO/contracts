@@ -116,7 +116,6 @@ module.exports = async function(callback) {
         console.log("Deployment Started.......");
         
         for(let i = 0; i<metadata.length;i++){
-            // await seedToken.approve(seedFactory.address, cap[i]);
             seedDetails.rinkeby[`seed${i+1}`] = await deploySeeds(i);
         }
 
