@@ -116,8 +116,8 @@ module.exports = async function(callback) {
         }
 
         fs.writeFileSync(
-            './contractAddresses.json',
-            JSON.stringify(contracts)
+            './seedDetails.json',
+            JSON.stringify(seedDetails)
         );
 
         await console.log("***   Success");

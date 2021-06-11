@@ -92,11 +92,11 @@ const deployToGanache = async (deployer) => {
 };
 
 const deployOnTest = async (deployer, network) => {
-    await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks[network].from);
-    await deployer.deploy(StakingRewards);
-    await deployer.deploy(PriceOracle);
-    await deployer.deploy(BalancerProxy);
-    await deployer.deploy(RepRedeemer);
+    // await deployer.deploy(PrimeToken, primeSupply, primeSupply, deployer.networks[network].from);
+    // await deployer.deploy(StakingRewards);
+    // await deployer.deploy(PriceOracle);
+    // await deployer.deploy(BalancerProxy);
+    // await deployer.deploy(RepRedeemer);
     await deployer.deploy(Seed);
     await deployer.deploy(SeedFactory);
 };
