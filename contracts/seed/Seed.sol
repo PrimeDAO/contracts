@@ -36,7 +36,8 @@ contract Seed {
     uint256 public feeAmountRequired;     // Amount of seed required for fee
     uint256 public price;
     uint256 public startTime;
-    uint256 public endTime;               // end time set by project admin, last restort end time, if max not reached
+    uint256 public endTime;               // set by project admin, this is the last resort endTime to be applied when 
+                                          //     maximumReached has not been reached by then
     bool    public permissionedSeed;
     uint32  public vestingDuration;
     uint32  public vestingCliff;
@@ -55,8 +56,8 @@ contract Seed {
     bool    public initialized;            // is this contract initialized [not necessary that it is funded]
     bool    public minimumReached;         // if the softCap[minimum limit of funding token] is reached
     bool    public maximumReached;         // if the hardCap[maximum limit of funding token] is reached
-    uint256 public vestingStartTime;       // timestamp when vesting start, by default = endTime,
-                                           //     correct time only when distribution ends
+    uint256 public vestingStartTime;       // timestamp for when vesting starts, by default == endTime,
+                                           //     otherwise when maximumReached is reached
     uint256 public totalFunderCount;       // Total funders that have contributed.
     uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
     uint256 public seedClaimed;            // Amount of seed token claimed by the user.
