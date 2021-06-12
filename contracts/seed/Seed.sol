@@ -36,7 +36,8 @@ contract Seed {
     uint256 public feeAmountRequired;     // Amount of seed required for fee
     uint256 public price;
     uint256 public startTime;
-    uint256 public endTime;
+    uint256 public endTime;               // set by project admin, this is the last resort endTime to be applied when 
+                                          //     maximumReached has not been reached by then
     bool    public permissionedSeed;
     uint32  public vestingDuration;
     uint32  public vestingCliff;
@@ -55,6 +56,8 @@ contract Seed {
     bool    public initialized;            // is this contract initialized [not necessary that it is funded]
     bool    public minimumReached;         // if the softCap[minimum limit of funding token] is reached
     bool    public maximumReached;         // if the hardCap[maximum limit of funding token] is reached
+    uint256 public vestingStartTime;       // timestamp for when vesting starts, by default == endTime,
+                                           //     otherwise when maximumReached is reached
     uint256 public totalFunderCount;       // Total funders that have contributed.
     uint256 public seedRemainder;          // Amount of seed tokens remaining to be distributed
     uint256 public seedClaimed;            // Amount of seed token claimed by the user.
@@ -163,6 +166,7 @@ contract Seed {
         price             = _price;
         startTime         = _startTime;
         endTime           = _endTime;
+        vestingStartTime  = endTime;
         vestingDuration   = _vestingDuration;
         vestingCliff      = _vestingCliff;
         permissionedSeed  = _permissionedSeed;
@@ -219,7 +223,8 @@ contract Seed {
             minimumReached = true;
         }
         if (fundingCollected >= hardCap) {
-            maximumReached = true;            
+            maximumReached = true;      
+            vestingStartTime = _currentTime();      
         }
 
         _addFunder(
@@ -393,12 +398,12 @@ contract Seed {
     function calculateClaim(address _funder) public view returns(uint256) {
         FunderPortfolio memory tokenFunder = funders[_funder];
 
-        if(_currentTime() < endTime){
+        if(_currentTime() < vestingStartTime){
             return 0;
         }
 
         // Check cliff was reached
-        uint256 elapsedSeconds = _currentTime().sub(endTime);
+        uint256 elapsedSeconds = _currentTime().sub(vestingStartTime);
 
         if (elapsedSeconds < vestingCliff) {
             return 0;

@@ -4,6 +4,7 @@ const SeedFactory = artifacts.require("SeedFactory");
 const Seed = artifacts.require("Seed");
 const PrimeToken = artifacts.require("PrimeToken");
 const contracts = require('../../contractAddresses.json');
+const seedDetails = require('../../seedDetails.json');
 const { toWei, toHex } = web3.utils;
 const fs = require('fs');
 
@@ -111,13 +112,12 @@ module.exports = async function(callback) {
         console.log("Deployment Started.......");
         
         for(let i = 0; i<metadata.length;i++){
-            // await seedToken.approve(seedFactory.address, cap[i]);
-            contracts.rinkeby[`seed${i+1}`] = await deploySeeds(i);
+            seedDetails.rinkeby[`seed${i+1}`] = await deploySeeds(i);
         }
 
         fs.writeFileSync(
-            './contractAddresses.json',
-            JSON.stringify(contracts)
+            './seedDetails.json',
+            JSON.stringify(seedDetails)
         );
 
         await console.log("***   Success");
