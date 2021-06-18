@@ -302,7 +302,7 @@ contract("Seed", (accounts) => {
                     const vestingStartTime = await setup.seed.vestingStartTime();
                     const expectedClaim = (await time.latest())
                         .sub(vestingStartTime)
-                        .mul(new BN(buySeedAmount).mul(twoBN).div(new BN(vestingDuration)));
+                        .mul(new BN(buySeedAmount).mul(twoBN)).div(new BN(vestingDuration));
                     expect(claim.toString()).to.equal(expectedClaim.toString());
                 });
                 it("claim = 0 when not contributed", async () => {
@@ -320,12 +320,11 @@ contract("Seed", (accounts) => {
                         "Seed: request is greater than claimable amount"
                     );
                 });
-                it("it returns amount of seed token rewarded and the fee", async () => {
-                    let { ["0"]: amountClaimed, ["1"]: feeAmount } = await setup.seed.claim.call(buyer1, claimAmount, {
+                it("it returns amount of the fee", async () => {
+                    let feeSent = await setup.seed.claim.call(buyer1, claimAmount, {
                         from: buyer1,
                     });
-                    expect((await amountClaimed).toString()).to.equal(claimAmount.toString());
-                    expect((await feeAmount).toString()).to.equal(feeAmount.toString());
+                    expect(feeSent.toString()).to.equal(feeAmount.toString());
                 });
                 it("it withdraws tokens after time passes", async () => {
                     // claim lock
