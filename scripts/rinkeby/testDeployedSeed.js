@@ -22,6 +22,7 @@ const log = async (seed, fromWei) => {
         "Price": fromWei((await seed.price()).toString(), 'ether'),
         "StartTime": (await seed.startTime()).toString(),
         "EndTime": (await seed.endTime()).toString(),
+        "VestingStartTime": (await seed.vestingStartTime()).toString(),
         "isPermissioned": await seed.permissionedSeed(),
         "Vesting duration": (await seed.vestingDuration()).toString(),
         "Vesting cliff": (await seed.vestingCliff()).toString(),
@@ -31,7 +32,22 @@ const log = async (seed, fromWei) => {
         "metadata": await seed.metadata(),
         "metadata in utf8": toAscii(await seed.metadata()),
         "admin": await seed.admin(),
-        "beneficiary": await seed.beneficiary()
+        "beneficiary": await seed.beneficiary(),
+        "closed": await seed.closed(),
+        "paused": await seed.paused(),
+        "isFunded": await seed.isFunded(),
+        "initialized": await seed.initialized(),
+        "minimumReached": await seed.minimumReached(),
+        "maximumReached": await seed.maximumReached(),
+        "vestingStartTime": (await seed.vestingStartTime()).toString(),
+        "totalFunderCount": (await seed.totalFunderCount()).toString(),
+        "seedRemainder": (await seed.seedRemainder()).toString(),
+        "seedClaimed": (await seed.seedClaimed()).toString(),
+        "feeRemainder": (await seed.feeRemainder()).toString(),
+        "feeClaimed": (await seed.feeClaimed()).toString(),
+        "fundingCollected": (await seed.fundingCollected()).toString(),
+        "fundingWithdrawn": (await seed.fundingWithdrawn()).toString(),
+        "claimAmount": (await seed.calculateClaim('0xD4717ee259f8736af189F968Dadc6939c1568200')).toString()
     };
     console.log(seedDetails);
     return seedDetails;
@@ -52,10 +68,10 @@ module.exports = async (callback) => {
         details.details[`seed${i+1}`] = await log(seed, fromWei);
     }
 
-    fs.writeFileSync(
-        './seedDetails.json',
-        JSON.stringify(details)
-    );
+    // fs.writeFileSync(
+    //     './seedDetails.json',
+    //     JSON.stringify(details)
+    // );
 
     callback();
 }

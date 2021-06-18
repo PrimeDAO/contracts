@@ -50,7 +50,7 @@ contract SeedFactory is CloneFactory, Ownable {
       * @param _softHardThresholds     Array containing two params:
                                         - the minimum funding token collection threshold in wei denomination.
                                         - the highest possible funding token amount to be raised in wei denomination.
-      * @param _price                 The price in wei of fundingTokens when exchanged for seedTokens.
+      * @param _price                 1 Funding Token = _price amount of Seed Token. 
       * @param _startTime             Distribution start time in unix timecode.
       * @param _endTime               Distribution end time in unix timecode.
       * @param _vestingDuration       Vesting period duration in days.
@@ -78,6 +78,7 @@ contract SeedFactory is CloneFactory, Ownable {
         // parameter check
         require( _tokens[0] != _tokens[1], "SeedFactory: seedToken cannot be fundingToken" );
         require( _softHardThresholds[1] >= _softHardThresholds[0],"SeedFactory: hardCap cannot be less than softCap");
+        require( _vestingDuration > 0, "SeedFactory: vesting duration cannot be zero");
         require( _vestingDuration >= _vestingCliff, "SeedFactory: vestingDuration cannot be less than vestingCliff" );
         require( _endTime > _startTime, "SeedFactory: endTime cannot be less than equal to startTime");
 
@@ -103,6 +104,6 @@ contract SeedFactory is CloneFactory, Ownable {
 
         emit SeedCreated(address(_newSeed), msg.sender);
 
-        return address(_newSeed);
+        return _newSeed;
     }
 }
