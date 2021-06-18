@@ -399,6 +399,10 @@ contract Seed {
             return 0;
         }
 
+        if(vestingDuration == 0){
+            return tokenFunder.seedAmount;
+        }
+
         // Check cliff was reached
         uint256 elapsedSeconds = _currentTime().sub(vestingStartTime);
 
