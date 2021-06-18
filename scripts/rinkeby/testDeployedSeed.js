@@ -68,10 +68,10 @@ module.exports = async (callback) => {
         details.details[`seed${i+1}`] = await log(seed, fromWei);
     }
 
-    // fs.writeFileSync(
-    //     './seedDetails.json',
-    //     JSON.stringify(details)
-    // );
+    fs.writeFileSync(
+        './seedDetails.json',
+        JSON.stringify(details)
+    );
 
     callback();
 }
