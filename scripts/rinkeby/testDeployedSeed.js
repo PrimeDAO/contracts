@@ -1,5 +1,4 @@
 const Seed = artifacts.require('Seed');
-const contracts = require('../../contractAddresses.json');
 const details = require('../../seedDetails.json');
 const fs = require('fs');
 
