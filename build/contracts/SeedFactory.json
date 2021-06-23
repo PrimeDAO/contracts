@@ -5071,8 +5071,8 @@
         }
       },
       "links": {},
-      "address": "0x60ef61cC71FD05993d71717f82b15ffe570bbD25",
-      "transactionHash": "0x48dc20392b502ba44e2ac8bbd8df6d3df3b17577613300579b483c3e4a9c6891"
+      "address": "0xc8E54DF609709a3aFCb1a534Fd21748c839a58C0",
+      "transactionHash": "0x03e7f8e55616ae560c8cf9c7debc5f57e7f6d4902db567585b4afcf4cd24527d"
     },
     "42": {
       "events": {
@@ -5102,7 +5102,7 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-06-22T17:06:54.278Z",
+  "updatedAt": "2021-06-23T13:16:00.556Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "Enable PrimeDAO governance to create new Seed contracts.",
