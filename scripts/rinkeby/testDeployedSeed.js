@@ -1,5 +1,8 @@
 const Seed = artifacts.require('Seed');
 const details = require('../../seedDetails.json');
+const PrimeToken = artifacts.require("PrimeToken");
+const contracts = require('../../contractAddresses.json');
+const SeedFactory = artifacts.require('SeedFactory');
 const fs = require('fs');
 
 const toAscii = (str1) =>
@@ -12,7 +15,7 @@ const toAscii = (str1) =>
     return str;
 };
 
-const log = async (seed, fromWei) => {
+const log = async (seed, fromWei, seedToken, foundInEvent) => {
     const seedDetails = {
         "SoftCap": fromWei((await seed.softCap()).toString(), 'ether'),
         "HardCap": fromWei((await seed.hardCap()).toString(), 'ether'),
@@ -46,7 +49,9 @@ const log = async (seed, fromWei) => {
         "feeClaimed": (await seed.feeClaimed()).toString(),
         "fundingCollected": (await seed.fundingCollected()).toString(),
         "fundingWithdrawn": (await seed.fundingWithdrawn()).toString(),
-        "claimAmount": (await seed.calculateClaim('0xD4717ee259f8736af189F968Dadc6939c1568200')).toString()
+        "claimAmount": (await seed.calculateClaim('0xD4717ee259f8736af189F968Dadc6939c1568200')).toString(),
+        "seedTokenBalance": (await seedToken.balanceOf(seed.address)).toString(),
+        "foundInEvents": foundInEvent
     };
     console.log(seedDetails);
     return seedDetails;
@@ -54,6 +59,10 @@ const log = async (seed, fromWei) => {
 
 module.exports = async (callback) => {
     const { fromWei } = web3.utils;
+    const factory = new web3.eth.Contract(SeedFactory.abi, contracts.rinkeby.SeedFactory);
+    const events = await factory.getPastEvents('SeedCreated',{fromBlock: 0, toBlock: 'latest'});
+
+    let seedToken = await PrimeToken.at(contracts.rinkeby.PrimeToken);
 
     if(details?.details == undefined){
         details.details = {};
@@ -64,7 +73,8 @@ module.exports = async (callback) => {
     for(let i = 0; i < Object.keys(details.rinkeby).length; i++){
         let seed = await Seed.at(details.rinkeby[`seed${i+1}`]);
         console.log(`Seed ${i+1}......${details.rinkeby[`seed${i+1}`]}`);
-        details.details[`seed${i+1}`] = await log(seed, fromWei);
+        const foundInEvent = details.rinkeby[`seed${i+1}`] == events[i].returnValues.newSeed;
+        details.details[`seed${i+1}`] = await log(seed, fromWei, seedToken, foundInEvent);
     }
 
     fs.writeFileSync(
