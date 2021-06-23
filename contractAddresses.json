@@ -58,17 +58,17 @@
     "rinkeby": {
         "WETH": "0xc778417E063141139Fce010982780140Aa0cD5Ab",
         "DAI": "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa",
-        "PrimeToken": "0x561b8e669cE0239c560CAe80b3717De61aff19be",
-        "StakingRewards": "0x945E2F2F3230472B03076f49D6befb89FA66f1A4",
-        "PriceOracle": "0x33D42d341B95be5be4F887fAA4b181E10ce32f47",
-        "BalancerProxy": "0xe0975a80F0CdE3b4C4a69Dcef2961044f5291A72",
-        "RepRedeemer": "0xd4eFfF4308bEad436041BDFA2ef4aD7f01D8dEa4",
-        "SeedFactory": "0x87aA228843Ac45297b0Dc93C74fcfafBbC7228E5",
-        "Seed": "0x69a8a781C2c21984075eeaEa392A1ca7DAbcFd92",
-        "Avatar": "0x30978636d1D1721bD7Bb94271A4728c1b6bE9Ad9",
-        "DAOToken": "0x804822D81F630974f60d5ea86Bc6c67B504c9AB0",
-        "Reputation": "0x7BAd0Bc17594BDe4B41d1aff27360E60Bd0DcccE",
-        "Controller": "0x53d83188Af868A25A21Be41B089DB034F1Dc5101",
-        "LockingToken4Reputation": "0xe6257Aa6426aF52C5298e9e2082eAc8EBCf7aF8a"
+        "PrimeToken": "0xf64cab09e8c78F3c24aEf6A7dB2798aC2d81aaD2",
+        "StakingRewards": "0xe33225489181F16f3dA9F9F944077D4d187AFEC5",
+        "PriceOracle": "0x4050E9A8294894D26C7bbE485F401242876C8152",
+        "BalancerProxy": "0xb5A9d1462843C72A947a49aA05886C89563Cb884",
+        "RepRedeemer": "0xA05b54D794332B1B767c02FefF76a65b8F05BF0B",
+        "SeedFactory": "0x60ef61cC71FD05993d71717f82b15ffe570bbD25",
+        "Seed": "0x749291e54D9bdEb70954fa84418372e426BF0672",
+        "Avatar": "0xA1DbA2FcB55BA81F0871727E1227F88d6ecad3E2",
+        "DAOToken": "0xd725DaE76361c08dFf213DB06baae9fdbc74a7CD",
+        "Reputation": "0x0489CA37423AA6Da1aE6c95bc92f1FB953a1D34c",
+        "Controller": "0x6DD55b5D71E850b65758fBC8B27fc37AaefACa28",
+        "LockingToken4Reputation": "0x89688fB2ef25ae3658f0EE015dA915De6b560EcA"
     }
 }

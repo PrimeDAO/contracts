@@ -586,9 +586,6 @@ contract("Seed", (accounts) => {
                 it("it cannot buy when closed", async () => {
                     await expectRevert(setup.data.seed.buy(buyAmount, { from: buyer1 }), "Seed: should not be closed");
                 });
-                it("it cannot withdraw when closed", async () => {
-                    await expectRevert(setup.data.seed.withdraw({ from: admin }), "Seed: should not be closed");
-                });
                 it("do not transfer funding tokens to the admin", async () => {
                     let ftBalance = await fundingToken.balanceOf(setup.data.seed.address);
                     expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(
@@ -646,6 +643,14 @@ contract("Seed", (accounts) => {
                             .sub(buyFee)
                             .toString()
                     );
+                });
+                
+                it("it can withdraw when closed", async () => {
+                    await setup.data.seed.withdraw({ from: admin });
+                    expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(
+                        zero.toString()
+                    );
+                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal(buyAmount);
                 });
                 it("paused == false", async () => {
                     expect(await setup.data.seed.paused()).to.equal(false);
@@ -790,7 +795,7 @@ contract("Seed", (accounts) => {
                     expect((await fundingToken.balanceOf(setup.data.seed.address)).toString()).to.equal(
                         zero.toString()
                     );
-                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal(buyAmount);
+                    expect((await fundingToken.balanceOf(admin)).toString()).to.equal((new BN(buyAmount).mul(twoBN)).toString());
                 });
                 it("updates the amount of funding token withdrawn", async () => {
                     await expect((await setup.data.seed.fundingWithdrawn()).toString()).to.equal(buyAmount);

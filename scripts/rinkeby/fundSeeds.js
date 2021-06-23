@@ -55,6 +55,9 @@ module.exports = async function(callback) {
             toWei('1'),
             toWei('1'),
             toWei('1.2'),
+            toWei('10'),
+            toWei('400'),
+            toWei('1100')
         ];
         let price = [ 
             toWei('1.5'), 
@@ -66,9 +69,12 @@ module.exports = async function(callback) {
             toWei('0.000000000000009'),
             toWei('1'),
             toWei('0.1'),
-            toWei('0.05')
+            toWei('0.05'),
+            toWei('0.002'),
+            toWei('1.5'),
+            toWei('2')
         ];
-        let fee = [ 2, 2, 1, 5, 2, 2, 2, 2, 2, 2  ];
+        let fee = [ 2, 2, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2 ];
         
         const fundSeed = fund(cap, fee, price, seedToken);
         const logBalance = checkBalance(seedToken);

@@ -36,7 +36,10 @@ module.exports = async function(callback) {
             contracts.rinkeby.WETH, 
             contracts.rinkeby.DAI, 
             contracts.rinkeby.WETH, 
-            contracts.rinkeby.DAI 
+            contracts.rinkeby.DAI, 
+            contracts.rinkeby.WETH, 
+            contracts.rinkeby.DAI,
+            contracts.rinkeby.WETH
         ];
         let cap              = [ 
             toWei('4'),
@@ -49,6 +52,9 @@ module.exports = async function(callback) {
             toWei('1'),
             toWei('1'),
             toWei('1.2'),
+            toWei('10'),
+            toWei('400'),
+            toWei('1100')
         ];
         let successMinimum   = [ 
             toWei('2'), 
@@ -60,7 +66,10 @@ module.exports = async function(callback) {
             toWei('0.0000000000000009'),
             toWei('1'),
             toWei('0.5'),
-            toWei('0.2')
+            toWei('0.2'),
+            toWei('0.24'),
+            toWei('100'),
+            toWei('100')
         ];
         let price            = [ 
             toWei('1.5'), 
@@ -72,14 +81,17 @@ module.exports = async function(callback) {
             toWei('0.000000000000009'),
             toWei('1'),
             toWei('0.1'),
-            toWei('0.05')
+            toWei('0.05'),
+            toWei('0.002'),
+            toWei('1.5'),
+            toWei('2')
         ];
-        let startTime        = [ 1622585775, 1628197200, 1622581200,  1622581200, 1622764800, 1622818800, 1625356800, 1623196800, 1623196800, 1623196800 ];
-        let endTime          = [ 1622586615,  1646352000, 1625000400, 1627678800, 1622764860, 1625356800, 1628035200, 1625011200, 1623283200, 1623369600 ];
-        let vestingDuration  = [ 360, 20, 0.01, 1000, 2, 1000, 20, 0.2, 0.2, 0.2 ]; // 1 year
-        let vestingCliff     = [ 22, 1, 0.001, 10, 1, 1, 2, 0.1, 0.1, 0.05 ]; // 3 months
-        let permissionedSeed = [ false, false, false, false, false, false, false, false, false, false ];
-        let fee              = [ 2, 2, 1, 5, 2, 2, 2, 2, 2, 2  ];
+        let startTime        = [ 1622585775, 1628197200, 1622581200,  1622581200, 1622764800, 1622818800, 1625356800, 1623196800, 1623196800, 1623196800, 1623196800, 1624060800, 1624320000 ];
+        let endTime          = [ 1622586615,  1646352000, 1625000400, 1627678800, 1622764860, 1625356800, 1628035200, 1625011200, 1623283200, 1623369600, 1623283200, 1625011200, 1624406400 ];
+        let vestingDuration  = [ 360, 20, 0.01, 1000, 2, 1000, 20, 0.2, 0.2, 0.2, 0.1, 100.2, 2 ]; // 1 year
+        let vestingCliff     = [ 22, 1, 0.001, 10, 1, 1, 2, 0.1, 0.1, 0.05, 0.02, 20.8, 0 ]; // 3 months
+        let permissionedSeed = [ false, false, false, false, false, false, false, false, false, false, false, false, false ];
+        let fee              = [ 2, 2, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2 ];
         let metadata         = [
             'QmRCtyCWKnJTtTCy1RTXte8pY8vV58SU8YtAC9oa24C4Qg', 
             'QmVX6kpZR7d1ci7pKQ9RZTqGbcCWjC3NcmKyCqB1XsEyDz', 
@@ -90,7 +102,10 @@ module.exports = async function(callback) {
             'QmbGsQPUGZ2E9ENf73HqJsSnsgXJZwojA1eSDxbqb8WQaH',
             'QmTpihoquASwUsV19TJDtu2YqABzKaQNkevyJYfEbydduM',
             'QmTD6GN5WBUuwTgHipK9iyAvX9QFZxsHJg3PotwNHP3tji',
-            'QmRNJRmSK7evutmys2yHythvb97hgCfvFcAk5gLE2DX55J'
+            'QmRNJRmSK7evutmys2yHythvb97hgCfvFcAk5gLE2DX55J',
+            'Qmf7RohnMKa2WP8VYftud7QetHEXD3HnRUntEJovkMsKWF',
+            'QmcfcHgpeN1Hy3JV1i7iDnCvXrPANp7ou7KP4Mcq6kasmC',
+            'QmeEGFohYJGv7v3S7AyuxiiEEg3HmnDhDKhUWJ3QrkPaLP'
         ];
 
         const deploySeeds = deploy(
