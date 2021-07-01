@@ -13,7 +13,7 @@ const fundSeed = async (seedAddress, seedToken) => {
     console.log(`available balance ${await seedToken.balanceOf('0x67BE2C36e75B7439ffc2DCb99dBdF4fbB2455930')}`);
     console.log(`funding seed at ${seedAddress} with ${required}`);
     console.log(required.toString(), seedBalance.toString());
-    if((required.sub(seedBalance)).toString() > 0){
+    if(seedBalance == 0){
         console.log("Not yet funded");
         await seedToken.transfer(seedAddress, required.sub(seedBalance));
     }
