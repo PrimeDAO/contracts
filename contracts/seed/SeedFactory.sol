@@ -67,20 +67,17 @@ contract SeedFactory is CloneFactory, Ownable {
         uint256 _price,
         uint256 _startTime,
         uint256 _endTime,
-        uint32 _vestingDuration,
-        uint32 _vestingCliff,
+        uint32[] memory _vestingDurationAndCliff,
         bool _permissionedSeed,
         uint8 _fee,
         bytes memory _metadata
     ) public onlyOwner returns (address) {
-        require(masterCopy != Seed(0), "SeedFactory: mastercopy cannot be zero address");
+        
 
-        // parameter check
-        require( _tokens[0] != _tokens[1], "SeedFactory: seedToken cannot be fundingToken" );
-        require( _softHardThresholds[1] >= _softHardThresholds[0],"SeedFactory: hardCap cannot be less than softCap");
-        require( _vestingDuration >= _vestingCliff, "SeedFactory: vestingDuration cannot be less than vestingCliff" );
-        require( _endTime > _startTime, "SeedFactory: endTime cannot be less than equal to startTime");
-
+        {
+            require(masterCopy != Seed(0), "SeedFactory: mastercopy cannot be zero address");
+            require(_vestingDurationAndCliff.length == 2, "Hasn't provided both vesting duration and cliff");
+        }
         // deploy clone
         address _newSeed = createClone(address(masterCopy));
 
@@ -95,8 +92,8 @@ contract SeedFactory is CloneFactory, Ownable {
             _price,
             _startTime,
             _endTime,
-            _vestingDuration,
-            _vestingCliff,
+            _vestingDurationAndCliff[0],
+            _vestingDurationAndCliff[1],
             _permissionedSeed,
             _fee
         );
