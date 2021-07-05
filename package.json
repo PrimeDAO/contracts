@@ -7,7 +7,6 @@
     "test": "truffle test",
     "lint": "solhint 'contracts/**/*.sol' && npx eslint test/*.js",
     "compile": "truffle compile --all",
-    
     "deploy:contracts:kovan": "truffle migrate --network kovan --reset",
     "deploy:dao:kovan": "npx run scripts/kovan/migrateDAO.js --network kovan",
     "setup:oracle:kovan": "npx truffle exec scripts/kovan/setupPriceOracle.js --network kovan",
@@ -16,14 +15,12 @@
     "init:staking:kovan": "npx truffle exec scripts/kovan/initRewards.js --network kovan",
     "init:seedfactory:kovan": "npx truffle exec scripts/kovan/initSeedFactory.js --network kovan",
     "deploy:seeds:kovan": "npx truffle exec scripts/kovan/deploySeeds.js --network kovan",
-
     "deploy:contracts:mainnet": "truffle migrate --network mainnet --reset",
     "deploy:dao:mainnet": "npx run scripts/mainnet/migrateDAO.js --network mainnet",
     "setup:lock4rep:mainnet": "npx truffle exec scripts/mainnet/setupLockToken4Reputation.js --network mainnet",
     "create:pool:mainnet": "npx truffle exec scripts/mainnet/createPool.js --network mainnet",
     "transfer:pool:mainnet": "npx truffle exec scripts/mainnet/transferPool.js --network mainnet",
     "init:staking:mainnet": "npx truffle exec scripts/mainnet/initRewards.js --network mainnet",
-
     "deploy:contracts:rinkeby": "truffle migrate --network rinkeby --reset",
     "deploy:dao:rinkeby": "npx run scripts/rinkeby/migrateDAO.js --network rinkeby",
     "setup:oracle:rinkeby": "npx truffle exec scripts/rinkeby/setupPriceOracle.js --network rinkeby",
@@ -35,7 +32,7 @@
     "deploy:customSeeds:rinkeby": "npx truffle exec scripts/rinkeby/deployCustomSeed.js --network rinkeby",
     "fund:seeds:rinkeby": "npx truffle exec scripts/rinkeby/fundSeeds.js --network rinkeby",
     "log:seeds:rinkeby": "npx truffle exec scripts/rinkeby/testDeployedSeed.js --network rinkeby",
-
+    "add:whitelist:rinkeby": "npx truffle exec scripts/rinkeby/addWhitelistToSeed.js --network rinkeby",
     "coverage": "truffle run coverage",
     "flatten": "sol-merger \"./contracts/**/*.sol\" ./_flat"
   },
@@ -58,6 +55,7 @@
     "web3": "^1.3.0"
   },
   "devDependencies": {
+    "axios": "^0.21.1",
     "eslint": "^7.9.0",
     "solidity-coverage": "^0.7.11"
   }
