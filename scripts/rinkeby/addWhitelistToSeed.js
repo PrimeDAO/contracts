@@ -23,11 +23,13 @@ const fetchWhitelist = async (url) => {
 
 module.exports = async () => {
     try {
-        const seed = await Seed.new();
+        const seed = await Seed.at("0xE2BE04B1E834CD737E210B67d961e18Ba9feA03C");
         const response = await axios.get(`https://ipfs.io/ipfs/QmbhX5YEh9umusWL1mxp7G5NJQ6UzKPjDzzTsWF7BaqsfW`);
         const whitelists = await fetchWhitelist(JSON.parse(response.data).seedDetails.whitelist);
         console.log("address to be whitelisted:- ", whitelists);
-        await seed.whitelistBatch(whitelists);
+        seed.whitelistBatch(whitelists).then(
+            () => console.log("Succesfull!")
+        );
     } catch (error) {
         console.log(error);
     }
