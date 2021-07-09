@@ -20,11 +20,11 @@ const fetchWhitelist = async (url) => {
     });
 };
 
-module.exports = async () => {
-    const seed = await Seed.at("0xE2BE04B1E834CD737E210B67d961e18Ba9feA03C");
-    const response = await axios.get(`https://ipfs.io/ipfs/QmbhX5YEh9umusWL1mxp7G5NJQ6UzKPjDzzTsWF7BaqsfW`);
+const addWhitelist = async (address, metadata) => {
+    const seed = await Seed.at(address);
+    const response = await axios.get(`https://ipfs.io/ipfs/${metadata}`);
     const whitelists = await fetchWhitelist(JSON.parse(response.data).seedDetails.whitelist);
-    console.log("address to be whitelisted:- ", whitelists);
+    console.log(`${seed.address} will have this address added as whitelists :- ${whitelists}`);
     seed.whitelistBatch(whitelists)
         .then(() => {
             whitelists.forEach(async (address) => {
@@ -38,4 +38,24 @@ module.exports = async () => {
             console.log("Succesfull!");
         })
         .catch((error) => console.log(error));
+};
+
+module.exports = async () => {
+    const seeds = [
+        {
+            address: '0x36cd8C4534262941c40270a5885dcF2Ca14a469F',
+            metadata: 'QmektwNKexJ18mbJJRhZ6oY4PiQk9Ug6NAhpzyY1BZdxmB'
+        },
+        {
+            address: '0xc9924D8822996b760EC939D22Ea8bf8830c2e08c',
+            metadata: 'QmUpsfCoMEsaJ5yMA2BkCuBhxAyy113CXZWqrjmk5UVGZX'
+        }
+    ];
+
+    seeds.map(
+        async (seed) => {
+            await addWhitelist(seed.address, seed.metadata);
+        }
+    );
+    
 };
