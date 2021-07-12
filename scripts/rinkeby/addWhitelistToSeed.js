@@ -25,7 +25,21 @@ const addWhitelist = async (address, metadata) => {
     const response = await axios.get(`https://ipfs.io/ipfs/${metadata}`);
     const whitelists = await fetchWhitelist(JSON.parse(response.data).seedDetails.whitelist);
     console.log(`${seed.address} will have this address added as whitelists :- ${whitelists}`);
+    console.log(await seed.whitelisted(whitelists[0]));
+    console.log("starting whitelist");
     seed.whitelistBatch(whitelists)
+        .on('transactionHash', function(hash){
+            console.log(hash);
+        })
+        .on('confirmation', function(confirmationNumber, receipt){
+            console.log(confirmationNumber, receipt);
+        })
+        .on('receipt', function(receipt){
+            console.log(receipt);
+        })
+        .on('error', function(error, receipt) { // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+            console.log(error, receipt);
+        })
         .then(() => {
             whitelists.forEach(async (address) => {
                 const status = await seed.whitelisted(address);
