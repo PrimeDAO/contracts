@@ -43,12 +43,8 @@ const addWhitelist = async (address, metadata) => {
 module.exports = async () => {
     const seeds = [
         {
-            address: '0x36cd8C4534262941c40270a5885dcF2Ca14a469F',
-            metadata: 'QmektwNKexJ18mbJJRhZ6oY4PiQk9Ug6NAhpzyY1BZdxmB'
-        },
-        {
-            address: '0xc9924D8822996b760EC939D22Ea8bf8830c2e08c',
-            metadata: 'QmUpsfCoMEsaJ5yMA2BkCuBhxAyy113CXZWqrjmk5UVGZX'
+            address: '0xe51e48E39ff4798D9262689A840423bE85209eF2',
+            metadata: 'QmSafP3zf1tB6QGGptGucnJe5xQ2PajYbbVtSRPGQRbKec'
         }
     ];
 
