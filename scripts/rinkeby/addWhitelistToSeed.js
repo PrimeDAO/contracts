@@ -27,7 +27,10 @@ const addWhitelist = async (address, metadata) => {
     console.log(`${seed.address} will have this address added as whitelists :- ${whitelists}`);
     console.log(await seed.whitelisted(whitelists[0]));
     console.log("starting whitelist");
-    seed.whitelistBatch(whitelists)
+    seed.whitelistBatch(whitelists, {
+        gas: 30000000,
+        gasPrice: 2000000000
+    })
         .on('transactionHash', function(hash){
             console.log(hash);
         })
